@@ -1,0 +1,560 @@
+<template>
+
+  <!-- 当前语言路由控制按钮又不是不能用，vue-i18n-routing暂时不用先 Language: {{ $t('Message.langInfo.langname') }}-->
+  <mdui-dropdown>
+
+    <mdui-button-icon v-if="!cookie_dialog" slot="trigger" v-show="show && LanguageList.length >= 2"
+      style="margin-right: 4px;margin-left: 4px;" :loading="is_loading">
+
+      <mdui-tooltip :content="`Language: ${$t('Message.langInfo.langname')}`">
+        <mdi-icon icon="mdi-translate" />
+      </mdui-tooltip>
+
+    </mdui-button-icon>
+
+    <mdui-button v-else slot="trigger" variant="tonal" v-show="show && LanguageList.length >= 2" :loading="is_loading"
+      full-width style="width:100%;"
+      >
+      <mdi-icon icon="mdi-translate" slot="icon" />
+      {{ $t('Message.langInfo.langname') }}
+    </mdui-button>
+
+    <mdui-menu selects="single">
+      <mdui-menu-item v-for="(item, index) in LanguageList" :key="index" @click="SetLanguage(item.locale, true)"
+        :disabled="!item.usability">
+        <!-- <mdi-icon v-if="$i18n.locale == item.locale" slot="icon" icon="mdi-check" /> -->
+        <span v-if="$i18n.locale != 'zh_CN'" slot="icon" style="width: 26px;"
+          :class="`langicon fi fi-${item.flagicon}`"></span>
+        {{ item.text }}
+
+        <mdi-icon v-if="$i18n.locale == item.locale" slot="end-icon" icon="mdi-check" />
+      </mdui-menu-item>
+    </mdui-menu>
+
+
+  </mdui-dropdown>
+</template>
+
+<script>
+import "/node_modules/flag-icons/css/flag-icons.min.css";
+import messages from '@/assets/language/language.js'
+import { useUserStore } from '@/stores/user'
+import { useLocalDataStore } from '@/stores/local-data'
+import {
+  // GetLocaleInfoList,
+  SetCookie,
+  SetUserLanguage,
+  GetLanguage,
+} from '@/api/global.js'
+import { useMainStore } from '@/stores/main';
+export default {
+  name: 'language-button',
+  props: {
+    show: {
+      type: Boolean,
+      default: true,
+    },
+    // slotname: {
+    //   type: String,
+    //   default: 'icon',// btn icon list
+    // },
+    cookie_dialog: {
+      type: Boolean,
+      default: false,
+    }
+  },
+  data() {
+    return {
+      mainStore: useMainStore(),
+      userStore: useUserStore(),
+      localDataStore: useLocalDataStore(),
+      vmodel: null,
+      LanguageMenu: false,
+      LanguageList: [],
+      IsMounted: false,
+      is_loading: false,
+      Messages: null,
+      translate_icon: 'mdi-translate',
+      translate_type: 'mdi',
+    }
+  },
+  methods: {
+    async getLocaleInfoList() {
+
+      //应该要有一个可以控制的变量，来控制是否显示
+      // const langpack = this.$store.getters.GetAppAllowUseLangpack;//['zh_CN','en_US']
+
+      // const langpack = this.mainStore.getAppAllowUseLangpack //['zh_CN','en_US']
+
+      const langpack = ["zh_CN", "en_US", "zh_TW", "en_GB", "ru_RU", "fr_FR", "de_DE", "ja_JP", "ko_KR"];
+
+      // const res = await GetLocaleInfoList()
+      // if (res.data != null) {
+
+      //   this.Messages = res.data
+      this.Messages = this.mainStore.getAppBaseInfo.lang_locale_list
+      // this.$store.dispatch('Set_LangMessages', res.data)
+      this.mainStore.setLangMessages(this.Messages)
+      // console.log('this.Messages',this.Messages)
+      this.LanguageList = []
+      for (let langCode in this.Messages) {
+        // if (this.Messages[langCode].Message.langInfo.show) {
+        //   //与允许使用的语言包进行比对，如果没有存在于允许使用的语言包中，则跳过
+        //   // console.log('langCode',langCode)
+        //   // console.log('langpack',langpack)
+        //   if (langpack.indexOf(langCode) == -1) {
+        //     continue;
+        //   }
+        //   // console.log('can use lang',langCode)
+
+        //   const langName = this.Messages[langCode].Message.langInfo.langname
+        //   const usabilitys = this.Messages[langCode].Message.langInfo.usability
+        //   const flagicon = this.Messages[langCode].Message.langInfo.flagicon
+        //   const langinfo = messages[langCode].Message.langInfo
+
+        if (this.Messages[langCode].Message.langInfo.show) {
+          //与允许使用的语言包进行比对，如果没有存在于允许使用的语言包中，则跳过
+          // console.log('langCode',langCode)
+          // console.log('langpack',langpack)
+          if (langpack.indexOf(langCode) == -1) {
+            continue;
+          }
+          // console.log('can use lang',langCode)
+
+          const langName = this.Messages[langCode].Message.langInfo.langname
+          const usabilitys = this.Messages[langCode].Message.langInfo.usability
+          const flagicon = this.Messages[langCode].Message.langInfo.flagicon
+          const langinfo = messages[langCode].Message.langInfo
+          this.LanguageList.push({
+            text: langName,
+            locale: langCode,
+            usability: usabilitys,
+            flagicon: flagicon,
+            langinfo: langinfo
+          })
+        }
+      }
+      this.SetLanguageAsLocale()
+
+      // }
+    },
+    SetLocaleCode(val) {
+      if (this.ValForLanguageList(val)) {
+        document.querySelector('html').setAttribute('lang', val)
+        this.localDataStore.setLang(val)
+        SetCookie('lang', val)
+
+        this.$i18n.locale = val
+
+
+        // const _this = this;
+        // // document.documentElement.style.setProperty('--x', event.clientX + 'px')
+        // // document.documentElement.style.setProperty('--y', event.clientY + 'px')
+        // //获取当前实例组件的位置
+        // const rect = _this.$el.getBoundingClientRect();
+        // const x = rect.left;
+        // const y = rect.top;
+        // document.documentElement.style.setProperty('--x', x + 'px')
+        // document.documentElement.style.setProperty('--y', y + 'px')
+        // if (document.startViewTransition) {
+        //   document.startViewTransition(() => {
+        //     this.$i18n.locale = val
+        //   });
+        // } else {
+        //   this.$i18n.locale = val
+        // }
+      }
+    },
+    SetLanguage(val, UpdateRoute = false) {
+      if (val == this.$i18n.locale) {
+        return
+      }
+      if (UpdateRoute && this.ValForLanguageList(val)) {
+        this.SetRouteLang(val)
+        this.SetUserLanguage(val)
+      }
+    },
+    async SetUserLanguage(val) {
+      // if (this.$store.getters['User/GetIsLogin'] == false) {
+      if (!this.userStore.getIsLogin) {
+        return
+      }
+      // if (this.localDataStore.getLang == val) {
+      //   return
+      // }
+      const response = await SetUserLanguage({
+        user_token: this.$G_GetUserToken(),
+        lang: val,
+      })
+      if (response.data.is_set) {
+        this.SetLocaleCode(val)
+
+
+        // this.LoadLanguage(val)
+      }
+    },
+    async LoadLanguage(lang) {
+      // 防止重复加载
+      // if (this.is_loading) return;  // 添加此行
+      // if (this.$i18n.messages[lang]) return;  // 如果已加载过，直接返回
+
+      this.is_loading = true
+      try {
+        if (this.ValForLanguageList(lang)) {
+          const response = await GetLanguage(lang)
+          if (response.data.hasOwnProperty('Message')) {
+            this.$i18n.setLocaleMessage(lang, response.data);
+            this.SetLocaleCode(lang)
+            this.is_loading = false
+          }
+        }
+      } catch (error) {
+        // console.error("Failed to load language file:", error);
+        this.is_loading = false
+      }
+    },
+    SetRouteLang(lang) {
+      var pathArray = this.$route.path.split('/')
+      var hash = this.$route.hash
+      if (this.$route.params.hasOwnProperty('lang')) {
+        if (pathArray.length == 5) {
+          this.$router.push({ path: `/${lang}/${pathArray[2]}/${pathArray[3]}/${pathArray[4]}${hash}` })
+        } else if (pathArray.length == 4) {
+          this.$router.push({ path: `/${lang}/${pathArray[2]}/${pathArray[3]}${hash}` })
+        } else if (pathArray.length == 3) {
+          this.$router.push({ path: `/${lang}/${pathArray[2]}${hash}` })
+        } else {
+          this.$router.push({ path: `/${lang}/` })
+        }
+      } else {
+        if (pathArray.length == 4) {
+          this.$router.push({ path: `/${lang}/${pathArray[1]}/${pathArray[2]}/${pathArray[3]}${hash}` })
+        } else if (pathArray.length == 3) {
+          this.$router.push({ path: `/${lang}/${pathArray[1]}/${pathArray[2]}${hash}` })
+        } else if (pathArray.length == 2) {
+          this.$router.push({ path: `/${lang}/${pathArray[1]}${hash}` })
+        } else {
+          this.$router.push({ path: `/${lang}/` })
+        }
+      }
+    },
+    ValForLanguageList(val) {
+      for (let i = 0; i < this.LanguageList.length; i++) {
+        if (this.LanguageList[i].locale == val) {
+          return true
+        }
+      }
+      return false
+    },
+    SetLanguageAsLocale() {
+      if (this.$route.params.hasOwnProperty('lang')) {
+        var lang = this.$route.params.lang
+        if (this.ValForLanguageList(lang)) {
+          this.LoadLanguage(lang)
+        }
+      } else {
+        var locale = this.localDataStore.getLang || document.querySelector('html').getAttribute('lang') || this.$i18n.fallbackLocale
+        if (this.ValForLanguageList(locale)) {
+          this.LoadLanguage(locale)
+        }
+      }
+    },
+    SetTranslateIcon() {
+      setInterval(() => {
+        if (this.translate_type == 'mdi') {
+          this.translate_type = 'fi'
+        } else {
+          this.translate_type = 'mdi'
+        }
+      }, 5000);
+    },
+  },
+  mounted() {
+    // this.SetLanguageList()
+  },
+  created() {
+    this.SetTranslateIcon()
+
+      // this.getLocaleInfoList()
+    // if (this.ReturnGetAppAllowUseLangpack != null) {
+    //   this.getLocaleInfoList()
+    // }
+  },
+  computed: {
+    ReturnUserGetUser() {
+      // return this.$store.getters['User/GetUser']
+      return this.userStore.getUser
+    },
+    ReturnGetAppAllowUseLangpack() {
+      // return this.$store.getters.GetAppAllowUseLangpack
+      return this.mainStore.getAppAllowUseLangpack
+    },
+    ReturnGetAppBaseInfo() {
+      return this.mainStore.getAppBaseInfo
+    },
+  },
+  watch: {
+    '$route.params': {
+      handler() {
+        var locale = this.$route.params.lang || this.localDataStore.getLang || document.querySelector('html').getAttribute('lang') || this.$i18n.fallbackLocale
+        if (this.$i18n.locale != locale) {
+          this.SetLanguageAsLocale()
+        }
+        if (this.$route.params.hasOwnProperty('lang')) {
+        } else {
+        }
+      },
+      immediate: true,
+    },
+    ReturnGetAppAllowUseLangpack(val) {
+      // console.log('ReturnGetAppAllowUseLangpack', val)
+      if (val == null) {
+        return;
+      }
+      this.getLocaleInfoList()
+    },
+    ReturnGetAppBaseInfo(val) {
+      // console.log('ReturnGetAppBaseInfo', val)
+      if (val == null) {
+        return;
+      }
+      this.getLocaleInfoList()
+    },
+  },
+}
+</script>
+<!-- <script>
+import "/node_modules/flag-icons/css/flag-icons.min.css";
+import messages from '@/assets/language/language.js'
+import {
+  // GetLocaleInfoList,
+  SetCookie,
+  SetUserLanguage,
+  GetLanguage,
+} from '@/api/global.js'
+export default {
+  name: 'language-button',
+  props: {
+    show: {
+      type: Boolean,
+      default: true,
+    },
+    cookie_dialog: {
+      type: Boolean,
+      default: false,
+    }
+  },
+  data() {
+    return {
+      vmodel: null,
+      LanguageMenu: false,
+      LanguageList: [],
+      IsMounted: false,
+      is_loading: false,
+      Messages: null,
+      translate_icon: 'mdi-translate',
+      translate_type: 'mdi',
+    }
+  },
+  methods: {
+    async getLocaleInfoList() {
+
+      //应该要有一个可以控制的变量，来控制是否显示
+      const langpack = this.$store.getters.GetAppAllowUseLangpack;//['zh_CN','en_US']
+
+      const res = await GetLocaleInfoList()
+      if (res.data != null) {
+        this.Messages = res.data
+        this.$store.dispatch('Set_LangMessages', res.data)
+        this.LanguageList = []
+        for (let langCode in this.Messages) {
+          if (this.Messages[langCode].Message.langInfo.show) {
+            //与允许使用的语言包进行比对，如果没有存在于允许使用的语言包中，则跳过
+            // console.log('langCode',langCode)
+            // console.log('langpack',langpack)
+            if (langpack.indexOf(langCode) == -1) {
+              continue;
+            }
+            // console.log('can use lang',langCode)
+
+            const langName = this.Messages[langCode].Message.langInfo.langname
+            const usabilitys = this.Messages[langCode].Message.langInfo.usability
+            const flagicon = this.Messages[langCode].Message.langInfo.flagicon
+            const langinfo = messages[langCode].Message.langInfo
+            this.LanguageList.push({
+              text: langName,
+              locale: langCode,
+              usability: usabilitys,
+              flagicon: flagicon,
+              langinfo: langinfo
+            })
+          }
+        }
+        this.SetLanguageAsLocale()
+      }
+    },
+    SetLocaleCode(val) {
+      if (this.ValForLanguageList(val)) {
+        document.querySelector('html').setAttribute('lang', val)
+        localStorage.setItem('lang', val)
+        SetCookie('lang', val)
+        this.$i18n.locale = val
+      }
+    },
+    // SetLanguageList() {
+    //   for (let langCode in messages) {
+    //     if (messages[langCode].Message.langInfo.show) {
+    //       const langName = messages[langCode].Message.langInfo.langname
+    //       const usabilitys = messages[langCode].Message.langInfo.usability
+    //       const flagicon = messages[langCode].Message.langInfo.flagicon
+    //       const langinfo = messages[langCode].Message.langInfo
+    //       this.LanguageList.push({
+    //         text: langName,
+    //         locale: langCode,
+    //         usability: usabilitys,
+    //         flagicon: flagicon,
+    //         langinfo: langinfo
+    //       })
+    //     }
+    //   }
+    //   this.getLocaleInfoList()
+    // },
+    SetLanguage(val, UpdateRoute = false) {
+      if (val == this.$i18n.locale) {
+        return
+      }
+      if (UpdateRoute && this.ValForLanguageList(val)) {
+        this.SetRouteLang(val)
+        this.SetUserLanguage(val)
+      }
+    },
+    async SetUserLanguage(val) {
+      if (this.$store.getters['User/GetIsLogin'] == false) {
+        return
+      }
+      const response = await SetUserLanguage({
+        user_token: this.$G_GetUserToken(),
+        language: val,
+      })
+      if (response.data.is_set) {
+        this.SetLocaleCode(val)
+        // this.LoadLanguage(val)
+      }
+    },
+    async LoadLanguage(lang) {
+      this.is_loading = true
+      try {
+        if (this.ValForLanguageList(lang)) {
+          const response = await GetLanguage(lang)
+          if (response.data.hasOwnProperty('Message')) {
+            this.$i18n.setLocaleMessage(lang, response.data);
+            this.SetLocaleCode(lang)
+            this.is_loading = false
+          }
+        }
+      } catch (error) {
+        // console.error("Failed to load language file:", error);
+        this.is_loading = false
+      }
+    },
+    SetRouteLang(lang) {
+      var pathArray = this.$route.path.split('/')
+      var hash = this.$route.hash
+      if (this.$route.params.hasOwnProperty('lang')) {
+        if (pathArray.length == 5) {
+          this.$router.push({ path: `/${lang}/${pathArray[2]}/${pathArray[3]}/${pathArray[4]}${hash}` })
+        } else if (pathArray.length == 4) {
+          this.$router.push({ path: `/${lang}/${pathArray[2]}/${pathArray[3]}${hash}` })
+        } else if (pathArray.length == 3) {
+          this.$router.push({ path: `/${lang}/${pathArray[2]}${hash}` })
+        } else {
+          this.$router.push({ path: `/${lang}/` })
+        }
+      } else {
+        if (pathArray.length == 4) {
+          this.$router.push({ path: `/${lang}/${pathArray[1]}/${pathArray[2]}/${pathArray[3]}${hash}` })
+        } else if (pathArray.length == 3) {
+          this.$router.push({ path: `/${lang}/${pathArray[1]}/${pathArray[2]}${hash}` })
+        } else if (pathArray.length == 2) {
+          this.$router.push({ path: `/${lang}/${pathArray[1]}${hash}` })
+        } else {
+          this.$router.push({ path: `/${lang}/` })
+        }
+      }
+    },
+    ValForLanguageList(val) {
+      for (let i = 0; i < this.LanguageList.length; i++) {
+        if (this.LanguageList[i].locale == val) {
+          return true
+        }
+      }
+      return false
+    },
+    SetLanguageAsLocale() {
+      if (this.$route.params.hasOwnProperty('lang')) {
+        var lang = this.$route.params.lang
+        if (this.ValForLanguageList(lang)) {
+          this.LoadLanguage(lang)
+        }
+      } else {
+        var locale = localStorage.getItem('lang') || document.querySelector('html').getAttribute('lang') || this.$i18n.fallbackLocale
+        if (this.ValForLanguageList(locale)) {
+          this.LoadLanguage(locale)
+        }
+      }
+    },
+    SetTranslateIcon() {
+      setInterval(() => {
+        if (this.translate_type == 'mdi') {
+          this.translate_type = 'fi'
+        } else {
+          this.translate_type = 'mdi'
+        }
+      }, 5000);
+    },
+  },
+  mounted() {
+    // this.SetLanguageList()
+  },
+  created() {
+    this.SetTranslateIcon()
+    if (this.ReturnGetAppAllowUseLangpack != null) {
+      this.getLocaleInfoList()
+    }
+  },
+  computed: {
+    ReturnUserGetUser() {
+      return this.$store.getters['User/GetUser']
+    },
+    ReturnGetAppAllowUseLangpack() {
+      return this.$store.getters.GetAppAllowUseLangpack
+    },
+  },
+  watch: {
+    '$route.params': {
+      handler() {
+        var locale = this.$route.params.lang || localStorage.getItem('lang') || document.querySelector('html').getAttribute('lang') || this.$i18n.fallbackLocale
+        if (this.$i18n.locale != locale) {
+          this.SetLanguageAsLocale()
+        }
+        if (this.$route.params.hasOwnProperty('lang')) {
+        } else {
+        }
+      },
+      immediate: true,
+    },
+    ReturnGetAppAllowUseLangpack(val) {
+      // console.log('ReturnGetAppAllowUseLangpack', val)
+      if (val == null) {
+        return;
+      }
+      this.getLocaleInfoList()
+    },
+  },
+}
+</script> -->
+<style lang="less">
+.langicon {
+  border: 1px solid #ccc;
+}
+</style>

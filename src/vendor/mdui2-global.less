@@ -1,0 +1,188 @@
+// @import './skeleton.less';
+
+:root {
+  --custom-blur: 16px;
+  --custom-light: rgba(255, 255, 255, 0.75);
+  --custom-dark: rgba(48, 48, 48, 0.75);
+  // --custom-dark: rgba(0, 0, 0, 0.75);
+  --custom-light-1: rgba(255, 255, 255, 1);
+  --custom-dark-1: rgba(48, 48, 48, 1);
+  // --custom-dark-1: rgba(0, 0, 0, 1);
+  --custom-overlay-color: rgba(33, 33, 33, 0.5);
+  --custom-overlay-blur: 16px;
+  // --custom-font: "MaterialDesignForum";
+  // --custom-font: "Microsoft YaHei", "微软雅黑", "Roboto", "Helvetica", Arial, sans-serif;
+
+  // --custom-font: "Segoe UI", "Roboto", "Helvetica", Arial, sans-serif;
+  // --custom-font: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  --custom-font: "iransans","poppins", "Poppins", "Segoe UI", "Roboto", "Helvetica", Arial, sans-serif;
+
+  
+  --x: 50%;
+  --y: 50%;
+
+  // --shape-corner: 24px; /* 全局修改 */
+}
+
+mdui-card{
+  border-radius: var(--mdui-shape-corner-extra-large);
+}
+mdui-menu{
+  border-radius: var(--mdui-shape-corner-medium);
+}
+
+// @font-face {
+//   font-family: "MaterialDesignForum";
+//   // src: url("~@/assets/fonts/JDZYZHKBZT.ttf") format("truetype");
+//   // src: url("~@/assets/fonts/经典综艺体繁.ttf") format("truetype");
+//   // src: url("~@/assets/fonts/HarmonyOS_Sans_Medium.ttf") format("truetype");
+//   // src: url("~@/assets/fonts/HUAWEI_PORSCHE_DESIGN_FONT.ttf") format("truetype");
+//   // src: url("~@/assets/fonts/ASPHALT_LEGEND_9_FONT.ttf") format("truetype");
+//   // src: url("~@/assets/fonts/浪漫雅圆.ttf") format("truetype");
+// }
+
+
+@font-face {
+  font-family: "poppins";
+  src: url("@/assets/fonts/Poppins-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "iransans";
+  src: url("@/assets/fonts/IRANSansXNoEn-Regular.ttf") format("truetype");
+}
+
+* {
+  font-family: var(--custom-font) !important;
+  // font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  // font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+input, select, textarea, button {
+  font-family: inherit; /* 继承全局字体 */
+}
+
+/* 淡入效果 */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade-anm{
+  animation: fadeIn 1s forwards !important;
+  /* 添加淡入效果 */
+}
+
+.mdui-card-variant-color-border {
+  border: 1px solid rgb(var(--mdui-color-surface-variant));
+}
+
+mdui-card {
+  box-shadow: none;
+}
+
+// .mdui-card-anm {
+//     // box-shadow: none;
+//     /* 关键：为 width 和 height 设置过渡 */
+//     // transition: width 0.5s ease, height 0.5s ease !important;
+//     transition: transform 0.5s ease, width 0.5s ease, height 0.5s ease; /* 添加缩放和尺寸变化的过渡效果 */
+//     will-change: transform, width, height; /* 提前告知浏览器将会有的变换，以优化性能 */
+// }
+
+
+// @font-face {
+//     font-family: "MaterialDesignForum";
+//     // src: url("~@/assets/fonts/JDZYZHKBZT.ttf") format("truetype");
+//     // src: url("~@/assets/fonts/经典综艺体繁.ttf") format("truetype");
+//     // src: url("~@/assets/fonts/HarmonyOS_Sans_Medium.ttf") format("truetype");
+//     src: url("~@/assets/fonts/HUAWEI_PORSCHE_DESIGN_FONT.ttf") format("truetype");
+//     // src: url("~@/assets/fonts/ASPHALT_LEGEND_9_FONT.ttf") format("truetype");
+//     // src: url("~@/assets/fonts/浪漫雅圆.ttf") format("truetype");
+// }
+
+// :root {
+//     --custom-font: "MaterialDesignForum";
+//     // --custom-font: "Microsoft YaHei", "微软雅黑", "Roboto", "Helvetica", Arial, sans-serif;
+
+//     // --custom-font: "Segoe UI", "Roboto", "Helvetica", Arial, sans-serif;
+//     // --custom-font: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+// }
+// .custom-font() {
+//     font-family: var(--custom-font) !important;
+// }
+
+// * {
+//     .custom-font();
+// }
+
+//全局字体使用微软雅黑
+// body{
+//     font-family: 'Microsoft YaHei', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', sans-serif !important;
+// }
+
+::-webkit-scrollbar {
+  width: 6px !important;
+  border-radius: 100px !important;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #00000000 !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1 !important;
+  border-radius: 3px !important;
+  transition: width 0.2s !important;
+
+  .mdui-theme-dark & {
+    background-color: #707070 !important;
+  }
+}
+
+/* 定义出现动画（从下往上） */
+@keyframes slideUp {
+  0% {
+      transform: translateY(100%);
+      opacity: 0;
+  }
+  100% {
+      transform: translateY(0);
+      opacity: 1;
+  }
+}
+
+/* 定义关闭动画（从上往下） */
+@keyframes slideDown {
+  0% {
+      transform: translateY(0);
+      opacity: 1;
+  }
+  100% {
+      transform: translateY(100%);
+      opacity: 0;
+  }
+}
+
+// 圆形动画切换
+@keyframes clip {
+  from {
+    clip-path: circle(0% at var(--x) var(--y));
+  }
+
+  to {
+    clip-path: circle(100% at var(--x) var(--y));
+  }
+}
+
+::view-transition-old(root) {
+  animation: none;
+}
+
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation: clip .5s ease-in;
+  // animation: clip 2s ease-in;
+}

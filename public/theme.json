@@ -1,0 +1,11 @@
+{
+  "name": "MaterialDesignForum-MDUI2",
+  "version": "26.7.4",
+  "description": "Material Design MaterialDesignForum for MDUI2",
+  "author": "HaiGeMaster",
+  "icon": "mdi-material-design",
+  "icon_color": "#735eab",
+  "disabled": false,
+  "language_routes": true,
+  "support_ie": false
+}

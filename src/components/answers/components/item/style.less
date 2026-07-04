@@ -1,0 +1,54 @@
+@import "../../../../vendor/variable.less";
+
+#page-question .answers .item,
+.mc-comments .item {
+
+// #page-question .answers .item{
+  padding: 16px 64px;
+
+  .content {
+    padding-top: 16px;
+    padding-left: 64px;
+  }
+
+  .reply_count,
+  .reply_more {
+    margin-top: 16px;
+    margin-left: 64px;
+  }
+
+  .actions {
+    display: flex;
+    margin-top: 16px;
+    padding-left: 64px;
+  }
+
+  .new-comment {
+    padding: 0px 16px 16px 16px;
+  }
+
+  @media (max-width: 849px) {
+    .content,
+    .actions,
+    .new-comment {
+      padding: 0px 16px 16px 16px;
+    }
+
+    .reply_count {
+      margin-left: 0;
+    }
+
+    .reply_more {
+      margin-left: 40px;
+    }
+  }
+
+  @media (max-width: @screen-xs-max) {
+    padding-right: 16px;
+    padding-left: 16px;
+
+    .content {
+      padding-top: 16px;
+    }
+  }
+}
