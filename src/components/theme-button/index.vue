@@ -1,10 +1,9 @@
-
 <template>
   <mdui-tooltip :content="tooltipContent">
     <mdui-button-icon
       v-show="show"
       @click="handleThemeSwitch"
-      style="margin-right: 4px; margin-left: 4px;"
+      style="margin-right: 4px; margin-left: 4px"
     >
       <mdi-icon :icon="themeIcon" />
     </mdui-button-icon>
@@ -12,12 +11,11 @@
 </template>
 
 <script>
-import { setColorScheme } from 'mdui/functions/setColorScheme.js';
-import { setTheme } from 'mdui/functions/setTheme.js';
-import {
-  // GetThemeColorParamJson,
-  // GetThemeSettingColor,
-} from '@/api/global.js';
+import { setColorScheme } from 'mdui/functions/setColorScheme.js'
+import { setTheme } from 'mdui/functions/setTheme.js'
+import {} from // GetThemeColorParamJson,
+// GetThemeSettingColor,
+'@/api/global.js'
 
 import { useMainStore } from '@/stores/main'
 
@@ -26,59 +24,59 @@ export default {
   props: {
     show: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   data() {
     return {
       isDark: false,
       theme_data: null,
       mainStore: useMainStore(),
-    };
+    }
   },
   computed: {
     tooltipContent() {
       return !this.isDark
         ? this.$t('Message.Components.ThemeButton.LightTheme')
-        : this.$t('Message.Components.ThemeButton.DarkTheme');
+        : this.$t('Message.Components.ThemeButton.DarkTheme')
     },
     themeIcon() {
-      return this.isDark ? 'mdi-weather-night' : 'mdi-weather-sunny';
+      return this.isDark ? 'mdi-weather-night' : 'mdi-weather-sunny'
     },
     ReturnGetAppBaseInfo() {
       return this.mainStore.getAppBaseInfo
-    }
+    },
   },
   methods: {
     async handleThemeSwitch(event) {
       // Add click effect with view transition if supported
-      document.documentElement.style.setProperty('--x', `${event.clientX}px`);
-      document.documentElement.style.setProperty('--y', `${event.clientY}px`);
+      document.documentElement.style.setProperty('--x', `${event.clientX}px`)
+      document.documentElement.style.setProperty('--y', `${event.clientY}px`)
 
       if (document.startViewTransition) {
-        document.startViewTransition(() => this.switchTheme());
+        document.startViewTransition(() => this.switchTheme())
       } else {
-        this.switchTheme();
+        this.switchTheme()
       }
     },
 
     switchTheme() {
-      const html = document.querySelector('html');
+      const html = document.querySelector('html')
 
       if (html.classList.contains('mdui-theme-dark')) {
-        setTheme('light');
-        this.isDark = false;
+        setTheme('light')
+        this.isDark = false
       } else if (html.classList.contains('mdui-theme-light')) {
-        setTheme('dark');
-        this.isDark = true;
+        setTheme('dark')
+        this.isDark = true
       } else {
-        setTheme('auto');
+        setTheme('auto')
         // Default to dark theme when auto is first set
-        this.isDark = true;
+        this.isDark = true
       }
 
       // Update color scheme after theme change
-      this.updateColorScheme();
+      this.updateColorScheme()
     },
     async GetThemeSettingColor() {
       // const response = await GetThemeSettingColor({
@@ -94,10 +92,10 @@ export default {
       //   console.log(this.theme_data)
       //   this.updateColorScheme()
       // }
-      let themes = this.theme_data;
-      themes = Object.assign({}, themes, this.mainStore.getAppBaseInfo.theme_color);
-      this.theme_data = themes;
-      this.updateColorScheme();
+      let themes = this.theme_data
+      themes = Object.assign({}, themes, this.mainStore.getAppBaseInfo.theme_color)
+      this.theme_data = themes
+      this.updateColorScheme()
     },
 
     // async fetchThemeColorParams() {
@@ -118,33 +116,37 @@ export default {
     // },
 
     updateColorScheme() {
-      if (!this.theme_data) return;
+      if (!this.theme_data) return
 
       if (this.isDark) {
-        setColorScheme(this.theme_data.dark.colors.primary);
+        setColorScheme(this.theme_data.dark.colors.primary)
       } else {
-        setColorScheme(this.theme_data.light.colors.primary);
+        setColorScheme(this.theme_data.light.colors.primary)
       }
     },
 
     setRandomColor() {
-      const randomColor = '#' + Math.floor(Math.random() * 0xffffff).toString(16).padEnd(6, '0');
-      setColorScheme(randomColor);
-    }
+      const randomColor =
+        '#' +
+        Math.floor(Math.random() * 0xffffff)
+          .toString(16)
+          .padEnd(6, '0')
+      setColorScheme(randomColor)
+    },
   },
   created() {
     // Initialize theme based on system preference
-    const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setTheme(isSystemDark ? 'dark' : 'light');
-    this.isDark = isSystemDark;
+    const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    setTheme(isSystemDark ? 'dark' : 'light')
+    this.isDark = isSystemDark
 
     // Listen for system theme changes
-    this.colorSchemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    this.colorSchemeMediaQuery.addListener(e => {
-      setTheme(e.matches ? 'dark' : 'light');
-      this.isDark = e.matches;
-      this.updateColorScheme();
-    });
+    this.colorSchemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    this.colorSchemeMediaQuery.addListener((e) => {
+      setTheme(e.matches ? 'dark' : 'light')
+      this.isDark = e.matches
+      this.updateColorScheme()
+    })
   },
   mounted() {
     // this.fetchThemeColorParams();
@@ -153,18 +155,18 @@ export default {
   beforeUnmount() {
     // Clean up event listener
     if (this.colorSchemeMediaQuery) {
-      this.colorSchemeMediaQuery.removeListener(this.handleSystemThemeChange);
+      this.colorSchemeMediaQuery.removeListener(this.handleSystemThemeChange)
     }
   },
   watch: {
     isDark(newVal) {
-      console.log('isDark changed:', newVal);
-      this.$store.dispatch('Set_Dark', newVal);
-      this.updateColorScheme();
+      // console.log('isDark changed:', newVal);
+      this.mainStore.setIsDark(newVal)
+      this.updateColorScheme()
     },
     ReturnGetAppBaseInfo(val) {
       this.GetThemeSettingColor()
-    }
-  }
-};
+    },
+  },
+}
 </script>

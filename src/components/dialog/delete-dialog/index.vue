@@ -1,14 +1,18 @@
 <template>
-
-
-  <mdui-dialog close-on-overlay-click :fullscreen="$store.getters.GetMobile" @close="vmodel = false"
-    style="margin: auto;" ref="delete_dialog" :headline="$t('Message.Components.DataTable.Delete')">
+  <mdui-dialog
+    close-on-overlay-click
+    :fullscreen="mainStore.getMobile"
+    @close="vmodel = false"
+    style="margin: auto"
+    ref="delete_dialog"
+    :headline="$t('Message.Components.DataTable.Delete')"
+  >
     <mdui-button-icon class="close" @click="vmodel = false" slot="icon">
       <mdi-icon icon="mdi-close" />
     </mdui-button-icon>
-    <span :style="!$store.getters.GetMobile ? 'min-width: 450px;' : ''">
+    <span :style="!mainStore.getMobile ? 'min-width: 450px;' : ''">
       <template v-for="(item, index) in vdelete_preview_text">
-        <br>
+        <br />
         <code>{{ item }}</code>
       </template>
     </span>
@@ -22,13 +26,11 @@
   </mdui-dialog>
 </template>
 <script>
-import {
-  DeleteDatas,
-} from '@/api/global.js'
+import { useMainStore } from '@/stores/main'
+import { DeleteDatas } from '@/api/global.js'
 export default {
   name: 'delete-dialog',
-  components: {
-  },
+  components: {},
   props: {
     model: {
       type: Boolean,
@@ -53,11 +55,12 @@ export default {
   },
   data() {
     return {
+      mainStore: useMainStore(),
       vmodel: false,
       vdelete_preview_text: null,
       ids: [],
-      loading:false,
-    };
+      loading: false,
+    }
   },
   methods: {
     async DeleteItem() {
@@ -69,57 +72,57 @@ export default {
         case 'topic':
           data = {
             topic_ids: this.ids,
-            user_token: user_token
+            user_token: user_token,
           }
-          break;
+          break
         case 'article':
           data = {
             article_ids: this.ids,
-            user_token: user_token
+            user_token: user_token,
           }
-          break;
+          break
         case 'question':
           data = {
             question_ids: this.ids,
-            user_token: user_token
+            user_token: user_token,
           }
-          break;
+          break
         case 'answer':
           data = {
             answer_ids: this.ids,
-            user_token: user_token
+            user_token: user_token,
           }
-          break;
+          break
         case 'comment':
           data = {
             comment_ids: this.ids,
-            user_token: user_token
+            user_token: user_token,
           }
-          break;
+          break
         case 'user':
           data = {
             user_ids: this.ids,
-            user_token: user_token
+            user_token: user_token,
           }
-          break;
+          break
         case 'reply':
           data = {
             reply_ids: this.ids,
-            user_token: user_token
+            user_token: user_token,
           }
-          break;
+          break
         case 'report':
           data = {
             report_ids: this.ids,
-            user_token: user_token
+            user_token: user_token,
           }
-          break;
+          break
         case 'user_group':
           data = {
             user_group_ids: this.ids,
-            user_token: user_token
+            user_token: user_token,
           }
-          break;
+          break
       }
       this.loading = true
       const response = await DeleteDatas(`${this.type}s`, data)
@@ -162,5 +165,5 @@ export default {
       }
     },
   },
-};
+}
 </script>

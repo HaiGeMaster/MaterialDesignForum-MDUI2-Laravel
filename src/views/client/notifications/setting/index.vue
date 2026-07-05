@@ -1,8 +1,7 @@
 <template>
   <div>
-
-    <div id="page-notifications-setting" v-if="$store.getters['User/GetIsLogin']">
-      <mdui-top-app-bar style="position: relative;">
+    <div id="page-notifications-setting" v-if="userStore.getIsLogin">
+      <mdui-top-app-bar style="position: relative">
         <mdui-button variant="tonal" @click="$router.go(-1)">
           <mdi-icon icon="mdi-arrow-left" slot="icon"></mdi-icon>
           {{ $t('Message.Components.BackButton.Back') }}
@@ -10,28 +9,23 @@
 
         <div style="flex-grow: 1"></div>
 
-        <span style="font-size: var(--mdui-typescale-title-large-size);">
+        <span style="font-size: var(--mdui-typescale-title-large-size)">
           {{ $t('Message.Client.Notification.NotificationSetting') }}
-
         </span>
 
         <div style="flex-grow: 1"></div>
         <mdui-button @click="SetUserOption()" :loading="loading">
-          {{
-            $t('Message.Admin.Options.Save')
-          }}
+          {{ $t('Message.Admin.Options.Save') }}
           <mdi-icon icon="mdi-send" slot="end-icon"></mdi-icon>
         </mdui-button>
       </mdui-top-app-bar>
 
-      <span style="margin: 0 16px 0 16px;color: rgb(var(--mdui-color-on-surface-variant));">
+      <span style="margin: 0 16px 0 16px; color: rgb(var(--mdui-color-on-surface-variant))">
         {{ $t('Message.Client.Notification.YouCanManageYourNotificationSettingsHere') }}
       </span>
 
       <div class="mdui-table">
-
         <table>
-
           <thead>
             <tr>
               <th class="text-left">
@@ -49,36 +43,43 @@
             <tr v-for="(item, index) in desserts" :key="item.name">
               <td>{{ $t(`Message.Client.Notification.NotificationType.${item.name}`) }}</td>
               <td>
-                <mdui-switch :checked="item.web_message" @input="($event) => {
-                  // console.log(!$event.target.checked)
-                  item.web_message = !$event.target.checked
-                }"></mdui-switch>
+                <mdui-switch
+                  :checked="item.web_message"
+                  @input="
+                    ($event) => {
+                      // console.log(!$event.target.checked)
+                      item.web_message = !$event.target.checked
+                    }
+                  "
+                ></mdui-switch>
               </td>
               <!-- disabled -->
               <td>
-                <mdui-switch :checked="item.email_message" @input="($event) => {
-                  // console.log(!$event.target.checked)
-                  item.email_message = !$event.target.checked
-                }"></mdui-switch>
+                <mdui-switch
+                  :checked="item.email_message"
+                  @input="
+                    ($event) => {
+                      // console.log(!$event.target.checked)
+                      item.email_message = !$event.target.checked
+                    }
+                  "
+                ></mdui-switch>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-
     </div>
 
     <NeedLoginAccess v-else />
   </div>
 </template>
 <script>
-import ReturnButton from '@/components/return-button/index.vue';
+import { useUserStore } from '@/stores/user'
+import ReturnButton from '@/components/return-button/index.vue'
 import NeedLoginAccess from '@/components/need-login-access/index.vue'
 
-import {
-  SetUserOption,
-  GetUserOption,
-} from '@/api/global.js'
+import { SetUserOption, GetUserOption } from '@/api/global.js'
 export default {
   name: 'notifications-page-setting',
   components: {
@@ -87,6 +88,7 @@ export default {
   },
   data() {
     return {
+      userStore: useUserStore(),
       web_message_all: false, // 全部站内通知开关
       email_message_all: false, // 全部邮件通知开关
       desserts: [
@@ -116,7 +118,7 @@ export default {
         { name: 'follow_article_update', web_message: true, email_message: false },
       ],
       loading: false,
-    };
+    }
   },
   methods: {
     async SetUserOption() {
@@ -125,19 +127,18 @@ export default {
       const res = await SetUserOption({
         user_token: this.$G_GetUserToken(),
         name: 'notifications',
-        value: this.desserts
+        value: this.desserts,
       })
       if (res.data.is_set) {
         this.loading = false
       } else {
         this.loading = false
       }
-
     },
     async GetUserOption() {
       const res = await GetUserOption({
         user_token: this.$G_GetUserToken(),
-        name: 'notifications'
+        name: 'notifications',
       })
       if (res.data.is_get) {
         // this.desserts = []
@@ -171,10 +172,9 @@ export default {
         // console.log('新值:', newValue);
         // this.SetUserOption()
       },
-      deep: true // 深度监听
+      deep: true, // 深度监听
     },
-  }
-
+  },
 }
 </script>
 <style lang="less">
@@ -189,7 +189,7 @@ export default {
   overflow-x: auto;
   margin-top: 2em;
   margin-bottom: 2em;
-  border: .0625rem solid rgb(var(--mdui-color-surface-variant));
+  border: 0.0625rem solid rgb(var(--mdui-color-surface-variant));
   border-radius: var(--mdui-shape-corner-large);
 }
 

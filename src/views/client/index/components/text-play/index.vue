@@ -1,15 +1,18 @@
 <template>
-  <h1 v-if="typed_show" :style="$store.getters.GetBreakpoint != 'xs' ? 'padding:8px;' : 'padding:16px;'
-    ">
+  <h1
+    v-if="typed_show"
+    :style="mainStore.getBreakpointName != 'xs' ? 'padding:8px;' : 'padding:16px;'"
+  >
     {{ header }}
-    <span class="text-plays" style="color: rgb(var(--mdui-color-primary));"></span>
+    <span class="text-plays" style="color: rgb(var(--mdui-color-primary))"></span>
     {{
-    $store.getters.GetBreakpoint != 'sm' && $store.getters.GetBreakpoint != 'xs' ?
-      `${footer_header} ${footer_tail}` :
-      `${footer_header}`
-  }}
-    <p v-show="$store.getters.GetBreakpoint == 'sm' || $store.getters.GetBreakpoint == 'xs'"><span>{{
-    footer_tail }}</span></p>
+      mainStore.getBreakpointName != 'sm' && mainStore.getBreakpointName != 'xs'
+        ? `${footer_header} ${footer_tail}`
+        : `${footer_header}`
+    }}
+    <p v-show="mainStore.getBreakpointName == 'sm' || mainStore.getBreakpointName == 'xs'">
+      <span>{{ footer_tail }}</span>
+    </p>
   </h1>
 </template>
 <script>
@@ -17,15 +20,15 @@ import {
   // GetThemeTypedParamJson,
   Get_G_INDEX_TEXT_PLAYERS,
 } from '@/api/global.js'
-import Typed from 'typed.js';
-import { useMainStore } from '@/stores/main';
+import Typed from 'typed.js'
+import { useMainStore } from '@/stores/main'
 export default {
   name: 'text-play',
   props: {
     text: {
       type: Object,
       default: null,
-    }
+    },
   },
   data: () => ({
     local_text: null,
@@ -44,7 +47,12 @@ export default {
           const _text = this.text || this.local_text
           var _body_arr = []
 
-          if (_text.header == '' || _text.body == '' || _text.footer_header == ''|| _text.footer_tail == '') {
+          if (
+            _text.header == '' ||
+            _text.body == '' ||
+            _text.footer_header == '' ||
+            _text.footer_tail == ''
+          ) {
             this.typed_show = false
             return
           } else {
@@ -66,12 +74,10 @@ export default {
           this.footer_header = this.$t(_text.footer_header)
           this.footer_tail = this.$t(_text.footer_tail)
           this.$forceUpdate()
-        } catch (e) {
-        }
-
+        } catch (e) {}
       } else {
         // const a = {"header": "Message.Components.TextPlay.With","body": ["Message.Components.TextPlay.MaterialDesign","Message.Components.TextPlay.VueAsTheCore","Message.Components.TextPlay.ImplementedByVuetify","Message.Components.TextPlay.MoreElegant","Message.Components.TextPlay.UnlimitedDistance","Message.Components.TextPlay.CrossPlatform","Message.Components.TextPlay.DynamicResponsive"],"footer_header": "Message.Components.TextPlay.TheWay","footer_tail": "Message.Components.TextPlay.EnjoyCommunication"}
-        this.header = this.$t("Message.Components.TextPlay.With")
+        this.header = this.$t('Message.Components.TextPlay.With')
         this.body = [
           this.$t('Message.Components.TextPlay.MaterialDesign'),
           // this.$t('Message.Components.TextPlay.VueAsTheCore'),
@@ -96,15 +102,15 @@ export default {
      */
     SpawnText(typeSpeed = 100, backSpeed = 30, loop = true) {
       if (this.typed != null) {
-        this.typed.destroy();
+        this.typed.destroy()
       }
       const options = {
         strings: this.body,
         typeSpeed: typeSpeed,
         backSpeed: backSpeed,
-        loop: loop
-      };
-      this.typed = new Typed('.text-plays', options);
+        loop: loop,
+      }
+      this.typed = new Typed('.text-plays', options)
     },
     // async GetThemeTypedParamJson() {
 
@@ -129,9 +135,9 @@ export default {
     //     this.UpdateText()
     //   }
     // },
-    async GetThemeTypedParamJson(){
+    async GetThemeTypedParamJson() {
       const TEXT_PLAYERS = Get_G_INDEX_TEXT_PLAYERS()
-      if(TEXT_PLAYERS!==null){
+      if (TEXT_PLAYERS !== null) {
         // this.local_text = TEXT_PLAYERS
         const data = TEXT_PLAYERS.json_text
         this.local_text = data
@@ -151,7 +157,6 @@ export default {
       //   this.UpdateText()
       // }
 
-
       // var user_token = this.$G_GetUserToken()
       // const res = await GetThemeTypedParamJson({
       //   user_token: user_token
@@ -166,7 +171,7 @@ export default {
       this.local_text = data_json
       this.$forceUpdate()
       this.UpdateText()
-    }
+    },
   },
   mounted() {
     // this.UpdateText()
@@ -175,10 +180,10 @@ export default {
   computed: {
     ReturnGetAppBaseInfo() {
       return this.mainStore.getAppBaseInfo
-    }
+    },
   },
   watch: {
-    '$route'() {
+    $route() {
       this.UpdateText()
     },
     '$i18n.locale'() {
@@ -193,7 +198,7 @@ export default {
     ReturnGetAppBaseInfo(val) {
       this.UpdateText()
       this.GetThemeTypedParamJson()
-    }
-  }
+    },
+  },
 }
 </script>

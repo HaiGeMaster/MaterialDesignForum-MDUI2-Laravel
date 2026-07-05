@@ -1,55 +1,69 @@
 <template>
   <div class="mc-comments-page">
-    <ListHeader :title="list_header_title" type="topics" @menu_order_item_select="
-      (name, _order) => {
-        order = _order
-      }
-    " @OnInit="(val) => { order = val }" />
-    <Comments :order="order" :show_new_comment="false" :external_loading="external_loading" :need_glass_container="true"
-      item_classes="layout-colourless" :commentable_id="commentable_id" :commentable_type="commentable_type"
-      @return_update_comments="(comment) => { $emit('return_update_comments', comment) }" />
-    <div :class="[
-      'new-comment-fixed',
-    ]" :style="{
+    <ListHeader
+      :title="list_header_title"
+      type="topics"
+      @menu_order_item_select="
+        (name, _order) => {
+          order = _order
+        }
+      "
+      @OnInit="
+        (val) => {
+          order = val
+        }
+      "
+    />
+    <Comments
+      :order="order"
+      :show_new_comment="false"
+      :external_loading="external_loading"
+      :need_glass_container="true"
+      item_classes="layout-colourless"
+      :commentable_id="commentable_id"
+      :commentable_type="commentable_type"
+      @return_update_comments="
+        (comment) => {
+          $emit('return_update_comments', comment)
+        }
+      "
+    />
+    <div
+      :class="['new-comment-fixed']"
+      :style="{
         'max-width': '846px',
-        'width': '100%',
-        'transition': 'transform 0.3s ease, opacity 0.3s ease',
-        // 'margin-left': $store.getters.GetPc && $store.getters.GetComponents.drawer_navigation
-        //     $store.getters.GetPad && $store.getters.GetComponents.drawer_navigation
-        // 'bottom': $store.getters.GetMobile ? '56px' : '0',
-
-        //   'margin-right': $store.getters.GetPc && $store.getters.GetComponents.drawer_navigation
-        //   ?
-        //   '256px'
-        //   :
-        //   (
-        //     $store.getters.GetPad && $store.getters.GetComponents.drawer_navigation
-        //       ?
-        //       '86px'
-        //       :
-        //       ''
-        //   )
-        // ,
-
-        'bottom': $store.getters.GetMobile ? '80px' : '0',
-        'transform': $store.getters.GetScrollMode == 'down' && !$store.getters.GetSelect ? 'translateY(100%)' : 'none',
-        'opacity': $store.getters.GetScrollMode == 'down' && !$store.getters.GetSelect ? '0' : '',
-      }">
+        width: '100%',
+        transition: 'transform 0.3s ease, opacity 0.3s ease',
+        bottom: mainStore.getMobile ? '80px' : '0',
+        transform:
+          mainStore.getScrollMode == 'down' && !mainStore.GetSelect ? 'translateY(100%)' : 'none',
+        opacity: mainStore.getScrollMode == 'down' && !mainStore.GetSelect ? '0' : '',
+      }"
+    >
       <div class="container">
-        <NewCommentOrReply :new_comment_reply_elevation="'10'" :label="$t(
-          'Message.Components.Comments.NewCommentOrReply.WriteYourComment'
-        )" @return_update_comments="
+        <NewCommentOrReply
+          :new_comment_reply_elevation="'10'"
+          :label="$t('Message.Components.Comments.NewCommentOrReply.WriteYourComment')"
+          @return_update_comments="
             (comment) => {
-              $emit('return_update_comments', comment);
-              $store.dispatch('Update/Set_CommentUpdate', comment)
-            }" :commentable_id="commentable_id" :commentable_type="commentable_type" :show="true"
-          card_list_elevation="10" @on_focus="$store.dispatch('NewCommentReply/Set_Select', true)"
-          @on_blur="$store.dispatch('NewCommentReply/Set_Select', false)" />
+              $emit('return_update_comments', comment)
+              updateStore.setCommentUpdate(comment)
+            }
+          "
+          :commentable_id="commentable_id"
+          :commentable_type="commentable_type"
+          :show="true"
+          card_list_elevation="10"
+        />
+        <!-- @on_focus="$store.dispatch('NewCommentReply/Set_Select', true)"
+          @on_blur="$store.dispatch('NewCommentReply/Set_Select', false)" -->
       </div>
     </div>
   </div>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
+import { useUpdateStore } from '@/stores/update'
 import Comments from './index.vue'
 import ListHeader from '@/components/list-header/index.vue'
 import NewCommentOrReply from './components/new-comment-or-reply/index.vue'
@@ -78,21 +92,23 @@ export default {
     NewCommentOrReply,
   },
   data: () => ({
+    mainStore: useMainStore(),
+    updateStore: useUpdateStore(),
     show_self_new_comment: false,
     order: '-update_time',
   }),
   watch: {
     '$route.path': {
       handler(newVal, oldVal) {
-        this.$store.dispatch('Set_ScrollMode', 'up')
+        this.mainStore.setScrollMode('up')
       },
-      immediate: true
-    }
-  }
+      immediate: true,
+    },
+  },
 }
 </script>
 <style lang="less">
-@import "../../vendor/variable.less";
+@import '../../vendor/variable.less';
 
 .mc-comments-page {
   .mc-list-header {
@@ -139,7 +155,6 @@ export default {
     }
 
     .new-comment {
-
       box-sizing: border-box;
       padding-right: 64px !important;
       padding-left: 64px !important;
@@ -158,7 +173,6 @@ export default {
         border-left: none;
         border-radius: 0;
 
-        
         // border-top-left-radius: var(--mdui-shape-corner-extra-large);
         // border-top-right-radius: var(--mdui-shape-corner-extra-large);
         // border-bottom-left-radius: 0;
@@ -170,9 +184,7 @@ export default {
       //min-width: @screen-sm-min且max-width: @screen-sm-max
       @media (min-width: @screen-sm-min) and (max-width: 940px) {
         width: calc(100% - 86px);
-        
       }
-      
     }
 
     // @media (max-width: @screen-sm-max) {

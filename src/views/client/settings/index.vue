@@ -1,7 +1,7 @@
 <template>
-  <div id="page-settings" style="padding: 16px;">
-      <!-- //服务器不再从客户端获取主题cookie，而是从数据库中获取默认主题 -->
-    <!-- <mdui-card style="width: 100%;" :variant="$store.getters.GetDark ? 'filled' : 'elevated'">
+  <div id="page-settings" style="padding: 16px">
+    <!-- //服务器不再从客户端获取主题cookie，而是从数据库中获取默认主题 -->
+    <!-- <mdui-card style="width: 100%;" :variant="mainStore.getIsDark ? 'filled' : 'elevated'">
       <mdui-list>
         <mdui-list-subheader>
           {{ IsTauri ?
@@ -22,104 +22,183 @@
 
     <br />
     <br /> -->
-    <mdui-card style="width: 100%;" :variant="$store.getters.GetDark ? 'filled' : 'elevated'"
-      v-if="$store.getters['User/GetIsLogin'] && (oauths_link.github || oauths_link.google || oauths_link.microsoft)">
-
+    <mdui-card
+      style="width: 100%"
+      :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
+      v-if="
+        userStore.getIsLogin && (oauths_link.github || oauths_link.google || oauths_link.microsoft)
+      "
+    >
       <mdui-list-subheader>
         {{
-          IsTauri ?
-            `${$t('Message.Components.Account.ThirdPartyAccounts')}(${$t('Message.App.TheCurrentEnvironmentIsUnavailable')})`
-            :
-            $t('Message.Components.Account.ThirdPartyAccounts')
+          IsTauri
+            ? `${$t('Message.Components.Account.ThirdPartyAccounts')}(${$t('Message.App.TheCurrentEnvironmentIsUnavailable')})`
+            : $t('Message.Components.Account.ThirdPartyAccounts')
         }}
       </mdui-list-subheader>
 
-      <mdui-list-item :disabled="IsTauri" v-show="oauths_link.github"
-        :href="oauths.github == null ? oauths_link.github : ''" rel="noopener noreferrer"
-        :nonclickable="oauths.github != null" :headline="$t('Message.Components.Account.GithubAccount')"
-        :description="oauths.github == null ? $t('Message.Components.Account.SssociatedNLogin', {
-          value: $t('Message.Components.Account.GithubAccount')
-        }) : $t('Message.Components.Account.AlreadySssociated') + oauths.github.oauth_user_email + '(' + oauths.github.oauth_user_name + ')'">
-
-        <img slot="icon" :src="$G_ImgHandle('/assets/fixed_content/github.png')" style="width: 24px;" />
+      <mdui-list-item
+        :disabled="IsTauri"
+        v-show="oauths_link.github"
+        :href="oauths.github == null ? oauths_link.github : ''"
+        rel="noopener noreferrer"
+        :nonclickable="oauths.github != null"
+        :headline="$t('Message.Components.Account.GithubAccount')"
+        :description="
+          oauths.github == null
+            ? $t('Message.Components.Account.SssociatedNLogin', {
+                value: $t('Message.Components.Account.GithubAccount'),
+              })
+            : $t('Message.Components.Account.AlreadySssociated') +
+              oauths.github.oauth_user_email +
+              '(' +
+              oauths.github.oauth_user_name +
+              ')'
+        "
+      >
+        <img
+          slot="icon"
+          :src="$G_ImgHandle('/assets/fixed_content/github.png')"
+          style="width: 24px"
+        />
 
         <mdui-button-icon v-if="oauths.github == null" slot="end-icon">
           <mdi-icon icon="mdi-open-in-new" />
         </mdui-button-icon>
 
-        <mdui-button v-else slot="end-icon" variant="outlined" @click.stop="DeleteOauth(oauths.github.oauth_id)">
+        <mdui-button
+          v-else
+          slot="end-icon"
+          variant="outlined"
+          @click.stop="DeleteOauth(oauths.github.oauth_id)"
+        >
           <mdi-icon icon="mdi-link-off" slot="icon" />
           {{ $t('Message.Components.Account.Disassociation') }}
         </mdui-button>
-
       </mdui-list-item>
       <!-- v-show="oauths_link.google" -->
-      <mdui-list-item :disabled="IsTauri" v-show="oauths_link.google"
-        :href="oauths.google == null ? oauths_link.google : ''" rel="noopener noreferrer"
-        :nonclickable="oauths.google != null" :headline="$t('Message.Components.Account.GoogleAccount')"
-        :description="oauths.google == null ? $t('Message.Components.Account.SssociatedNLogin', {
-          value: $t('Message.Components.Account.GoogleAccount')
-        }) : $t('Message.Components.Account.AlreadySssociated') + oauths.google.oauth_user_email + '(' + oauths.google.oauth_user_name + ')'">
-
-        <img slot="icon" :src="$G_ImgHandle('/assets/fixed_content/google.png')" style="width: 24px;" />
+      <mdui-list-item
+        :disabled="IsTauri"
+        v-show="oauths_link.google"
+        :href="oauths.google == null ? oauths_link.google : ''"
+        rel="noopener noreferrer"
+        :nonclickable="oauths.google != null"
+        :headline="$t('Message.Components.Account.GoogleAccount')"
+        :description="
+          oauths.google == null
+            ? $t('Message.Components.Account.SssociatedNLogin', {
+                value: $t('Message.Components.Account.GoogleAccount'),
+              })
+            : $t('Message.Components.Account.AlreadySssociated') +
+              oauths.google.oauth_user_email +
+              '(' +
+              oauths.google.oauth_user_name +
+              ')'
+        "
+      >
+        <img
+          slot="icon"
+          :src="$G_ImgHandle('/assets/fixed_content/google.png')"
+          style="width: 24px"
+        />
 
         <mdui-button-icon v-if="oauths.google == null" slot="end-icon">
           <mdi-icon icon="mdi-open-in-new" />
         </mdui-button-icon>
 
-        <mdui-button v-else slot="end-icon" variant="outlined" @click.stop="DeleteOauth(oauths.google.oauth_id)">
+        <mdui-button
+          v-else
+          slot="end-icon"
+          variant="outlined"
+          @click.stop="DeleteOauth(oauths.google.oauth_id)"
+        >
           <mdi-icon icon="mdi-link-off" slot="icon" />
           {{ $t('Message.Components.Account.Disassociation') }}
         </mdui-button>
-
       </mdui-list-item>
 
-      <mdui-list-item :disabled="IsTauri" v-show="oauths_link.microsoft"
-        :href="oauths.microsoft == null ? oauths_link.microsoft : ''" rel="noopener noreferrer"
-        :nonclickable="oauths.microsoft != null" :headline="$t('Message.Components.Account.MicrosoftAccount')"
-        :description="oauths.microsoft == null ? $t('Message.Components.Account.SssociatedNLogin', {
-          value: $t('Message.Components.Account.MicrosoftAccount')
-        }) : $t('Message.Components.Account.AlreadySssociated') + oauths.microsoft.oauth_user_email + '(' + oauths.microsoft.oauth_user_name + ')'">
-
-        <img slot="icon" :src="$G_ImgHandle('/assets/fixed_content/microsoft.png')" style="width: 24px;" />
+      <mdui-list-item
+        :disabled="IsTauri"
+        v-show="oauths_link.microsoft"
+        :href="oauths.microsoft == null ? oauths_link.microsoft : ''"
+        rel="noopener noreferrer"
+        :nonclickable="oauths.microsoft != null"
+        :headline="$t('Message.Components.Account.MicrosoftAccount')"
+        :description="
+          oauths.microsoft == null
+            ? $t('Message.Components.Account.SssociatedNLogin', {
+                value: $t('Message.Components.Account.MicrosoftAccount'),
+              })
+            : $t('Message.Components.Account.AlreadySssociated') +
+              oauths.microsoft.oauth_user_email +
+              '(' +
+              oauths.microsoft.oauth_user_name +
+              ')'
+        "
+      >
+        <img
+          slot="icon"
+          :src="$G_ImgHandle('/assets/fixed_content/microsoft.png')"
+          style="width: 24px"
+        />
 
         <mdui-button-icon v-if="oauths.microsoft == null" slot="end-icon">
           <mdi-icon icon="mdi-open-in-new" />
         </mdui-button-icon>
 
-        <mdui-button v-else slot="end-icon" variant="outlined" @click.stop="DeleteOauth(oauths.microsoft.oauth_id)">
+        <mdui-button
+          v-else
+          slot="end-icon"
+          variant="outlined"
+          @click.stop="DeleteOauth(oauths.microsoft.oauth_id)"
+        >
           <mdi-icon icon="mdi-link-off" slot="icon" />
           {{ $t('Message.Components.Account.Disassociation') }}
         </mdui-button>
-
       </mdui-list-item>
 
-      <mdui-list-item :disabled="IsTauri" v-show="oauths_link.sso" :href="oauths.sso == null ? oauths_link.sso : ''"
-        rel="noopener noreferrer" :nonclickable="oauths.sso != null"
-        :headline="sso_client_main_name ? $t('Message.Components.Account.ValueAccount', { value: sso_client_main_name }) : $t('Message.Components.Account.SSOAccount')"
-
-        :description="oauths.sso == null ? 
-        $t('Message.Components.Account.SssociatedNLogin', {
-          value: sso_client_main_name ? $t('Message.Components.Account.ValueAccount', { value: sso_client_main_name }) : 
-          $t('Message.Components.Account.SSOAccount')
-        }) : 
-        $t('Message.Components.Account.AlreadySssociated') + oauths.sso.oauth_user_email + '(' + oauths.sso.oauth_user_name + ')'
-        ">
-
-        <img slot="icon" :src="$G_ImgHandle('/assets/fixed_content/sso.png')" style="width: 24px;" />
+      <mdui-list-item
+        :disabled="IsTauri"
+        v-show="oauths_link.sso"
+        :href="oauths.sso == null ? oauths_link.sso : ''"
+        rel="noopener noreferrer"
+        :nonclickable="oauths.sso != null"
+        :headline="
+          sso_client_main_name
+            ? $t('Message.Components.Account.ValueAccount', { value: sso_client_main_name })
+            : $t('Message.Components.Account.SSOAccount')
+        "
+        :description="
+          oauths.sso == null
+            ? $t('Message.Components.Account.SssociatedNLogin', {
+                value: sso_client_main_name
+                  ? $t('Message.Components.Account.ValueAccount', { value: sso_client_main_name })
+                  : $t('Message.Components.Account.SSOAccount'),
+              })
+            : $t('Message.Components.Account.AlreadySssociated') +
+              oauths.sso.oauth_user_email +
+              '(' +
+              oauths.sso.oauth_user_name +
+              ')'
+        "
+      >
+        <img slot="icon" :src="$G_ImgHandle('/assets/fixed_content/sso.png')" style="width: 24px" />
 
         <mdui-button-icon v-if="oauths.sso == null" slot="end-icon">
           <mdi-icon icon="mdi-open-in-new" />
         </mdui-button-icon>
 
-        <mdui-button v-else slot="end-icon" variant="outlined" @click.stop="DeleteOauth(oauths.sso.oauth_id)">
+        <mdui-button
+          v-else
+          slot="end-icon"
+          variant="outlined"
+          @click.stop="DeleteOauth(oauths.sso.oauth_id)"
+        >
           <mdi-icon icon="mdi-link-off" slot="icon" />
           {{ $t('Message.Components.Account.Disassociation') }}
         </mdui-button>
-
       </mdui-list-item>
     </mdui-card>
-
   </div>
 </template>
 <script>
@@ -169,7 +248,7 @@ export default {
       this.form_data = null
       var user_token = this.$G_GetUserToken()
       const res = await GetThemeData({
-        user_token: user_token
+        user_token: user_token,
       })
       if (res.data.is_get) {
         this.form_data = res.data.form_data
@@ -180,12 +259,11 @@ export default {
       }
     },
     async GetOauths() {
-
       // if (this.$route.name!='settings'||this.$route.name!='lang-settings') {
       //   return
       // }
 
-      if (!this.$store.getters['User/GetIsLogin']) {
+      if (!this.userStore.getIsLogin) {
         return
       }
 
@@ -196,12 +274,12 @@ export default {
 
       var user_token = this.$G_GetUserToken()
       const res = await GetOauths({
-        user_token: user_token
+        user_token: user_token,
       })
       if (res.data.is_get) {
         this.oauths = res.data.data
         this.sso_client_main_name = res.data.data.sso_client_main_name
-        console.log( this.sso_client_main_name)
+        console.log(this.sso_client_main_name)
         this.$forceUpdate()
       }
     },
@@ -210,7 +288,7 @@ export default {
       var user_token = this.$G_GetUserToken()
       const res = await DeleteOauth({
         user_token: user_token,
-        oauth_id: oauth_id
+        oauth_id: oauth_id,
       })
       if (res.data.is_delete) {
         this.delete_loading_id = null
@@ -220,11 +298,10 @@ export default {
       }
     },
     UpdateWebTitleAndAppbarSubTitle(val) {
-      if (val.name == 'settings' || val.name == 'lang-settings'
-      ) {
+      if (val.name == 'settings' || val.name == 'lang-settings') {
         this.$G_UpdateWebTitleAndAppbarSubTitle(
           this.$t('Message.Components.DevDialog.Setting'),
-          this.$t('Message.Components.DevDialog.Setting')
+          this.$t('Message.Components.DevDialog.Setting'),
         )
       }
     },
@@ -244,7 +321,7 @@ export default {
       return IsMobileApp()
     },
     ReturnGetIsLogin() {
-      return this.$store.getters['User/GetIsLogin']
+      return this.userStore.getIsLogin
     },
   },
   created() {

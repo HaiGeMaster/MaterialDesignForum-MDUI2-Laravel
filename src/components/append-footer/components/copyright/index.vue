@@ -4,7 +4,7 @@
       <!-- Cookie Setting -->
       <!-- {{ $t('Message.Components.UseCookieDialog.cookieConsent.manage') }} -->
 
-      <a @click="$store.dispatch('Dialog/Set_UseCookieDialog', true)">
+      <a @click="dialogStore.setCookieUseDialog(true)">
         {{ $t('Message.Components.UseCookieDialog.cookieConsent.manage') }} </a
       >|
       <!-- <a @click="mainStore.setRightDrawer(!mainStore.getRightDrawer)">
@@ -51,16 +51,6 @@
     <p>
       <a href="https://www.xbedrock.com/info" target="_blank"> Material Design Forum </a>
     </p>
-    <!-- <p>
-      <a href="https://developer.harmonyos.com/cn/design/resource" target="_blank">
-        HUAWEI HarmonyOS Sans
-      </a>
-    </p> -->
-    <!-- <p @click="
-      $router.push(`${$G_UrlHeaderLang()}/settings`)
-      ">
-      V{{ $store.getters.GetAppVersion }}
-    </p> -->
   </div>
 </template>
 <script>

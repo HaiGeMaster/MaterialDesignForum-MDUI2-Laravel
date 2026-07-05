@@ -1,7 +1,7 @@
 <template>
   <mdui-dialog
     close-on-overlay-click
-    :fullscreen="$store.getters.GetBreakpoint == 'xs'"
+    :fullscreen="mainStore.getBreakpointName == 'xs'"
     ref="topics_dialog"
     @close="vmodel = false"
     class="topics-dialog"
@@ -12,7 +12,7 @@
     <mdui-button-icon slot="icon" class="close" @click="vmodel = !vmodel">
       <mdi-icon icon="mdi-close" />
     </mdui-button-icon>
-    <div :style="!$store.getters.GetMobile ? 'min-width: 500px;' : ''">
+    <div :style="!mainStore.getMobile ? 'min-width: 500px;' : ''">
       <form ref="form">
         <div class="cover-wrapper" @click="handleFileSelect()">
           <div class="content">
@@ -71,6 +71,7 @@
   </mdui-dialog>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
 import { AddTopic, EditTopic } from '@/api/global.js'
 export default {
   name: 'topics-dialog',
@@ -90,6 +91,7 @@ export default {
   },
   components: {},
   data: () => ({
+    mainStore: useMainStore(),
     vmodel: false,
     TopicTitle: '',
     TopicDescription: '',

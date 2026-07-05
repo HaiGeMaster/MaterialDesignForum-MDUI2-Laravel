@@ -1,96 +1,105 @@
 <template>
-
-  <mdui-card 
-    v-show="vmodel == 'open' ||
-            vmodel == 'maximize' ||
-            vmodel == 'moderate'
-            " 
-          :class="[
-            'mc-fab-dialog',
-            'glass-container',
-            {
-              'maximize': $store.getters.GetBreakpoint != 'xs' && vmodel == 'maximize',
-              'minimize': vmodel == 'minimize',
-            }
-          ]" class="mdui-card-variant-color-border" ref="card_name_id" :id="name_id" :elevation="vmodel == 'maximize'
-            ? ($store.getters['FabDialog/GetFabDialogName'] == name_id ? elevation : elevation - 4)
-            : (
-              vmodel == 'minimize'
-                ? ($store.getters['FabDialog/GetFabDialogName'] == name_id ? elevation - 4 : elevation - 8)
-                : ($store.getters['FabDialog/GetFabDialogName'] == name_id ? elevation - 8 : elevation - 16)
-            )"  @focus="onFocus()"
-            
-            :style="`${$store.getters['FabDialog/GetFabDialogName'] == name_id?'box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 25px;':'box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 25px;'}`"
-
-            :variant="$store.getters.GetDark ? 'filled' : 'elevated'"
-            >
-
+  <mdui-card
+    v-show="vmodel == 'open' || vmodel == 'maximize' || vmodel == 'moderate'"
+    :class="[
+      'mc-fab-dialog',
+      'glass-container',
+      {
+        maximize: mainStore.getBreakpointName != 'xs' && vmodel == 'maximize',
+        minimize: vmodel == 'minimize',
+      },
+    ]"
+    class="mdui-card-variant-color-border"
+    ref="card_name_id"
+    :id="name_id"
+    :elevation="
+      vmodel == 'maximize'
+        ? fabDialogStore.getFabDialogName == name_id
+          ? elevation
+          : elevation - 4
+        : vmodel == 'minimize'
+          ? fabDialogStore.getFabDialogName == name_id
+            ? elevation - 4
+            : elevation - 8
+          : fabDialogStore.getFabDialogName == name_id
+            ? elevation - 8
+            : elevation - 16
+    "
+    @focus="onFocus()"
+    :style="`${fabDialogStore.getFabDialogName == name_id ? 'box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 25px;' : 'box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 25px;'}`"
+    :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
+  >
     <div :class="['header', 'glass-container']">
-
-      <div ref="header_title" :class="[
-            'header-title',
-            {
-              'white--text': $store.getters.GetDark,
-              'black--text': !$store.getters.GetDark,
-            }
-          ]" @dblclick="vmodel == 'moderate' ? EditorStateUpdate('maximize') : EditorStateUpdate('moderate')"
-        @click="onFocus()">
-
-
+      <div
+        ref="header_title"
+        :class="[
+          'header-title',
+          {
+            'white--text': mainStore.getIsDark,
+            'black--text': !mainStore.getIsDark,
+          },
+        ]"
+        @dblclick="
+          vmodel == 'moderate' ? EditorStateUpdate('maximize') : EditorStateUpdate('moderate')
+        "
+        @click="onFocus()"
+      >
         <mdi-icon v-if="icon.indexOf('mdi-') != -1" :icon="icon"></mdi-icon>
 
-        <img v-else :src="icon" :style="{
-            'width': '24px',
-            'height': '24px',
+        <img
+          v-else
+          :src="icon"
+          :style="{
+            width: '24px',
+            height: '24px',
             'margin-right': '8px',
-          }" />
+          }"
+        />
         &nbsp;
-        {{
-            title.indexOf('Message') == -1
-              ?
-              title
-              :
-              $t(title)
-          }}
+        {{ title.indexOf('Message') == -1 ? title : $t(title) }}
       </div>
 
-      <div class="header-actions" style="margin-top: 8px;">
-
+      <div class="header-actions" style="margin-top: 8px">
         <mdui-tooltip :content="$t('Message.Components.Editor.Minimize')" placement="bottom">
-          <mdui-button-icon @click="vmodel == 'minimize' ? vmodel = 'maximize' : vmodel = 'minimize'" style="width: 28px;height: 28px;">
+          <mdui-button-icon
+            @click="vmodel == 'minimize' ? (vmodel = 'maximize') : (vmodel = 'minimize')"
+            style="width: 28px; height: 28px"
+          >
             <!-- <mdi-icon :icon="'mdi-window-minimize'"
               @click="vmodel == 'minimize' ? vmodel = 'maximize' : vmodel = 'minimize'"></mdi-icon> -->
-            <mdi-icon :icon="'mdi-circle'"  span_style="color:#4caf50;"
-              ></mdi-icon>
-              
+            <mdi-icon :icon="'mdi-circle'" span_style="color:#4caf50;"></mdi-icon>
           </mdui-button-icon>
         </mdui-tooltip>
 
         <mdui-tooltip :content="$t('Message.Components.Editor.Maximize')" placement="bottom">
-          <mdui-button-icon v-show="$store.getters.GetBreakpoint != 'xs'" style="width: 28px;height: 28px;"
-            @click="vmodel == 'maximize' ? EditorStateUpdate('moderate') : EditorStateUpdate('maximize')">
+          <mdui-button-icon
+            v-show="mainStore.getBreakpointName != 'xs'"
+            style="width: 28px; height: 28px"
+            @click="
+              vmodel == 'maximize' ? EditorStateUpdate('moderate') : EditorStateUpdate('maximize')
+            "
+          >
             <!-- <mdi-icon :icon="vmodel == 'maximize' ? 'mdi-circle-outline' : 'mdi-border-radius'"></mdi-icon> -->
             <mdi-icon icon="mdi-circle" span_style="color:#ff9800;"></mdi-icon>
           </mdui-button-icon>
         </mdui-tooltip>
 
         <mdui-tooltip :content="$t('Message.Components.Editor.Close')" placement="bottom">
-          <mdui-button-icon @click="vmodel = 'close'" style="width: 28px;height: 28px;">
+          <mdui-button-icon @click="vmodel = 'close'" style="width: 28px; height: 28px">
             <!-- <mdi-icon :icon="'mdi-close'"></mdi-icon> -->
             <mdi-icon :icon="'mdi-circle'" span_style="color:#f44336;"></mdi-icon>
           </mdui-button-icon>
         </mdui-tooltip>
-
       </div>
-
     </div>
     <div class="body" @focus="onFocus()">
       <slot></slot>
     </div>
   </mdui-card>
-
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
+import { useFabDialogStore } from '@/stores/fab-dialog'
 export default {
   name: 'fab-dialog',
   props: {
@@ -115,115 +124,114 @@ export default {
       default: false,
     },
   },
-  components: {
-  },
+  components: {},
   data: () => ({
+    mainStore: useMainStore(),
+    fabDialogStore: useFabDialogStore(),
     vmodel: 'close',
     elevation: 20,
   }),
   mounted() {
-    const headerTitle = this.$refs.header_title;
-    var selfs = this;
+    const headerTitle = this.$refs.header_title
+    var selfs = this
     headerTitle.addEventListener('touchstart', function (event) {
-      if (selfs.$store.getters.GetMobile) {
+      if (selfs.mainStore.getMobile) {
         return
       }
-      event.preventDefault();
-      const initialX = event.touches[0].clientX;
-      const initialY = event.touches[0].clientY;
-      const fab_dialog = document.getElementById(selfs.name_id);
-      const fab_dialogRect = fab_dialog.getBoundingClientRect();
-      const initialEditorX = fab_dialogRect.left;
-      const initialEditorY = fab_dialogRect.top;
-      document.addEventListener('touchmove', touchMoveHandler);
-      document.addEventListener('touchend', touchEndHandler);
+      event.preventDefault()
+      const initialX = event.touches[0].clientX
+      const initialY = event.touches[0].clientY
+      const fab_dialog = document.getElementById(selfs.name_id)
+      const fab_dialogRect = fab_dialog.getBoundingClientRect()
+      const initialEditorX = fab_dialogRect.left
+      const initialEditorY = fab_dialogRect.top
+      document.addEventListener('touchmove', touchMoveHandler)
+      document.addEventListener('touchend', touchEndHandler)
       function touchMoveHandler(event) {
         selfs.onFocus()
-        const deltaX = event.touches[0].clientX - initialX;
-        const deltaY = event.touches[0].clientY - initialY;
-        fab_dialog.style.left = `${initialEditorX + deltaX}px`;
-        fab_dialog.style.top = `${initialEditorY + deltaY}px`;
+        const deltaX = event.touches[0].clientX - initialX
+        const deltaY = event.touches[0].clientY - initialY
+        fab_dialog.style.left = `${initialEditorX + deltaX}px`
+        fab_dialog.style.top = `${initialEditorY + deltaY}px`
       }
       function touchEndHandler() {
-        document.removeEventListener('touchmove', touchMoveHandler);
-        document.removeEventListener('touchend', touchEndHandler);
+        document.removeEventListener('touchmove', touchMoveHandler)
+        document.removeEventListener('touchend', touchEndHandler)
       }
-    });
+    })
     headerTitle.addEventListener('mousedown', function (event) {
-      event.preventDefault();
-      const initialX = event.clientX;
-      const initialY = event.clientY;
-      const fab_dialog = document.getElementById(selfs.name_id);
-      const fab_dialogRect = fab_dialog.getBoundingClientRect();
-      const initialEditorX = fab_dialogRect.left;
-      const initialEditorY = fab_dialogRect.top;
-      document.addEventListener('mousemove', mouseMoveHandler);
-      document.addEventListener('mouseup', mouseUpHandler);
+      event.preventDefault()
+      const initialX = event.clientX
+      const initialY = event.clientY
+      const fab_dialog = document.getElementById(selfs.name_id)
+      const fab_dialogRect = fab_dialog.getBoundingClientRect()
+      const initialEditorX = fab_dialogRect.left
+      const initialEditorY = fab_dialogRect.top
+      document.addEventListener('mousemove', mouseMoveHandler)
+      document.addEventListener('mouseup', mouseUpHandler)
       function mouseMoveHandler(event) {
         selfs.onFocus()
-        if (selfs.$store.getters.GetMobile) {
-          fab_dialog.style.left = '0px';
-          fab_dialog.style.top = '0px';
+        if (selfs.mainStore.getMobile) {
+          fab_dialog.style.left = '0px'
+          fab_dialog.style.top = '0px'
           return
         }
-        const deltaX = event.clientX - initialX;
-        const deltaY = event.clientY - initialY;
-        fab_dialog.style.left = `${initialEditorX + deltaX}px`;
-        fab_dialog.style.top = `${initialEditorY + deltaY}px`;
+        const deltaX = event.clientX - initialX
+        const deltaY = event.clientY - initialY
+        fab_dialog.style.left = `${initialEditorX + deltaX}px`
+        fab_dialog.style.top = `${initialEditorY + deltaY}px`
       }
       function mouseUpHandler() {
-        document.removeEventListener('mousemove', mouseMoveHandler);
-        document.removeEventListener('mouseup', mouseUpHandler);
+        document.removeEventListener('mousemove', mouseMoveHandler)
+        document.removeEventListener('mouseup', mouseUpHandler)
       }
-    });
+    })
   },
   methods: {
     onFocus() {
-      this.$store.dispatch('FabDialog/Set_FabDialogName', this.name_id)
-      const card_name_id = document.getElementById(this.name_id);
+      this.fabDialogStore.setFabDialogName(this.name_id)
+      const card_name_id = document.getElementById(this.name_id)
 
-      const mdui_layout_main = document.querySelector('mdui-layout-main');
-      mdui_layout_main.appendChild(card_name_id);
+      const mdui_layout_main = document.querySelector('mdui-layout-main')
+      mdui_layout_main.appendChild(card_name_id)
     },
     ResetEditorPos() {
-      if (
-        this.vmodel == 'minimize' ||
-        this.vmodel == 'close'
-      ) {
+      if (this.vmodel == 'minimize' || this.vmodel == 'close') {
         return
       }
-      const fab_dialog = document.getElementById(this.name_id);
-      fab_dialog.style.left = '0px';
-      fab_dialog.style.top = '0px';
+      const fab_dialog = document.getElementById(this.name_id)
+      fab_dialog.style.left = '0px'
+      fab_dialog.style.top = '0px'
     },
     EditorStateUpdate(v) {
       if (v == 'moderate') {
         this.vmodel = 'close'
         setTimeout(() => {
           this.vmodel = 'moderate'
-        }, 700);
+        }, 700)
       } else if (v == 'maximize') {
         this.vmodel = 'close'
         setTimeout(() => {
           this.vmodel = 'maximize'
-        }, 500);
+        }, 500)
       }
     },
   },
   watch: {
     model(v) {
       this.vmodel = v
-      this.$store.dispatch('FabDialog/Set_FabDialogName', this.name_id)
+      this.fabDialogStore.setFabDialogName(this.name_id)
     },
     vmodel(v) {
       console.log('vmodel', v)
       this.$emit('model', v)
     },
-    '$route'(to, from) {
+    $route(to, from) {
       if (this.route_update_close) {
       }
     },
-    '$store.getters.GetMobile': {
+    'mainStore.getMobile': {
+      //注意
       handler: function (val, oldVal) {
         if (val) {
           this.ResetEditorPos()
@@ -241,7 +249,7 @@ export default {
   },
   computed: {
     ReturnFabDialogGetFabDialogName() {
-      return this.$store.getters['FabDialog/GetFabDialogName']
+      return this.fabDialogStore.getFabDialogName
     },
   },
 }

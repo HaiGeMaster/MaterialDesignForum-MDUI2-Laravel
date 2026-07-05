@@ -1,26 +1,44 @@
 <template>
   <div>
-    <div id="page-notifications" v-if="$store.getters['User/GetIsLogin']">
-      <div style="display: flex;margin: 16px;">
-
-        <h3 style="margin: auto;">
-          {{ $t('Message.Components.NoticeButton.Notice') }}</h3>
+    <div id="page-notifications" v-if="userStore.getIsLogin">
+      <div style="display: flex; margin: 16px">
+        <h3 style="margin: auto">
+          {{ $t('Message.Components.NoticeButton.Notice') }}
+        </h3>
 
         <div class="flex-grow" />
 
-        <mdui-button-icon @click="DeleteAllNotifications" v-show="notification_pagination.total > 0">
+        <!-- <mdui-button-icon
+          @click="DeleteAllNotifications"
+          v-show="notification_pagination.total > 0"
+        >
           <mdi-icon icon="mdi-bell-remove" />
         </mdui-button-icon>
 
         <mdui-button-icon @click="$router.push(`${$G_UrlHeaderLang()}/notifications/setting`)">
           <mdi-icon icon="mdi-bell-cog" />
-        </mdui-button-icon>
+        </mdui-button-icon> -->
+
+        <mdui-dropdown>
+          <mdui-button-icon slot="trigger"
+            ><mdi-icon icon="mdi-dots-vertical"></mdi-icon
+          ></mdui-button-icon>
+          <mdui-menu>
+            <mdui-menu-item
+              @click="DeleteAllNotifications"
+              v-show="notification_pagination.total > 0"
+              >{{ $t('Message.Client.Notification.ClearAllNotifications') }}</mdui-menu-item
+            >
+            <mdui-menu-item @click="$router.push(`${$G_UrlHeaderLang()}/notifications/setting`)">{{
+              $t('Message.Client.Notification.NotificationSetting')
+            }}</mdui-menu-item>
+          </mdui-menu>
+        </mdui-dropdown>
       </div>
 
-      <div style="margin: 16px;">
-
+      <div style="margin: 16px">
         <!-- <mdui-card v-if="notification_data" v-for="item in notification_data" :key="item.notification_id"
-        @click="$router.push(SpawnLink(item))" :variant="$store.getters.GetDark ? 'filled' : 'elevated'"
+        @click="$router.push(SpawnLink(item))" :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
         style="width: 100%;"> -->
 
         <!-- <mdui-list-item :headline="item.sender_user.username" headline-line="1" description-line="2" class="notification-item">
@@ -83,26 +101,32 @@
 
       </mdui-card> -->
 
-        <NotificationItem v-if="notification_data" v-for="item in notification_data" :key="item.notification_id"
-          :item="item" />
-
+        <NotificationItem
+          v-if="notification_data"
+          v-for="item in notification_data"
+          :key="item.notification_id"
+          :item="item"
+        />
 
         <NotificationItemSkeleton v-if="notification_is_loading" v-for="i in 20" />
-
-
       </div>
 
-      <Loading :empty="notification_data == null" :loading="notification_is_loading"
-        :pagination="notification_pagination" @autoload="GetUserInteractionNotifications" />
+      <Loading
+        :empty="notification_data == null"
+        :loading="notification_is_loading"
+        :pagination="notification_pagination"
+        @autoload="GetUserInteractionNotifications"
+      />
     </div>
     <NeedLoginAccess v-else />
   </div>
 </template>
 <script>
+import { useUserStore } from '@/stores/user'
 import {
   GetUserInteractionNotifications,
   DeleteNotification,
-  DeleteAllNotifications
+  DeleteAllNotifications,
 } from '@/api/global.js'
 import ListItem from '@/components/list-item/index.vue'
 import Loading from '@/components/loading/index.vue'
@@ -122,6 +146,7 @@ export default {
     NeedLoginAccess,
   },
   data: () => ({
+    userStore: useUserStore(),
     tab_item: 'system',
     notification_is_loading: false,
     notification_data: null,
@@ -131,11 +156,10 @@ export default {
       total: 0,
       pages: 0,
       previous: 0,
-      next: 1
+      next: 1,
     },
   }),
-  computed: {
-  },
+  computed: {},
   methods: {
     UpdateTabItems(val) {
       if (val.name == 'notifications' || val.name == 'lang-notifications') {
@@ -154,17 +178,17 @@ export default {
         if (val.hash == '#system' || val.hash == '') {
           this.$G_UpdateWebTitleAndAppbarSubTitle(
             this.$t('Message.Client.Notifications.SystemNotifications'),
-            this.$t('Message.Client.Notifications.WebSubTitle')
+            this.$t('Message.Client.Notifications.WebSubTitle'),
           )
         } else if (val.hash == '#user_group') {
           this.$G_UpdateWebTitleAndAppbarSubTitle(
             this.$t('Message.Client.Notifications.UserGroupNotifications'),
-            this.$t('Message.Client.Notifications.WebSubTitle')
+            this.$t('Message.Client.Notifications.WebSubTitle'),
           )
         } else if (val.hash == '#private_message') {
           this.$G_UpdateWebTitleAndAppbarSubTitle(
             this.$t('Message.Client.Notifications.PrivateMessageNotifications'),
-            this.$t('Message.Client.Notifications.WebSubTitle')
+            this.$t('Message.Client.Notifications.WebSubTitle'),
           )
         }
       }
@@ -179,7 +203,9 @@ export default {
       })
       console.log('response', response.data)
       if (response.data.is_get) {
-        this.notification_data == null ? this.notification_data = response.data.data : this.$G_FilterSameItems('notification_id', this.notification_data, response.data.data)
+        this.notification_data == null
+          ? (this.notification_data = response.data.data)
+          : this.$G_FilterSameItems('notification_id', this.notification_data, response.data.data)
         // this.notification_data = response.data.data
         this.notification_pagination = response.data.pagination
         this.notification_is_loading = false
@@ -400,11 +426,11 @@ export default {
   },
   computed: {
     ReturnUserIsLogin() {
-      return this.$store.getters['User/GetIsLogin']
-    }
+      return this.userStore.getIsLogin
+    },
   },
   watch: {
-    '$route'(val) {
+    $route(val) {
       this.UpdateTabItems(this.$route)
       this.UpdateWebTitleAndAppbarSubTitle(val)
     },
@@ -416,15 +442,16 @@ export default {
         this.UpdateTabItems(this.$route)
         this.UpdateWebTitleAndAppbarSubTitle(this.$route)
       }
-    }
+    },
   },
-};
+}
 </script>
 <style lang="less">
-@import "../questions/index.less";
+@import '../questions/index.less';
 
 // .notification-item {
 //   .user-popover-badge {
 //     top: 36px;
 //   }
-// }</style>
+// }
+</style>

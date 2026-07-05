@@ -1,41 +1,40 @@
 <template>
-  <FabDialog name_id="search_fab_dialog" :model="vmodel" @model="vmodel = $event" icon="mdi-magnify"
-    :title="$t('Message.Components.Search.SearchTooltop') + `(${pagination.total})`">
-    
+  <FabDialog
+    name_id="search_fab_dialog"
+    :model="vmodel"
+    @model="vmodel = $event"
+    icon="mdi-magnify"
+    :title="$t('Message.Components.Search.SearchTooltop') + `(${pagination.total})`"
+  >
+    <mdui-linear-progress v-if="IsLoading"></mdui-linear-progress>
 
-    <mdui-linear-progress
-      v-if="IsLoading"
-      
-    ></mdui-linear-progress>
-
-    <mdui-tabs :value="tab"
-    style="height: 100%;overflow-y: scroll;"
-    >
-      <mdui-tab v-for="(item, i) in tab_items" :key="`tab_${i}`" :value="item.value"
-      @click="tab = item.value" inline
+    <mdui-tabs :value="tab" style="height: 100%; overflow-y: scroll">
+      <mdui-tab
+        v-for="(item, i) in tab_items"
+        :key="`tab_${i}`"
+        :value="item.value"
+        @click="tab = item.value"
+        inline
       >
-      
-        <mdi-icon slot="icon" :icon="item.icon" ></mdi-icon>
+        <mdi-icon slot="icon" :icon="item.icon"></mdi-icon>
         {{ item.text }}
       </mdui-tab>
 
       <mdui-tab-panel slot="panel" value="topics">
         <mdui-list>
           <mdui-list-subheader>
-            {{
-              $t('Message.Components.Search.SearchTooltop')
-              + ': ' + value
-            }}
+            {{ $t('Message.Components.Search.SearchTooltop') + ': ' + value }}
           </mdui-list-subheader>
-          <mdui-list-item v-if="topics != null" v-for="(item, i) in topics" :key="`topics_${i}`"
+          <mdui-list-item
+            v-if="topics != null"
+            v-for="(item, i) in topics"
+            :key="`topics_${i}`"
             @click="$router.push(`${$G_UrlHeaderLang()}/topics/${item.topic_id}`)"
             :headline="item.name"
             :description="item.description"
-            >
-            
-
+          >
             <mdui-card slot="icon">
-              <img :src="$G_ImgHandle(item.cover.middle)" style="max-width: 120px;"/>
+              <img :src="$G_ImgHandle(item.cover.middle)" style="max-width: 120px" />
             </mdui-card>
           </mdui-list-item>
         </mdui-list>
@@ -44,18 +43,18 @@
       <mdui-tab-panel slot="panel" value="questions">
         <mdui-list>
           <mdui-list-subheader>
-            {{
-              $t('Message.Components.Search.SearchTooltop')
-              + ': ' + value
-            }}
+            {{ $t('Message.Components.Search.SearchTooltop') + ': ' + value }}
           </mdui-list-subheader>
-          <mdui-list-item v-if="questions != null" v-for="(item, i) in questions" :key="`questions_${i}`"
+          <mdui-list-item
+            v-if="questions != null"
+            v-for="(item, i) in questions"
+            :key="`questions_${i}`"
             @click="$router.push(`${$G_UrlHeaderLang()}/questions/${item.question_id}`)"
             :headline="item.title"
             :description="item.content_markdown"
             headline-line="1"
             description-line="1"
-            >
+          >
             <mdui-avatar slot="icon" :src="$G_ImgHandle(item.user.avatar.small)"></mdui-avatar>
           </mdui-list-item>
         </mdui-list>
@@ -64,18 +63,18 @@
       <mdui-tab-panel slot="panel" value="articles">
         <mdui-list>
           <mdui-list-subheader>
-            {{
-              $t('Message.Components.Search.SearchTooltop')
-              + ': ' + value
-            }}
+            {{ $t('Message.Components.Search.SearchTooltop') + ': ' + value }}
           </mdui-list-subheader>
-          <mdui-list-item v-if="articles != null" v-for="(item, i) in articles" :key="`articles_${i}`"
+          <mdui-list-item
+            v-if="articles != null"
+            v-for="(item, i) in articles"
+            :key="`articles_${i}`"
             @click="$router.push(`${$G_UrlHeaderLang()}/articles/${item.article_id}`)"
             :headline="item.title"
             :description="item.content_markdown"
             headline-line="1"
             description-line="1"
-            >
+          >
             <mdui-avatar slot="icon" :src="$G_ImgHandle(item.user.avatar.small)"></mdui-avatar>
           </mdui-list-item>
         </mdui-list>
@@ -84,18 +83,22 @@
       <mdui-tab-panel slot="panel" value="answers">
         <mdui-list>
           <mdui-list-subheader>
-            {{
-              $t('Message.Components.Search.SearchTooltop')
-              + ': ' + value
-            }}
+            {{ $t('Message.Components.Search.SearchTooltop') + ': ' + value }}
           </mdui-list-subheader>
-          <mdui-list-item v-if="answers != null" v-for="(item, i) in answers" :key="`answers_${i}`"
-            @click="$router.push(`${$G_UrlHeaderLang()}/questions/${item.question_id}/answers/${item.answer_id}`)"
+          <mdui-list-item
+            v-if="answers != null"
+            v-for="(item, i) in answers"
+            :key="`answers_${i}`"
+            @click="
+              $router.push(
+                `${$G_UrlHeaderLang()}/questions/${item.question_id}/answers/${item.answer_id}`,
+              )
+            "
             :headline="item.content_markdown"
             :description="item.user.username"
             headline-line="1"
             description-line="1"
-            >
+          >
             <mdui-avatar slot="icon" :src="$G_ImgHandle(item.user.avatar.small)"></mdui-avatar>
           </mdui-list-item>
         </mdui-list>
@@ -104,25 +107,28 @@
       <mdui-tab-panel slot="panel" value="comments">
         <mdui-list>
           <mdui-list-subheader>
-            {{
-              $t('Message.Components.Search.SearchTooltop')
-              + ': ' + value
-            }}
+            {{ $t('Message.Components.Search.SearchTooltop') + ': ' + value }}
           </mdui-list-subheader>
-          <mdui-list-item v-if="comments != null" v-for="(item, i) in comments" :key="`comments_${i}`"
-            @click="$router.push(item.commentable_type == 'question' ?
-              `${$G_UrlHeaderLang()}/questions/${item.commentable_id}` :
-              item.commentable_type == 'answer' ?
-                `${$G_UrlHeaderLang()}/questions/${item.commentable_id}/answers/${item.commentable_id}` :
-                item.commentable_type == 'article' ?
-                  `${$G_UrlHeaderLang()}/articles/${item.commentable_id}` :
-                  ''
-              )"
+          <mdui-list-item
+            v-if="comments != null"
+            v-for="(item, i) in comments"
+            :key="`comments_${i}`"
+            @click="
+              $router.push(
+                item.commentable_type == 'question'
+                  ? `${$G_UrlHeaderLang()}/questions/${item.commentable_id}`
+                  : item.commentable_type == 'answer'
+                    ? `${$G_UrlHeaderLang()}/questions/${item.commentable_id}/answers/${item.commentable_id}`
+                    : item.commentable_type == 'article'
+                      ? `${$G_UrlHeaderLang()}/articles/${item.commentable_id}`
+                      : '',
+              )
+            "
             :headline="item.content"
             :description="item.user.username"
             headline-line="1"
             description-line="1"
-            >
+          >
             <mdui-avatar slot="icon" :src="$G_ImgHandle(item.user.avatar.small)"></mdui-avatar>
           </mdui-list-item>
         </mdui-list>
@@ -131,23 +137,26 @@
       <mdui-tab-panel slot="panel" value="replys">
         <mdui-list>
           <mdui-list-subheader>
-            {{
-              $t('Message.Components.Search.SearchTooltop')
-              + ': ' + value
-            }}
+            {{ $t('Message.Components.Search.SearchTooltop') + ': ' + value }}
           </mdui-list-subheader>
-          <mdui-list-item v-if="replys != null" v-for="(item, i) in replys" :key="`replys_${i}`"
-            @click="$router.push(item.replyable_parent_type == 'question' ?
-              `${$G_UrlHeaderLang()}/questions/${item.replyable_parent_id}` :
-              item.replyable_parent_type == 'article' ?
-                `${$G_UrlHeaderLang()}/articles/${item.replyable_parent_id}` :
-                ''
-              )"
+          <mdui-list-item
+            v-if="replys != null"
+            v-for="(item, i) in replys"
+            :key="`replys_${i}`"
+            @click="
+              $router.push(
+                item.replyable_parent_type == 'question'
+                  ? `${$G_UrlHeaderLang()}/questions/${item.replyable_parent_id}`
+                  : item.replyable_parent_type == 'article'
+                    ? `${$G_UrlHeaderLang()}/articles/${item.replyable_parent_id}`
+                    : '',
+              )
+            "
             :headline="item.content"
             :description="item.user.username"
             headline-line="1"
             description-line="1"
-            >
+          >
             <mdui-avatar slot="icon" :src="$G_ImgHandle(item.user.avatar.small)"></mdui-avatar>
           </mdui-list-item>
         </mdui-list>
@@ -156,49 +165,47 @@
       <mdui-tab-panel slot="panel" value="users">
         <mdui-list>
           <mdui-list-subheader>
-            {{
-              $t('Message.Components.Search.SearchTooltop')
-              + ': ' + value
-            }}
+            {{ $t('Message.Components.Search.SearchTooltop') + ': ' + value }}
           </mdui-list-subheader>
-          <mdui-list-item v-if="users != null" v-for="(item, i) in users" :key="`users_${i}`"
+          <mdui-list-item
+            v-if="users != null"
+            v-for="(item, i) in users"
+            :key="`users_${i}`"
             @click="$router.push(`${$G_UrlHeaderLang()}/users/${item.user_id}`)"
             :headline="item.username"
             :description="item.headline"
             headline-line="1"
             description-line="1"
-            >
+          >
             <mdui-avatar slot="icon" :src="$G_ImgHandle(item.avatar.small)"></mdui-avatar>
           </mdui-list-item>
         </mdui-list>
       </mdui-tab-panel>
-
-
-
     </mdui-tabs>
   </FabDialog>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
 import FabDialog from '@/components/fab-dialog/common-fab-dialog/index.vue'
-import {
-  GetDatas
-} from '@/api/global.js'
+import { GetDatas } from '@/api/global.js'
 export default {
   name: 'search-fab-dialog',
   components: {
-    FabDialog
+    FabDialog,
   },
   props: {
     model: {
       type: String,
-      default: 'close',    },
+      default: 'close',
+    },
     value: {
       type: String,
-      default: ''
+      default: '',
     },
   },
   data() {
     return {
+      mainStore: useMainStore(),
       tab: 'topics',
       vmodel: 'close',
       topics: null,
@@ -215,7 +222,7 @@ export default {
         total: 0,
         pages: 0,
         previous: 0,
-        next: 1
+        next: 1,
       },
     }
   },
@@ -225,40 +232,40 @@ export default {
         {
           text: this.$t('Message.Components.DrawerNavigation.Topics'),
           icon: 'mdi-book-variant',
-          value: 'topics'
+          value: 'topics',
         },
         {
           text: this.$t('Message.Components.DrawerNavigation.Questions'),
           icon: 'mdi-forum',
-          value: 'questions'
+          value: 'questions',
         },
         {
           text: this.$t('Message.Components.DrawerNavigation.Articles'),
           icon: 'mdi-file-document',
-          value: 'articles'
+          value: 'articles',
         },
         {
           text: this.$t('Message.Components.DrawerNavigation.Answers'),
           icon: 'mdi-message-reply',
-          value: 'answers'
+          value: 'answers',
         },
         {
           text: this.$t('Message.Components.DrawerNavigation.Comments'),
           icon: 'mdi-message-reply-text',
-          value: 'comments'
+          value: 'comments',
         },
         {
           text: this.$t('Message.Components.DrawerNavigation.Replts'),
           icon: 'mdi-reply-all',
-          value: 'replys'
+          value: 'replys',
         },
         {
           text: this.$t('Message.Components.DrawerNavigation.User'),
           icon: 'mdi-account-multiple',
-          value: 'users'
+          value: 'users',
         },
       ]
-    }
+    },
   },
   methods: {
     // OnClick(item) {
@@ -272,21 +279,27 @@ export default {
         const response = await GetDatas(type, {
           order: '-update_time',
           page: this.pagination.next,
-          type:'',
+          type: '',
           question_id: '',
           commentable_id: '',
           commentable_type: '',
           replyable_comment_id: '',
           user_token: token != '' ? token : '',
-          search_keywords: this.value
+          search_keywords: this.value,
         })
         if (response.data.is_get == true) {
-          var keys = type == 'articles' ?
-            'article_id' : type == 'questions' ?
-              'question_id' : type == 'answers' ?
-                'answer_id' : type == 'messages' ?
-                  'message_id' : type == 'users' ?
-                    'user_id' : ''
+          var keys =
+            type == 'articles'
+              ? 'article_id'
+              : type == 'questions'
+                ? 'question_id'
+                : type == 'answers'
+                  ? 'answer_id'
+                  : type == 'messages'
+                    ? 'message_id'
+                    : type == 'users'
+                      ? 'user_id'
+                      : ''
           switch (type) {
             case 'topics':
               this.topics = response.data.data
@@ -326,7 +339,7 @@ export default {
       }
     },
     StartSearch() {
-      if(this.value == '') {
+      if (this.value == '') {
         this.vmodel = 'close'
         return
       }
@@ -336,10 +349,10 @@ export default {
         total: 0,
         pages: 0,
         previous: 0,
-        next: 1
+        next: 1,
       }
       // console.log('StartSearch', this.tab)
-            // console.log('StartSearch', this.tab_items[this.tab].value)
+      // console.log('StartSearch', this.tab_items[this.tab].value)
 
       //找到 this.tab_items 对象中的value==this.tab的对象
       // const item = this.tab_items.find(item => item.value == this.tab)
@@ -378,7 +391,7 @@ export default {
   },
   watch: {
     value(val) {
-      if (val == ''){
+      if (val == '') {
         this.vmodel = 'close'
         return
       }
@@ -395,11 +408,11 @@ export default {
     tab(val) {
       this.StartSearch()
     },
-    '$route'(to, from) {
-      if (!this.$store.getters.GetPc) {
+    $route(to, from) {
+      if (!this.mainStore.getDesktop) {
         this.vmodel = 'close'
       }
-    }
-  }
+    },
+  },
 }
 </script>

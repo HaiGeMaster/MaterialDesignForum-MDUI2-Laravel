@@ -1,41 +1,69 @@
 <template>
   <mdui-tooltip :content="AddFabText">
-    <mdui-fab v-show="AddFabShow" class="fade-anm" style="position: absolute;bottom: 16px;" :style="{
-      'right': $store.getters.GetScrollValue > 1 ? '94px' : '16px',
-      'bottom': $store.getters.GetMobile ? '96px' : '16px'
-    }" @click="
-        on_click()
-        ">
-
-      <!-- @click="
-        $store.getters['User/GetIsLogin']
-          ? on_click()
-          : $store.dispatch('Dialog/Set_LoginDialog', true)
-        " -->
-
+    <mdui-fab
+      v-show="AddFabShow"
+      class="fade-anm"
+      style="position: absolute; bottom: 16px"
+      :style="{
+        right: mainStore.getScrollValue > 1 ? '94px' : '16px',
+        bottom: mainStore.getMobile ? '96px' : '16px',
+      }"
+      @click="on_click()"
+    >
       <mdi-icon slot="icon" :icon="AddFabIcon" />
     </mdui-fab>
   </mdui-tooltip>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
+import { useDialogStore } from '@/stores/dialog'
+import { useFabDialogStore } from '@/stores/fab-dialog'
+import { useUserStore } from '@/stores/user'
+import { useSnackbarStore } from '@/stores/snackbar'
 export default {
   data: () => ({
+    mainStore: useMainStore(),
+    dialogStore: useDialogStore(),
+    fabDialogStore: useFabDialogStore(),
+    userStore: useUserStore(),
+    snackbarStore: useSnackbarStore(),
     AddFabText: '',
     AddFabIcon: '',
     AddFabShow: false,
     AddFabDisabled: false,
-    AddFabFunction: () => { null },
+    AddFabFunction: () => {
+      null
+    },
   }),
   methods: {
     RoutePathObject() {
       return {
-        is_usergroup: this.$route.name == 'admin-usergroup' || this.$route.name == 'lang-admin-usergroup',
-        is_topics: this.$route.name == 'topics' || this.$route.name == 'lang-topics' || this.$route.name == 'admin-topics' || this.$route.name == 'lang-admin-topics',
-        is_questions: this.$route.name == 'questions' || this.$route.name == 'lang-questions' || this.$route.name == 'admin-questions' || this.$route.name == 'lang-admin-questions',
-        is_articles: this.$route.name == 'articles' || this.$route.name == 'lang-articles' || this.$route.name == 'admin-articles' || this.$route.name == 'lang-admin-articles',
+        is_usergroup:
+          this.$route.name == 'admin-usergroup' || this.$route.name == 'lang-admin-usergroup',
+        is_topics:
+          this.$route.name == 'topics' ||
+          this.$route.name == 'lang-topics' ||
+          this.$route.name == 'admin-topics' ||
+          this.$route.name == 'lang-admin-topics',
+        is_questions:
+          this.$route.name == 'questions' ||
+          this.$route.name == 'lang-questions' ||
+          this.$route.name == 'admin-questions' ||
+          this.$route.name == 'lang-admin-questions',
+        is_articles:
+          this.$route.name == 'articles' ||
+          this.$route.name == 'lang-articles' ||
+          this.$route.name == 'admin-articles' ||
+          this.$route.name == 'lang-admin-articles',
         is_question: this.$route.name == 'question' || this.$route.name == 'lang-question',
-        topic_is_questions: ((this.$route.name == 'topic' || this.$route.name == 'lang-topic') && (this.$route.hash == '' || this.$route.hash == '#questions')) || this.$route.hash == '#following_questions',
-        topic_is_articles: ((this.$route.name == 'topic' || this.$route.name == 'lang-topic') && this.$route.hash == '#articles') || this.$route.hash == '#following_articles',
+        topic_is_questions:
+          ((this.$route.name == 'topic' || this.$route.name == 'lang-topic') &&
+            (this.$route.hash == '' || this.$route.hash == '#questions')) ||
+          this.$route.hash == '#following_questions',
+        topic_is_articles:
+          ((this.$route.name == 'topic' || this.$route.name == 'lang-topic') &&
+            this.$route.hash == '#articles') ||
+          this.$route.hash == '#following_articles',
       }
     },
     AddFabButtonUpdate(val) {
@@ -50,42 +78,44 @@ export default {
       const topic_is_questions = this.RoutePathObject().topic_is_questions
       const topic_is_articles = this.RoutePathObject().topic_is_articles
 
-      const user_group = this.$store.getters['User/GetUser'].user_group
+      const user_group = this.userStore.getUser.user_group
 
       if (is_usergroup) {
         this.AddFabDisabled = false
-        // this.AddFabShow = !this.$store.getters['User/GetIsLogin']?true:user_group.ability_admin_manage_user_group
-        // this.AddFabShow = !this.$store.getters['User/GetIsLogin']?false:(user_group.ability_admin_manage_user_group&&user_group.is_admin)
-        this.AddFabShow = !this.$store.getters['User/GetIsLogin'] ? false : user_group.ability_admin_manage_user_group
+        // this.AddFabShow = !this.userStore.getIsLogin?true:user_group.ability_admin_manage_user_group
+        // this.AddFabShow = !this.userStore.getIsLogin?false:(user_group.ability_admin_manage_user_group&&user_group.is_admin)
+        this.AddFabShow = !this.userStore.getIsLogin
+          ? false
+          : user_group.ability_admin_manage_user_group
         this.AddFabIcon = 'mdi-account-multiple-plus'
         this.AddFabText = this.$t('Message.Admin.UserGroups.CreateNewUserGroup')
         this.AddFabFunction = () => {
           this.AddFabShow = false
-          this.$store.dispatch('Dialog/Set_UserGroupEditDialog', {
+          this.dialogStore.setUserGroupEditDialog({
             mode: 'new',
             model: true,
           })
         }
       } else if (is_topics) {
         this.AddFabDisabled = false
-        this.AddFabShow = !this.$store.getters['User/GetIsLogin'] ? true : user_group.ability_create_topic
+        this.AddFabShow = !this.userStore.getIsLogin ? true : user_group.ability_create_topic
         this.AddFabIcon = 'mdi-book-plus-outline'
         this.AddFabText = this.$t('Message.Components.AddFabButton.NewTopic')
         this.AddFabFunction = () => {
           this.AddFabShow = false
-          this.$store.dispatch('Dialog/Set_TopicDialog', {
+          this.dialogStore.setTopicDialog({
             model: true,
             mode: 'new',
           })
         }
       } else if (is_questions || topic_is_questions) {
         this.AddFabDisabled = false
-        this.AddFabShow = !this.$store.getters['User/GetIsLogin'] ? true : user_group.ability_create_question
+        this.AddFabShow = !this.userStore.getIsLogin ? true : user_group.ability_create_question
         this.AddFabIcon = 'mdi-forum-plus-outline'
         this.AddFabText = this.$t('Message.Components.AddFabButton.WriteAskAQuestion')
         this.AddFabFunction = () => {
           this.AddFabShow = false
-          this.$store.dispatch('FabDialog/Set_EditorFabDialog', {
+          this.fabDialogStore.setEditorFabDialog({
             title: this.$t('Message.Components.Editor.NewQuestions'),
             icon: 'mdi-forum-plus-outline',
             has_title: true,
@@ -99,12 +129,12 @@ export default {
         }
       } else if (is_articles || topic_is_articles) {
         this.AddFabDisabled = false
-        this.AddFabShow = !this.$store.getters['User/GetIsLogin'] ? true : user_group.ability_create_article
+        this.AddFabShow = !this.userStore.getIsLogin ? true : user_group.ability_create_article
         this.AddFabIcon = 'mdi-file-document-plus-outline'
         this.AddFabText = this.$t('Message.Components.AddFabButton.WriteAnArticle')
         this.AddFabFunction = () => {
           this.AddFabShow = false
-          this.$store.dispatch('FabDialog/Set_EditorFabDialog', {
+          this.fabDialogStore.setEditorFabDialog({
             title: this.$t('Message.Components.Editor.NewArticles'),
             icon: 'mdi-file-document-plus-outline',
             has_title: true,
@@ -118,12 +148,12 @@ export default {
         }
       } else if (is_question) {
         this.AddFabDisabled = false
-        this.AddFabShow = !this.$store.getters['User/GetIsLogin'] ? true : user_group.ability_create_answer
+        this.AddFabShow = !this.userStore.getIsLogin ? true : user_group.ability_create_answer
         this.AddFabIcon = 'mdi-comment-plus-outline'
         this.AddFabText = this.$t('Message.Components.AddFabButton.WriteAnAnswer')
         this.AddFabFunction = () => {
           this.AddFabShow = false
-          this.$store.dispatch('FabDialog/Set_EditorFabDialog', {
+          this.fabDialogStore.setEditorFabDialog({
             title: this.$t('Message.Components.Editor.WriteAnAnswer'),
             icon: 'mdi-comment-plus-outline',
             has_title: false,
@@ -148,42 +178,43 @@ export default {
     },
     on_click() {
       const is_usergroup = this.RoutePathObject().is_usergroup
-      const user_group = this.$store.getters['User/GetUser'].user_group
+      const user_group = this.userStore.getUser.user_group
       const is_admin = user_group.ability_admin_manage_user_group && user_group.is_admin
-      if (!this.$store.getters['User/GetIsLogin']) {//如果没有登录
-        this.$store.dispatch('Dialog/Set_LoginDialog', true)
-        this.$store.dispatch('Snackbar/Show_Snackbar', {
+      if (!this.userStore.getIsLogin) {
+        //如果没有登录
+        this.dialogStore.setLoginDialog(true)
+        this.snackbarStore.addMessage({
           text: this.$t('Message.Components.Account.YouMustLoginToUseThisFeature'),
         })
         return
       }
-      if (is_usergroup && !is_admin) {//如果是用户组页面，且不是管理员
-        this.$store.dispatch('Snackbar/Show_Snackbar', {
+      if (is_usergroup && !is_admin) {
+        //如果是用户组页面，且不是管理员
+        this.snackbarStore.addMessage({
           text: this.$t('Message.Components.Account.YouNeedAdminPermissionToUseThisFeature'),
         })
         return
       }
       this.AddFabFunction()
-    }
+    },
   },
   computed: {
     ReturnEditorFabDialog() {
-      return this.$store.getters['FabDialog/GetEditorFabDialog'].model
+      return this.fabDialogStore.getEditorFabDialog.model
     },
     ReturnTopicDialog() {
-      return this.$store.getters['Dialog/GetTopicDialog'].model
+      return this.dialogStore.getTopicDialog.model
     },
     ReturnUserGroupEditDialog() {
-      return this.$store.getters['Dialog/GetUserGroupEditDialog'].model
+      return this.dialogStore.getUserGroupEditDialog.model
     },
     ReturnGetIsLogin() {
-      return this.$store.getters['User/GetIsLogin']
+      return this.userStore.getIsLogin
     },
   },
-  created() {
-  },
+  created() {},
   watch: {
-    '$route'(val) {
+    $route(val) {
       this.AddFabButtonUpdate(this.$route)
     },
     '$i18n.locale': {
@@ -229,6 +260,6 @@ export default {
     ReturnGetIsLogin(val) {
       this.AddFabButtonUpdate(this.$route)
     },
-  }
+  },
 }
 </script>

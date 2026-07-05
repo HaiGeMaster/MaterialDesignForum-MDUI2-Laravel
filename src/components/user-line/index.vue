@@ -6,21 +6,19 @@
           user.username + $t('Message.Components.Comments.Item.Reply') + (reply_user != null ? reply_user.username : '')
         )
       " -->
-    <mdui-list-item nonclickable 
-      style="padding-left: 0;"
-      :class="
-        $store.getters['User/GetUser'].user_id === user.user_id ? 'is_self' : ''
-      "
+    <mdui-list-item
+      nonclickable
+      style="padding-left: 0"
+      :class="userStore.getUser.user_id === user.user_id ? 'is_self' : ''"
       :headline="
-        !is_reply ? user.username : (
-          user.username + $t('Message.Components.Comments.Item.Reply') + (reply_user != null ? reply_user.username : '')
-        )
+        !is_reply
+          ? user.username
+          : user.username +
+            $t('Message.Components.Comments.Item.Reply') +
+            (reply_user != null ? reply_user.username : '')
       "
-      :description="
-      !is_reply ? user.headline : ''
-      "
+      :description="!is_reply ? user.headline : ''"
     >
-
       <!-- <span slot="headline">
           <span v-if="user != null"
             :class="
@@ -35,23 +33,22 @@
             :class="
               reply_user.user_id==$G_GetUserID()?'primary--text':''
             "
-            @click="$router.push(`${$G_UrlHeaderLang()}/users/${reply_user.user_id}`)" 
+            @click="$router.push(`${$G_UrlHeaderLang()}/users/${reply_user.user_id}`)"
             style="text-decoration:none;cursor: pointer;"
             >{{ reply_user.username }}
           </span>
       </span> -->
 
-      <UserPopover slot="icon" :user="user" :small_avatar="small_avatar" :is_reply="is_reply"/>
+      <UserPopover slot="icon" :user="user" :small_avatar="small_avatar" :is_reply="is_reply" />
 
-      <!-- v-if="!$store.getters.GetMobile" -->
-      <span slot="end-icon" >
+      <span slot="end-icon">
         {{ time }}
       </span>
-
     </mdui-list-item>
   </mdui-list>
 </template>
 <script>
+import { useUserStore } from '@/stores/user'
 import UserPopover from '@/components/user-popover/index.vue'
 export default {
   name: 'user-line',
@@ -79,19 +76,16 @@ export default {
   },
   components: {
     UserPopover,
-      },
+  },
   data() {
     return {
-      gradientColors: [
-        '#ff0000',
-        '#00ff00',
-      ],
+      userStore: useUserStore(),
+      gradientColors: ['#ff0000', '#00ff00'],
       gradientIndex: 0,
-    };
+    }
   },
 }
 </script>
 <style lang="less" scoped>
 // @import "./index.less";
-
 </style>

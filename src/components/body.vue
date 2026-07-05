@@ -1,151 +1,176 @@
 <template>
   <!-- style="height: 100vh;width: 100%;" -->
   <mdui-layout
-  :style="{
-    height: IsElectron||IsTauri ? 'calc(100vh - 32px)' : '100vh',
-    width: '100%',
-  }"
+    :style="{
+      height: IsElectron || IsTauri ? 'calc(100vh - 32px)' : '100vh',
+      width: '100%',
+    }"
   >
-    <mdui-top-app-bar v-if="!v_search_appbar" scroll-behavior="elevate" scroll-target=".layout-main"
-
+    <mdui-top-app-bar
+      v-if="!v_search_appbar"
+      scroll-behavior="elevate"
+      scroll-target=".layout-main"
     >
-
       <mdui-tooltip :content="GetBarDrawerText" placement="right">
         <mdui-button-icon @click="navigation_drawer = !navigation_drawer">
-
-          <!-- <mdi-icon :icon="($store.getters.GetPad && !navigation_drawer) ? 'mdi-menu-close' : (($store.getters.GetMobile) ? 'mdi-format-list-bulleted' : (($store.getters.GetPad && navigation_drawer) ? 'mdi-menu-open' : 'mdi-menu'))
-            " /> -->
-
           <mdi-icon :icon="GetBarDrawerIcon" />
         </mdui-button-icon>
       </mdui-tooltip>
 
-      <mdui-top-app-bar-title v-if="$store.getters.GetReadTitle" @click="$router.push($G_UrlHeaderLang() + '/')">
-        {{
-        $store.getters.GetReadTitle }}
+      <mdui-top-app-bar-title
+        v-if="mainStore.getReadTitle"
+        @click="$router.push($G_UrlHeaderLang() + '/')"
+      >
+        {{ mainStore.getReadTitle }}
       </mdui-top-app-bar-title>
 
       <mdui-top-app-bar-title v-else @click="$router.push($G_UrlHeaderLang() + '/')">
         {{
-          ($store.getters.GetBreakpoint == 'xs' || $store.getters.GetBreakpoint == 'sm' || $store.getters.GetBreakpoint ==
-            'md') ?
-            $store.getters.GetAppbarSubtitle : mainStore.getInfoData.site_name
+          mainStore.getBreakpointName == 'xs' ||
+          mainStore.getBreakpointName == 'sm' ||
+          mainStore.getBreakpointName == 'md'
+            ? mainStore.getAppbarSubtitle
+            : mainStore.getInfoData.site_name
         }}
 
-        <a v-show="($store.getters.GetBreakpoint == 'lg' || $store.getters.GetBreakpoint == 'xl' || $store.getters.GetBreakpoint == 'xxl')"
-          style="font-size: 1rem;margin-left: 16px;margin-bottom: 8px;">
-          {{
-            $store.getters.GetAppbarSubtitle
-          }}
+        <a
+          v-show="
+            mainStore.getBreakpointName == 'lg' ||
+            mainStore.getBreakpointName == 'xl' ||
+            mainStore.getBreakpointName == 'xxl'
+          "
+          style="font-size: 1rem; margin-left: 16px; margin-bottom: 8px"
+        >
+          {{ mainStore.getAppbarSubtitle }}
         </a>
       </mdui-top-app-bar-title>
 
       <div style="flex-grow: 1"></div>
-      <slot name="appbar-right">
-
-      </slot>
+      <slot name="appbar-right"> </slot>
     </mdui-top-app-bar>
 
     <mdui-top-app-bar v-else scroll-behavior="elevate" scroll-target=".layout-main">
-      <input style="display: none;" />
-      <CustomInput :name="'search-appbar'" :placeholder="$t('Message.Components.Search.SearchTooltop')" @model="val => {
-        $store.dispatch('FabDialog/Set_SearchFabDialog', {
-          value: val,
-          model: 'moderate',
-        })
-      }" width="88%" />
+      <input style="display: none" />
+      <CustomInput
+        :name="'search-appbar'"
+        :placeholder="$t('Message.Components.Search.SearchTooltop')"
+        @model="
+          (val) => {
+            fabDialogStore.setNewSearchFabDialog({
+              value: val,
+              model: 'moderate',
+            })
+          }
+        "
+        width="88%"
+      />
 
-      <mdui-button-icon style="margin-left: 4px;margin-right: 4px;" @click="v_search_appbar = !v_search_appbar">
+      <mdui-button-icon
+        style="margin-left: 4px; margin-right: 4px"
+        @click="v_search_appbar = !v_search_appbar"
+      >
         <mdi-icon icon="mdi-close" />
       </mdui-button-icon>
     </mdui-top-app-bar>
 
-    <mdui-navigation-drawer v-if="!$store.getters.GetPad" close-on-overlay-click
-      :open="navigation_drawer && !$store.getters.GetPad" @close="navigation_drawer = false"
-      class="navigation-drawer" style="-webkit-app-region: drag;"
-      >
-      <!-- :style="!$store.getters.GetMobile?'-webkit-app-region: drag;-webkit-user-select: none;':''" -->
+    <mdui-navigation-drawer
+      v-if="!mainStore.getTablet"
+      close-on-overlay-click
+      :open="navigation_drawer && !mainStore.getTablet"
+      @close="navigation_drawer = false"
+      class="navigation-drawer"
+      style="-webkit-app-region: drag"
+    >
+      <!-- :style="!mainStore.getMobile?'-webkit-app-region: drag;-webkit-user-select: none;':''" -->
       <slot name="navigation-drawer-content"></slot>
       <slot name="navigation-drawer-bottom"></slot>
-
     </mdui-navigation-drawer>
 
-    <mdui-navigation-rail v-if="navigation_drawer" v-show="$store.getters.GetPad && navigation_drawer"
-      :value="$route.path" alignment="center" contained
-      style="-webkit-app-region: drag;-webkit-user-select: none;"
-      >
+    <mdui-navigation-rail
+      v-if="navigation_drawer"
+      v-show="mainStore.getTablet && navigation_drawer"
+      :value="$route.path"
+      alignment="center"
+      contained
+      style="-webkit-app-region: drag; -webkit-user-select: none"
+    >
       <slot name="navigation-rail-content"></slot>
       <slot name="navigation-rail-bottom"></slot>
     </mdui-navigation-rail>
 
     <mdui-layout-main class="layout-main" @scroll="updateScrollValue">
       <slot></slot>
+      <SettingNavigationDrawer />
     </mdui-layout-main>
 
-    <mdui-navigation-bar :hide="!$store.getters.GetMobile" :value="$route.path" label-visibility="labeled">
+    <mdui-navigation-bar
+      :hide="!mainStore.getMobile"
+      :value="$route.path"
+      label-visibility="labeled"
+    >
       <slot name="navigation-bar-content"></slot>
     </mdui-navigation-bar>
     <slot name="bottom">
       <AddFabButton />
       <ToTopFab />
     </slot>
-
   </mdui-layout>
 </template>
 
 <script>
-
 import { useMainStore } from '@/stores/main'
+import { useDialogStore } from '@/stores/dialog'
+import { useFabDialogStore } from '@/stores/fab-dialog'
 
-import 'mdui/components/icon.js';
-import { breakpoint } from 'mdui/functions/breakpoint.js';
+import 'mdui/components/icon.js'
+import { breakpoint } from 'mdui/functions/breakpoint.js'
 import AddFabButton from '@/components/add-fab-button/index.vue'
 import ToTopFab from '@/components/to-top-fab/index.vue'
 import CustomInput from '@/components/custom-input/index.vue'
 // C:\Users\Administrator\Documents\Vue\MaterialDesignForum-MDUI2\src\components\append-footer\components\copyright\index.vue
 // import Copyright from '@/components/append-footer/components/copyright/index.vue'
-import {
-  IsTauri,
-  IsElectron,
-  IsMobileApp,
-} from '@/api/global.js'
+import { IsTauri, IsElectron, IsMobileApp } from '@/api/global.js'
+import SettingNavigationDrawer from '@/components/setting-navigation-drawer/index.vue'
 export default {
-  name: "App",
+  name: 'App',
   props: {
     search_appbar: {
       type: Boolean,
-      default: false
+      default: false,
     },
     appbar_title: {
       type: String,
-      default: 'Material Design Forum'
+      default: 'Material Design Forum',
     },
     appbar_suntitle: {
       type: String,
-      default: 'MDF'
+      default: 'MDF',
     },
     navigation_drawer_items: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     navigation_rail_items: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     navigation_bar_items: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
   },
   components: {
     AddFabButton,
     ToTopFab,
     CustomInput,
+    SettingNavigationDrawer,
     // Copyright,
   },
   data() {
     return {
       mainStore: useMainStore(),
+      dialogStore: useDialogStore(),
+      fabDialogStore: useFabDialogStore(),
       v_search_appbar: false,
       navigation_drawer: false,
       bp_smlg: false,
@@ -156,58 +181,58 @@ export default {
   },
   mounted() {
     this.OnResize()
-    let _this = this;
+    let _this = this
     window.addEventListener('resize', () => {
       _this.OnResize()
-      _this.$forceUpdate();
-    });
+      _this.$forceUpdate()
+    })
     // let randomColor = '#' + Math.floor(Math.random() * 0xffffff).toString(16).padEnd(6, '0');
   },
   computed: {
-    IsTauri(){
+    IsTauri() {
       return IsTauri()
     },
-    IsElectron(){
+    IsElectron() {
       return IsElectron()
     },
-    IsMobileApp(){
+    IsMobileApp() {
       return IsMobileApp()
     },
     breakpoints() {
-      return breakpoint;
+      return breakpoint
     },
     GetBarDrawerText() {
-      if (this.$store.getters.GetPc && this.$store.getters.GetComponents.drawer_navigation) {
+      if (this.mainStore.getDesktop && this.mainStore.getDrawer) {
         return this.$t('Message.Components.Appbar.CollapseTheSideNavigationDrawer')
-      } else if (this.$store.getters.GetPc && !this.$store.getters.GetComponents.drawer_navigation) {
+      } else if (this.mainStore.getDesktop && !this.mainStore.getDrawer) {
         return this.$t('Message.Components.Appbar.ShowSideNavigationDrawer')
-      } else if (this.$store.getters.GetPad && this.$store.getters.GetComponents.drawer_navigation) {
+      } else if (this.mainStore.getTablet && this.mainStore.getDrawer) {
         return this.$t('Message.Components.Appbar.CollapseTheSideNavigationBar')
-      } else if (this.$store.getters.GetPad && !this.$store.getters.GetComponents.drawer_navigation) {
+      } else if (this.mainStore.getTablet && !this.mainStore.getDrawer) {
         return this.$t('Message.Components.Appbar.ShowSideNavigationBar')
-      } else if (this.$store.getters.GetMobile && this.$store.getters.GetComponents.drawer_navigation) {
+      } else if (this.mainStore.getMobile && this.mainStore.getDrawer) {
         return this.$t('Message.Components.Appbar.CollapseTheSideNavigationDrawer')
-      } else if (this.$store.getters.GetMobile && !this.$store.getters.GetComponents.drawer_navigation) {
+      } else if (this.mainStore.getMobile && !this.mainStore.getDrawer) {
         return this.$t('Message.Components.Appbar.ShowSideNavigationDrawer')
       }
     },
     GetBarDrawerIcon() {
-      // return (this.$store.getters.GetPad && !this.$store.getters.GetComponents.drawer_navigation)
+      // return (this.mainStore.getTablet && !this.mainStore.getDrawer)
       //   ?
       //   'mdi-menu-close'
       //   :
       //   (
-      //     (this.$store.getters.GetMobile)
+      //     (this.mainStore.getMobile)
       //       ?
       //       'mdi-format-list-bulleted'
       //       :
       //       'mdi-menu'
       //   )
-      if (this.$store.getters.GetPad && !this.$store.getters.GetComponents.drawer_navigation) {
+      if (this.mainStore.getTablet && !this.mainStore.getDrawer) {
         return 'mdi-menu-close'
-      } else if (this.$store.getters.GetMobile) {
+      } else if (this.mainStore.getMobile) {
         return 'mdi-format-list-bulleted'
-      } else if (this.$store.getters.GetPad && this.$store.getters.GetComponents.drawer_navigation) {
+      } else if (this.mainStore.getTablet && this.mainStore.getDrawer) {
         return 'mdi-menu-open'
       } else {
         return 'mdi-menu'
@@ -219,27 +244,23 @@ export default {
      * 滚动到顶部
      */
     ToTop() {
-      let main = document.querySelector('mdui-layout-main');
+      let main = document.querySelector('mdui-layout-main')
       main.scrollTo({
         top: 0,
-        behavior: 'smooth'
-      });
+        behavior: 'smooth',
+      })
     },
 
-    SetScrollListener() {
-      //   var scrollHeight = main.scrollHeight - main.clientHeight;
-
-      //   _this.$store.commit('SetScrollValue', a === 99 ? 100 : a);
-    },
+    SetScrollListener() {},
     updateScrollValue() {
-      var _this = this;
-      const main = document.querySelector('mdui-layout-main');
-      var scrollHeight = main.scrollHeight - main.clientHeight;
-      var scrollTop = main.scrollTop;
+      var _this = this
+      const main = document.querySelector('mdui-layout-main')
+      var scrollHeight = main.scrollHeight - main.clientHeight
+      var scrollTop = main.scrollTop
 
-      var scrollPercent = (scrollTop / scrollHeight) * 100;
-      var a = parseInt(scrollPercent.toFixed(2));
-      _this.$store.commit('SetScrollValue', a === 99 ? 100 : a);
+      var scrollPercent = (scrollTop / scrollHeight) * 100
+      var a = parseInt(scrollPercent.toFixed(2))
+      _this.mainStore.setScrollValue(a === 99 ? 100 : a)
     },
     /**
      * 窗口大小调整事件
@@ -247,30 +268,32 @@ export default {
     OnResize() {
       this.navigation_drawer = true
       // this.bp_smlg = this.breakpoints().between('sm', 'lg');
-      this.bp_smlg = this.breakpoints().between('sm', 'xl');
-      this.bp_xssm = this.breakpoints().between('xs', 'sm');
+      this.bp_smlg = this.breakpoints().between('sm', 'xl')
+      this.bp_xssm = this.breakpoints().between('xs', 'sm')
 
       if (this.breakpointOnly('xs')) {
-        this.$store.dispatch('Set_Breakpoint', 'xs')
-        this.$store.dispatch('Set_Mobile', true)
+        this.mainStore.setBreakpointName('xs')
+        this.mainStore.setMobile(true)
       } else if (this.breakpointOnly('sm')) {
-        this.$store.dispatch('Set_Breakpoint', 'sm')
-        this.$store.dispatch('Set_Pad', true)
+        this.mainStore.setBreakpointName('sm')
+        this.mainStore.setTablet(true)
       } else if (this.breakpointOnly('md')) {
-        this.$store.dispatch('Set_Breakpoint', 'md')
-        this.$store.dispatch('Set_Pad', true)
+        this.mainStore.setBreakpointName('md')
+        this.mainStore.setTablet(true)
       } else if (this.breakpointOnly('lg')) {
-        this.$store.dispatch('Set_Breakpoint', 'lg')
-        this.$store.dispatch('Set_Pad', true)
+        this.mainStore.setBreakpointName('lg')
+        this.mainStore.setTablet(true)
       } else if (this.breakpointOnly('xl')) {
-        this.$store.dispatch('Set_Breakpoint', 'xl')
-        this.$store.dispatch('Set_Pc', true)
+        this.mainStore.setBreakpointName('xl')
+        this.mainStore.setDesktop(true)
       } else if (this.breakpointOnly('xxl')) {
-        this.$store.dispatch('Set_Breakpoint', 'xxl')
-        this.$store.dispatch('Set_Pc', true)
+        this.mainStore.setBreakpointName('xxl')
+        this.mainStore.setDesktop(true)
       }
 
-      this.navigation_drawer = !this.$store.getters.GetMobile
+      // console.log(this.mainStore.getBreakpointName)
+
+      this.navigation_drawer = !this.mainStore.getMobile
     },
     /**
      * 判断当前断点是否仅为指定的断点
@@ -278,7 +301,7 @@ export default {
      * @return {boolean} 如果当前断点仅为指定的断点，返回 true，否则返回 false
      */
     breakpointOnly(value) {
-      return this.breakpoints().only(value);
+      return this.breakpoints().only(value)
     },
     /**
      * 判断当前断点是否在指定的断点范围内
@@ -287,12 +310,10 @@ export default {
      * @return {boolean} 如果当前断点在指定的断点范围内，返回 true，否则返回 false
      */
     breakpointBetween(start, end) {
-      return this.breakpoints().between(start, end);
+      return this.breakpoints().between(start, end)
     },
   },
-  created() {
-    this.SetScrollListener()
-  },
+  created() {},
   watch: {
     search_appbar(val) {
       if (val) {
@@ -308,9 +329,9 @@ export default {
       this.v_search_appbar = false
     },
     navigation_drawer(val) {
-      this.$store.dispatch('Set_Component',{ components:'drawer_navigation',value: val });
+      this.mainStore.setDrawer(val)
     },
-  }
+  },
 }
 </script>
 <style lang="less">
@@ -319,7 +340,6 @@ body {
 }
 
 mdui-layout {
-
   /* 定义滚动条的宽度和圆角 */
   ::-webkit-scrollbar {
     width: 6px !important;

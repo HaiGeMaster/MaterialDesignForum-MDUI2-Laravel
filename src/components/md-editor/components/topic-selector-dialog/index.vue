@@ -1,23 +1,34 @@
 <template>
-  <mdui-dialog :fullscreen="$store.getters.GetBreakpoint == 'xs'" scrollable
-    style="overflow: hidden;" ref="topic_selector_dialog" @close="vmodel = !vmodel" @overlay-click="vmodel = !vmodel"
-    :headline="$t('Message.Components.TopicSelectDialog.TopicSelect')+ '(' + selector_indexs.length + ')'"
+  <mdui-dialog
+    :fullscreen="mainStore.getBreakpointName == 'xs'"
+    scrollable
+    style="overflow: hidden"
+    ref="topic_selector_dialog"
+    @close="vmodel = !vmodel"
+    @overlay-click="vmodel = !vmodel"
+    :headline="
+      $t('Message.Components.TopicSelectDialog.TopicSelect') + '(' + selector_indexs.length + ')'
+    "
+  >
+    <mdui-button-icon class="close" @click="vmodel = !vmodel" slot="icon">
+      <mdi-icon icon="mdi-close" />
+    </mdui-button-icon>
+
+    <mdui-card
+      style="overflow: hidden; width: auto"
+      :style="!mainStore.getMobile ? 'min-width: 500px;' : 'width:100%;'"
     >
-      <mdui-button-icon class="close" @click="vmodel = !vmodel" slot="icon">
-          <mdi-icon icon="mdi-close" />
-        </mdui-button-icon>
+      <br />
 
-    <mdui-card style="overflow: hidden;width: auto;" :style="!$store.getters.GetMobile ? 'min-width: 500px;' : 'width:100%;'"
-      >
-        <br>
-
-        <mdui-text-field variant="outlined" style="padding-left: 16px;padding-right: 16px;"
+      <mdui-text-field
+        variant="outlined"
+        style="padding-left: 16px; padding-right: 16px"
         :label="$t('Message.Components.Search.Search')"
-        :value="search_text" @input="search_text = $event.target.value"
-        ></mdui-text-field>
+        :value="search_text"
+        @input="search_text = $event.target.value"
+      ></mdui-text-field>
 
-      <mdui-list style="
-    overflow: auto;">
+      <mdui-list style="overflow: auto">
         <!-- <mdui-list-item v-for="(item, index) in data" :key="item.topic_id" :headline="item.name"
           :description="item.description" :active="selector_indexs.includes(index)"
           @click="selector_indexs.includes(index) ? selector_indexs.splice(selector_indexs.indexOf(index), 1) : selector_indexs.push(index)">
@@ -26,65 +37,75 @@
             <img :src="$G_ImgHandle(item.cover.middle)" style="max-width: 120px;" />
           </mdui-card>
 
-          <mdui-checkbox slot="end-icon" 
+          <mdui-checkbox slot="end-icon"
           @input="selector_indexs.includes(index) ? selector_indexs.splice(selector_indexs.indexOf(index), 1) : selector_indexs.push(index)"
           :checked="selector_indexs.includes(index)"></mdui-checkbox>
 
         </mdui-list-item> -->
 
-        <mdui-list-item v-for="(item, index) in data" :key="item.topic_id" :headline="item.name"
-          :description="item.description" :active="selector_indexs.includes(index)"
-          @click="
-          SwitchSelector(index)
-          ">
-
+        <mdui-list-item
+          v-for="(item, index) in data"
+          :key="item.topic_id"
+          :headline="item.name"
+          :description="item.description"
+          :active="selector_indexs.includes(index)"
+          @click="SwitchSelector(index)"
+        >
           <mdui-card slot="icon">
-            <img :src="$G_ImgHandle(item.cover.middle)" style="max-width: 120px;" />
+            <img :src="$G_ImgHandle(item.cover.middle)" style="max-width: 120px" />
           </mdui-card>
 
-          <mdui-checkbox slot="end-icon" 
-          @input="
-          SwitchSelector(index)
-          "
-          :checked="selector_indexs.includes(index)"></mdui-checkbox>
-
+          <mdui-checkbox
+            slot="end-icon"
+            @input="SwitchSelector(index)"
+            :checked="selector_indexs.includes(index)"
+          ></mdui-checkbox>
         </mdui-list-item>
       </mdui-list>
 
-      <Loading :empty="data==null" :loading="is_loading" :pagination="pagination" :need_margin_bottom="false"
-          @autoload="GetTopics" />
+      <Loading
+        :empty="data == null"
+        :loading="is_loading"
+        :pagination="pagination"
+        :need_margin_bottom="false"
+        @autoload="GetTopics"
+      />
     </mdui-card>
 
     <mdui-button slot="action" variant="text" @click="vmodel = false">
       {{ $t('Message.Components.TopicSelectDialog.Cancel') }}
     </mdui-button>
-    <mdui-button slot="action" variant="tonal" @click="OnTopicSelectorDialogClose()"
-      :disabled="selector_indexs.length == 0">
+    <mdui-button
+      slot="action"
+      variant="tonal"
+      @click="OnTopicSelectorDialogClose()"
+      :disabled="selector_indexs.length == 0"
+    >
       {{ $t('Message.Components.TopicSelectDialog.Confirm') }}
     </mdui-button>
   </mdui-dialog>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
 import Loading from '@/components/loading/index.vue'
-import {
-  GetTopics
-} from '@/api/global.js'
+import { GetTopics } from '@/api/global.js'
 export default {
   name: 'topic-selector-dialog',
   props: {
     pre_selected_topics: {
       Array,
-      default: () => []
+      default: () => [],
     },
     model: {
       Boolean,
-      default: false
+      default: false,
     },
   },
   components: {
     Loading,
-              },
+  },
   data: () => ({
+    mainStore: useMainStore(),
     vmodel: false,
     selector_indexs: [],
     selector_topics: [],
@@ -98,7 +119,7 @@ export default {
       total: 0,
       pages: 0,
       previous: 0,
-      next: 1
+      next: 1,
     },
   }),
   methods: {
@@ -113,7 +134,9 @@ export default {
           user_token: this.$G_GetUserToken(),
         })
         if (response.data.is_get == true) {
-          this.data == null ? this.data = response.data.data : this.$G_FilterSameItems('topic_id', this.data, response.data.data)
+          this.data == null
+            ? (this.data = response.data.data)
+            : this.$G_FilterSameItems('topic_id', this.data, response.data.data)
           this.pagination = response.data.pagination
           if (this.pre_selected_topics.length > 0) {
             for (var i = 0; i < this.pre_selected_topics.length; i++) {
@@ -139,7 +162,7 @@ export default {
         total: 0,
         pages: 0,
         previous: 0,
-        next: 1
+        next: 1,
       }
       this.selector_indexs = []
       this.selector_topics = []
@@ -152,15 +175,15 @@ export default {
       this.vmodel = false
     },
     SwitchSelector(index) {
-      if (this.selector_indexs.includes(index)) {//如果已选中，则取消选中
-        this.selector_indexs.splice(this.selector_indexs.indexOf(index), 1)//
+      if (this.selector_indexs.includes(index)) {
+        //如果已选中，则取消选中
+        this.selector_indexs.splice(this.selector_indexs.indexOf(index), 1) //
       } else {
-        this.selector_indexs.push(index)//
+        this.selector_indexs.push(index) //
       }
       console.log(this.selector_indexs)
       const val = this.selector_indexs
 
-      
       this.selector_topics = []
       for (var i = 0; i < val.length; i++) {
         // this.selector_topics.push(this.data[val[i]])
@@ -177,8 +200,7 @@ export default {
     //   this.vmodel = false
     // },
   },
-  created() {
-  },
+  created() {},
   watch: {
     search_text(val) {
       this.search_keywords = val
@@ -238,7 +260,7 @@ export default {
     padding: 0;
   }
 
-      .list-item {
+  .list-item {
     padding-right: 24px;
     padding-left: 24px;
   }
@@ -272,7 +294,7 @@ export default {
       border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 
       .mdui-theme-dark & {
-        border-bottom-color: rgba(255, 255, 255, .12);
+        border-bottom-color: rgba(255, 255, 255, 0.12);
       }
     }
 
@@ -282,7 +304,7 @@ export default {
 
     .close {
       display: inline-block;
-            margin-right: 16px;
+      margin-right: 16px;
     }
   }
 }

@@ -1,0 +1,183 @@
+[36mvite v8.1.3 [32mbuilding client environment for production...[36m[39m
+[2Ktransforming...✓ 1011 modules transformed.
+rendering chunks...
+computing gzip size...
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/index.html                                             2.24 kB │ gzip:   0.84 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gu-SbvrH0uZ.svg                                 4.19 kB │ gzip:   1.77 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gu-Di1JYREk.svg                                 4.32 kB │ gzip:   1.84 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sz-D39eIL5d.svg                                 4.63 kB │ gzip:   1.93 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sz-qxMwa2gs.svg                                 4.66 kB │ gzip:   1.94 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/kg-B0FsxZiL.svg                                 4.74 kB │ gzip:   1.93 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/kg-CjfitMyT.svg                                 4.79 kB │ gzip:   1.96 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gq-Cag8QTk2.svg                                 4.94 kB │ gzip:   2.04 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gq-CPnMO1hT.svg                                 5.07 kB │ gzip:   2.15 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/zm-D8B-0kdx.svg                                 5.31 kB │ gzip:   2.27 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/nf-DGrQb42O.svg                                 5.37 kB │ gzip:   2.39 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/zm-BmsW91ne.svg                                 5.42 kB │ gzip:   2.28 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/cy-bZuP8hmf.svg                                 5.46 kB │ gzip:   2.40 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/cy-DJKnEFYW.svg                                 5.51 kB │ gzip:   2.44 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/nf-Dl00mlk2.svg                                 5.56 kB │ gzip:   2.49 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ki-p_fAQGbS.svg                                 5.62 kB │ gzip:   1.63 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ki-fuIMkEYQ.svg                                 5.80 kB │ gzip:   1.69 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ms-DxciGbUu.svg                                 5.83 kB │ gzip:   2.57 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ms-B-w7hFKu.svg                                 5.91 kB │ gzip:   2.51 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/zw-CSuuaw9K.svg                                 6.16 kB │ gzip:   2.49 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/zw-U0m7oJ5e.svg                                 6.18 kB │ gzip:   2.52 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/br-Dr5rMAMb.svg                                 6.74 kB │ gzip:   2.22 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/tc-CJHJmJj1.svg                                 7.09 kB │ gzip:   3.01 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/kz-CwKXYZ8s.svg                                 7.09 kB │ gzip:   2.95 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/kz-Dkyx6q-p.svg                                 7.09 kB │ gzip:   2.94 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/tc-dtelpZmc.svg                                 7.11 kB │ gzip:   3.02 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/kh-BeWfuE30.svg                                 7.12 kB │ gzip:   2.75 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/kh-BBvObpUS.svg                                 7.12 kB │ gzip:   2.76 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/br-Cu5YU29T.svg                                 7.14 kB │ gzip:   2.44 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/li-CHdhvNcr.svg                                 7.31 kB │ gzip:   3.00 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/li-CMlf0YU8.svg                                 7.34 kB │ gzip:   3.01 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/xk-Cdz2uTvR.svg                                 7.73 kB │ gzip:   3.10 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/pt-DZ2ADgIR.svg                                 8.00 kB │ gzip:   3.26 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/xk-Bj15g7cp.svg                                 8.26 kB │ gzip:   3.29 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/pt-BTevY6N2.svg                                 8.36 kB │ gzip:   3.28 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/vi-BSdsyIxY.svg                                 8.44 kB │ gzip:   3.57 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/vi-BC_zcciE.svg                                 8.51 kB │ gzip:   3.63 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/eg-YC70hswZ.svg                                 8.72 kB │ gzip:   3.59 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/eg-DwOkwyQ0.svg                                 8.73 kB │ gzip:   3.60 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/aw-W0PWLK5p.svg                                 9.00 kB │ gzip:   1.65 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gb-wls-CK0XlKT-.svg                             9.00 kB │ gzip:   4.08 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gb-wls-Bxz9hxvX.svg                             9.09 kB │ gzip:   4.18 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/im--VPIqfkF.svg                                 9.13 kB │ gzip:   3.55 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/im-Dd9p-0-T.svg                                 9.70 kB │ gzip:   3.83 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sa-DnlyVVKx.svg                                 9.85 kB │ gzip:   4.25 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sa-Dh79zbT9.svg                                 9.96 kB │ gzip:   4.30 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/vg-ClZ-0KpG.svg                                 9.99 kB │ gzip:   4.20 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/vg-C7xY6pic.svg                                10.01 kB │ gzip:   4.20 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/aw-CLCX8uk5.svg                                10.35 kB │ gzip:   1.77 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/lk-DUkgV9Tq.svg                                10.72 kB │ gzip:   4.53 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/lk-DSQoDxn_.svg                                10.73 kB │ gzip:   4.54 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/md-DRlxvNwm.svg                                11.12 kB │ gzip:   2.84 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/md-DTi94M3M.svg                                11.23 kB │ gzip:   2.73 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sx-RKKs0ph6.svg                                12.15 kB │ gzip:   4.16 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sx-nDhIaDNb.svg                                12.21 kB │ gzip:   4.34 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/mt-YDa8zgzO.svg                                12.71 kB │ gzip:   5.42 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ht-DIMg4gti.svg                                13.30 kB │ gzip:   4.80 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/bn-B6T3O78g.svg                                13.34 kB │ gzip:   5.73 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/pn-BPAlH32D.svg                                13.44 kB │ gzip:   5.01 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ht-pweRl6ZP.svg                                13.45 kB │ gzip:   4.88 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/bn-CPQcA8Ol.svg                                13.47 kB │ gzip:   5.78 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/pn-DgxdtieE.svg                                13.47 kB │ gzip:   5.05 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/eac-CwGQsyAM.svg                               13.63 kB │ gzip:   4.88 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/eac-h4QKADRE.svg                               13.64 kB │ gzip:   4.87 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/mt-YqzKx9xl.svg                                13.92 kB │ gzip:   5.92 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ir-Q03Mij62.svg                                15.29 kB │ gzip:   2.28 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ir-cCIgaNf6.svg                                15.39 kB │ gzip:   2.22 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sm-BKrUHzrq.svg                                15.54 kB │ gzip:   5.42 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sm-DGBIRFB_.svg                                15.68 kB │ gzip:   5.33 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/dm-Cbhezfe1.svg                                15.78 kB │ gzip:   3.09 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/py-mNzh0mZC.svg                                16.18 kB │ gzip:   5.86 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/dm-DPPHwW2M.svg                                16.26 kB │ gzip:   3.23 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/py-BKi5dxWt.svg                                16.36 kB │ gzip:   5.93 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ni-CcFCSQxm.svg                                17.24 kB │ gzip:   5.44 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ni-BX2WCaNt.svg                                17.29 kB │ gzip:   5.50 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/un-Bqg4Cbbh.svg                                18.70 kB │ gzip:   7.58 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/af-Bc2fqp73.svg                                18.98 kB │ gzip:   7.82 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/un-DabL4p35.svg                                19.00 kB │ gzip:   7.72 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/af-C77Rf6cE.svg                                19.19 kB │ gzip:   7.89 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/om-nN8zP2Bu.svg                                22.20 kB │ gzip:   4.44 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/om-DcqxRdQL.svg                                22.22 kB │ gzip:   4.41 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gb-nir-D4gikpNq.svg                            22.27 kB │ gzip:   6.03 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/bm-DvNWWcPM.svg                                22.39 kB │ gzip:   7.29 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/bm-BeYgB2z9.svg                                22.46 kB │ gzip:   7.30 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/mp-CrOApEqW.svg                                22.56 kB │ gzip:   7.06 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/dg-DqkWLbnk.svg                                22.71 kB │ gzip:   4.13 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/io-BImhNBcd.svg                                22.71 kB │ gzip:   4.13 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/mp-CuaQmCLf.svg                                22.79 kB │ gzip:   7.12 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/dg-CJPJrjiZ.svg                                23.02 kB │ gzip:   4.16 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/io-13HOfeJD.svg                                23.02 kB │ gzip:   4.16 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ky-BqaZHuhf.svg                                23.37 kB │ gzip:   8.73 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ky-Dpsu1myA.svg                                23.38 kB │ gzip:   8.72 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gb-nir-vEp1ZXy6.svg                            23.91 kB │ gzip:   5.57 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/fj-DEAVMg38.svg                                24.10 kB │ gzip:   9.26 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/fj-u3dAPoew.svg                                24.13 kB │ gzip:   9.28 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/arab-C4CYPgyC.svg                              24.42 kB │ gzip:   8.68 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/bt-SxWnbWW0.svg                                24.50 kB │ gzip:  10.15 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/arab-C-KgnQEz.svg                              24.59 kB │ gzip:   8.74 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/bt-BTo4qm10.svg                                24.78 kB │ gzip:  10.27 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/es-ga-D9xG2hYr.svg                             28.21 kB │ gzip:   6.30 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sh-ta-BFo5zkKU.svg                             28.29 kB │ gzip:  11.03 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/es-ga-DXhVZ333.svg                             28.34 kB │ gzip:   6.34 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/fk-B-RvQ4Hz.svg                                28.48 kB │ gzip:   8.97 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/va-s7kyhqIM.svg                                28.65 kB │ gzip:   9.82 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/va-B9-hqIE-.svg                                28.72 kB │ gzip:   9.83 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/fk-nuUF_Ak3.svg                                28.73 kB │ gzip:   9.36 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sh-ta-CPJublpi.svg                             28.77 kB │ gzip:  11.29 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ec-CaVOFQ3t.svg                                28.77 kB │ gzip:   6.93 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ad-Blhdm5jl.svg                                29.14 kB │ gzip:  10.81 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ec-cwfBJlvF.svg                                29.34 kB │ gzip:   6.80 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/as-Dekqy8Of.svg                                30.44 kB │ gzip:  11.73 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/ad-B18i8NGa.svg                                30.51 kB │ gzip:  11.37 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/hr-fzLfaANM.svg                                30.73 kB │ gzip:  13.28 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/as-BTEVCXG-.svg                                30.97 kB │ gzip:  11.90 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/hr-BpiVVBoV.svg                                31.28 kB │ gzip:  13.47 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gt-BLpn5qMn.svg                                31.35 kB │ gzip:  11.49 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gt-CJo5DI-7.svg                                31.35 kB │ gzip:  11.49 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gs-DiiNa0F5.svg                                31.50 kB │ gzip:  11.61 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/gs-DOgYbHsY.svg                                31.92 kB │ gzip:  11.25 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/je-DyWbhIiC.svg                                34.19 kB │ gzip:  10.01 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sh-hl-CgxUDvtv.svg                             34.77 kB │ gzip:  12.88 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/je-vXe0Dr49.svg                                35.02 kB │ gzip:  10.26 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sh-hl-CqtQPzWZ.svg                             35.42 kB │ gzip:  13.20 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/tm-DGBJvQay.svg                                38.22 kB │ gzip:  12.22 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/tm-C_WSgUcv.svg                                38.34 kB │ gzip:  12.37 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/do-B86d445t.svg                                40.34 kB │ gzip:  14.63 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/do-DeRnbj4d.svg                                41.33 kB │ gzip:  15.00 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/bz-BCKHR4_q.svg                                42.50 kB │ gzip:  15.93 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/bz-CoBdB-p8.svg                                42.67 kB │ gzip:  15.93 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/IRANSansXNoEn-Regular-jRCARnF3.ttf             53.74 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/me-Cv4Gwqah.svg                                56.37 kB │ gzip:  21.73 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/me-CfGorN3b.svg                                56.95 kB │ gzip:  22.02 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sv-CJIHhYwF.svg                                77.27 kB │ gzip:  22.25 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sv-RZ39q5hO.svg                                77.71 kB │ gzip:  22.49 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/mx-CvCwYHGF.svg                                80.20 kB │ gzip:  28.28 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/es-d5m8M5h8.svg                                80.95 kB │ gzip:  14.98 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/es-BuSGTZm_.svg                                82.14 kB │ gzip:  15.71 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/mx-Cc8Ccfe8.svg                                84.75 kB │ gzip:  30.16 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/bo-CcUiMqkJ.svg                               102.88 kB │ gzip:  25.24 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/bo-Dry0C6UA.svg                               104.72 kB │ gzip:  25.67 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sh-ac-D-aE2xRW.svg                            140.51 kB │ gzip:  48.04 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/sh-ac-FjwY7RYr.svg                            143.37 kB │ gzip:  48.71 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/Poppins-Regular-CTKNfV9P.ttf                  158.24 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/rs-CnTO3ehk.svg                               181.47 kB │ gzip:  51.03 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/rs-BfwKwXtn.svg                               181.63 kB │ gzip:  51.26 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/materialdesignicons-webfont-Dp5v-WZN.woff2    403.21 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/materialdesignicons-webfont-PXm3-2wK.woff     587.98 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/materialdesignicons-webfont-B7mPwVP_.ttf    1,307.66 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/materialdesignicons-webfont-CSr8KVlo.eot    1,307.88 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/index-DL11LmVa.css                            832.27 kB │ gzip: 157.08 kB
+../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/assets/index-BeSqBhN9.js                           2,630.05 kB │ gzip: 781.89 kB
+
+[33m[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[31m✗[39m Build failed in 1.70s
+[31merror during build:
+[31mBuild failed with 1 error:
+
+Error: [vite]: Rolldown failed to resolve import "vuex" from "d:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/src/store/index.js".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rolldownOptions.external`
+    at viteLog (file:///d:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/vite@8.1.3_less@4.6.7_yaml@2.9.0/node_modules/vite/dist/node/chunks/node.js:32715:57)
+    at onRollupLog (file:///d:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/vite@8.1.3_less@4.6.7_yaml@2.9.0/node_modules/vite/dist/node/chunks/node.js:32747:7)
+    at onLog (file:///d:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/vite@8.1.3_less@4.6.7_yaml@2.9.0/node_modules/vite/dist/node/chunks/node.js:32514:4)
+    at file:///D:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/rolldown@1.1.4/node_modules/rolldown/dist/shared/rolldown-build-aV0QeeTW.mjs:50:26
+    at logger (file:///D:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/rolldown@1.1.4/node_modules/rolldown/dist/shared/rolldown-build-aV0QeeTW.mjs:41:3)[31m
+    at aggregateBindingErrorsIntoJsError (file:///D:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/rolldown@1.1.4/node_modules/rolldown/dist/shared/error-BlQ0-ek7.mjs:48:18)
+    at unwrapBindingResult (file:///D:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/rolldown@1.1.4/node_modules/rolldown/dist/shared/error-BlQ0-ek7.mjs:18:128)
+    at #build (file:///D:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/rolldown@1.1.4/node_modules/rolldown/dist/shared/rolldown-build-aV0QeeTW.mjs:3256:34)
+    at async buildEnvironment (file:///d:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/vite@8.1.3_less@4.6.7_yaml@2.9.0/node_modules/vite/dist/node/chunks/node.js:32622:66)
+    at async Object.build (file:///d:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/vite@8.1.3_less@4.6.7_yaml@2.9.0/node_modules/vite/dist/node/chunks/node.js:33044:19)
+    at async Object.buildApp (file:///d:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/vite@8.1.3_less@4.6.7_yaml@2.9.0/node_modules/vite/dist/node/chunks/node.js:33041:153)
+    at async CAC.<anonymous> (file:///d:/Administrator/Documents/Vue/MaterialDesignForum-MDUI2-Laravel/node_modules/.pnpm/vite@8.1.3_less@4.6.7_yaml@2.9.0/node_modules/vite/dist/node/cli.js:777:3) {
+  errors: [Getter/Setter]
+}[39m

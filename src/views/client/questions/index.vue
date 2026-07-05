@@ -1,100 +1,177 @@
 <template>
+  <div
+    id="page-questions"
+    :style="{
+      padding: mainStore.getMobile ? '0' : '16px',
+    }"
+  >
+    <mdui-tabs :value="tab_item" :full-width="mainStore.getMobile">
+      <mdui-tab
+        value="recent"
+        @click="$router.push($G_UrlHeaderLang() + `/questions#recent`)"
+        :style="mainStore.getDesktop ? 'margin-left: auto;' : ''"
+        >{{ $t('Message.Components.Appbar.Tabbars.QuestionsItems.Recent') }}</mdui-tab
+      >
 
-  <div id="page-questions" :style="{
-    'padding': $store.getters.GetMobile ? '0' : '16px',
-  }">
-    <mdui-tabs :value="tab_item" :full-width="$store.getters.GetMobile">
-      <mdui-tab value="recent" @click="$router.push($G_UrlHeaderLang() + `/questions#recent`)"
-        :style="$store.getters.GetPc ? 'margin-left: auto;' : ''">{{
-    $t('Message.Components.Appbar.Tabbars.QuestionsItems.Recent') }}</mdui-tab>
+      <mdui-tab
+        value="popular"
+        @click="$router.push($G_UrlHeaderLang() + `/questions#popular`)"
+        :style="!userStore.getIsLogin ? 'margin-right: auto;' : ''"
+        >{{ $t('Message.Components.Appbar.Tabbars.QuestionsItems.Popular') }}</mdui-tab
+      >
 
-      <mdui-tab value="popular" @click="$router.push($G_UrlHeaderLang() + `/questions#popular`)"
-        :style="!$store.getters['User/GetIsLogin'] ? 'margin-right: auto;' : ''">{{
-    $t('Message.Components.Appbar.Tabbars.QuestionsItems.Popular') }}</mdui-tab>
-
-      <mdui-tab v-if="$store.getters['User/GetIsLogin']" value="following"
-        @click="$router.push($G_UrlHeaderLang() + `/questions#following`)" style="margin-right: auto;">{{
-    $t('Message.Components.Appbar.Tabbars.QuestionsItems.Following') }}</mdui-tab>
+      <mdui-tab
+        v-if="userStore.getIsLogin"
+        value="following"
+        @click="$router.push($G_UrlHeaderLang() + `/questions#following`)"
+        style="margin-right: auto"
+        >{{ $t('Message.Components.Appbar.Tabbars.QuestionsItems.Following') }}</mdui-tab
+      >
 
       <mdui-tab-panel slot="panel" value="recent" class="items-wrapper">
-        <mdui-card  v-if="recent_data" :variant="$store.getters.GetDark ? 'filled' : 'elevated'" style="width: 100%;margin-top: 8px;">
-
+        <mdui-card
+          v-if="recent_data"
+          :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
+          style="width: 100%; margin-top: 8px"
+        >
           <mdui-list>
-            <ListItem v-for="(item, index) in recent_data" type="questions" :key="index" :item="item"
-              :title="item.title" :subtitle="item.content_markdown"
-              :action_time="$G_UserTimeStampToDateTime(item.create_time)" :action_subtitle="$t('Message.Client.Question.NAnswers', {
-    value: item.answer_count,
-  })" :to="`${$G_UrlHeaderLang()}/questions/${item.question_id}`" />
-
+            <ListItem
+              v-for="(item, index) in recent_data"
+              type="questions"
+              :key="index"
+              :item="item"
+              :title="item.title"
+              :subtitle="item.content_markdown"
+              :action_time="$G_UserTimeStampToDateTime(item.create_time)"
+              :action_subtitle="
+                $t('Message.Client.Question.NAnswers', {
+                  value: item.answer_count,
+                })
+              "
+              :to="`${$G_UrlHeaderLang()}/questions/${item.question_id}`"
+            />
           </mdui-list>
         </mdui-card>
 
-        <mdui-card v-else-if="recent_loading" :variant="$store.getters.GetDark ? 'filled' : 'elevated'" style="width: 100%;margin-top: 8px;">
+        <mdui-card
+          v-else-if="recent_loading"
+          :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
+          style="width: 100%; margin-top: 8px"
+        >
           <mdui-list>
             <ListItemSkeleton v-for="i in 20" />
           </mdui-list>
         </mdui-card>
-
       </mdui-tab-panel>
       <mdui-tab-panel slot="panel" value="popular" class="items-wrapper">
-        <mdui-card  v-if="popular_data" :variant="$store.getters.GetDark ? 'filled' : 'elevated'" style="width: 100%;margin-top: 8px;">
-
+        <mdui-card
+          v-if="popular_data"
+          :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
+          style="width: 100%; margin-top: 8px"
+        >
           <mdui-list>
-            <ListItem v-for="(item, index) in popular_data" type="questions" :key="index" :item="item"
-              :title="item.title" :subtitle="item.content_markdown"
-              :action_time="$G_UserTimeStampToDateTime(item.create_time)" :action_subtitle="$t('Message.Client.Question.NAnswers', {
-    value: item.answer_count,
-  })" :to="`${$G_UrlHeaderLang()}/questions/${item.question_id}`" />
-
+            <ListItem
+              v-for="(item, index) in popular_data"
+              type="questions"
+              :key="index"
+              :item="item"
+              :title="item.title"
+              :subtitle="item.content_markdown"
+              :action_time="$G_UserTimeStampToDateTime(item.create_time)"
+              :action_subtitle="
+                $t('Message.Client.Question.NAnswers', {
+                  value: item.answer_count,
+                })
+              "
+              :to="`${$G_UrlHeaderLang()}/questions/${item.question_id}`"
+            />
           </mdui-list>
         </mdui-card>
 
-        <mdui-card v-else-if="popular_loading" :variant="$store.getters.GetDark ? 'filled' : 'elevated'" style="width: 100%;margin-top: 8px;">
-          <mdui-list>
-            <ListItemSkeleton v-for="i in 20" />
-          </mdui-list>
-        </mdui-card>
-
-      </mdui-tab-panel>
-      <mdui-tab-panel v-if="$store.getters['User/GetIsLogin']" slot="panel" value="following" class="items-wrapper">
-        <mdui-card  v-if="following_data" :variant="$store.getters.GetDark ? 'filled' : 'elevated'" style="width: 100%;margin-top: 8px;">
-          <mdui-list>
-
-            <ListItem v-for="(item, index) in following_data" type="questions" :key="index" :item="item"
-              :title="item.title" :subtitle="item.content_markdown"
-              :action_time="$G_UserTimeStampToDateTime(item.create_time)" :action_subtitle="$t('Message.Client.Question.NAnswers', {
-    value: item.answer_count,
-  })" :to="`${$G_UrlHeaderLang()}/questions/${item.question_id}`" />
-
-          </mdui-list>
-        </mdui-card>
-
-        <mdui-card v-else-if="following_loading" :variant="$store.getters.GetDark ? 'filled' : 'elevated'" style="width: 100%;margin-top: 8px;">
+        <mdui-card
+          v-else-if="popular_loading"
+          :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
+          style="width: 100%; margin-top: 8px"
+        >
           <mdui-list>
             <ListItemSkeleton v-for="i in 20" />
           </mdui-list>
         </mdui-card>
-
       </mdui-tab-panel>
+      <mdui-tab-panel
+        v-if="userStore.getIsLogin"
+        slot="panel"
+        value="following"
+        class="items-wrapper"
+      >
+        <mdui-card
+          v-if="following_data"
+          :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
+          style="width: 100%; margin-top: 8px"
+        >
+          <mdui-list>
+            <ListItem
+              v-for="(item, index) in following_data"
+              type="questions"
+              :key="index"
+              :item="item"
+              :title="item.title"
+              :subtitle="item.content_markdown"
+              :action_time="$G_UserTimeStampToDateTime(item.create_time)"
+              :action_subtitle="
+                $t('Message.Client.Question.NAnswers', {
+                  value: item.answer_count,
+                })
+              "
+              :to="`${$G_UrlHeaderLang()}/questions/${item.question_id}`"
+            />
+          </mdui-list>
+        </mdui-card>
 
+        <mdui-card
+          v-else-if="following_loading"
+          :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
+          style="width: 100%; margin-top: 8px"
+        >
+          <mdui-list>
+            <ListItemSkeleton v-for="i in 20" />
+          </mdui-list>
+        </mdui-card>
+      </mdui-tab-panel>
     </mdui-tabs>
 
-    <Loading v-if="tab_item == 'recent'" key="recent" :empty="recent_data == null" :loading="recent_loading"
-      :pagination="recent_pagination" @autoload="GetQuestionsRecent" />
+    <Loading
+      v-if="tab_item == 'recent'"
+      key="recent"
+      :empty="recent_data == null"
+      :loading="recent_loading"
+      :pagination="recent_pagination"
+      @autoload="GetQuestionsRecent"
+    />
 
-    <Loading v-if="tab_item == 'popular'" key="popular" :empty="popular_data == null" :loading="popular_loading"
-      :pagination="popular_pagination" @autoload="GetQuestionsPopular" />
+    <Loading
+      v-if="tab_item == 'popular'"
+      key="popular"
+      :empty="popular_data == null"
+      :loading="popular_loading"
+      :pagination="popular_pagination"
+      @autoload="GetQuestionsPopular"
+    />
 
-    <Loading v-if="tab_item == 'following'" key="following" :empty="following_data == null" :loading="following_loading"
-      :pagination="following_pagination" @autoload="GetQuestionsFollowing" />
+    <Loading
+      v-if="tab_item == 'following'"
+      key="following"
+      :empty="following_data == null"
+      :loading="following_loading"
+      :pagination="following_pagination"
+      @autoload="GetQuestionsFollowing"
+    />
   </div>
 </template>
 <script>
-import {
-  GetQuestions,
-  Get_G_QUESTIONS_RECENT,
-  Get_G_QUESTIONS_POPULAR,
-} from '@/api/global.js'
+import { useMainStore } from '@/stores/main'
+import { useUserStore } from '@/stores/user'
+import { GetQuestions, Get_G_QUESTIONS_RECENT, Get_G_QUESTIONS_POPULAR } from '@/api/global.js'
 
 import Loading from '@/components/loading/index.vue'
 import ListItem from '@/components/list-item/index.vue'
@@ -106,6 +183,8 @@ export default {
     ListItemSkeleton,
   },
   data: () => ({
+    mainStore: useMainStore(),
+    userStore: useUserStore(),
     tab_item: 'recent',
     recent_loading: false,
     recent_data: null,
@@ -115,7 +194,7 @@ export default {
       total: 0,
       pages: 0,
       previous: 0,
-      next: 1
+      next: 1,
     },
     popular_loading: false,
     popular_data: null,
@@ -125,7 +204,7 @@ export default {
       total: 0,
       pages: 0,
       previous: 0,
-      next: 1
+      next: 1,
     },
     following_loading: false,
     following_data: null,
@@ -135,15 +214,14 @@ export default {
       total: 0,
       pages: 0,
       previous: 0,
-      next: 1
+      next: 1,
     },
   }),
-  computed: {
-  },
+  computed: {},
   methods: {
     UpdateTabItems(val) {
       if (val.name == 'questions' || val.name == 'lang-questions') {
-        if (this.$store.getters['User/GetIsLogin'] && val.hash == '#following') {
+        if (this.userStore.getIsLogin && val.hash == '#following') {
           this.tab_item = 'following'
           this.GetQuestionsFollowing()
         } else if (val.hash == '#recent' || val.hash == '') {
@@ -157,20 +235,20 @@ export default {
     },
     UpdateWebTitleAndAppbarSubTitle(val) {
       if (val.name == 'questions' || val.name == 'lang-questions') {
-        if (this.$store.getters['User/GetIsLogin'] && val.hash == '#following') {
+        if (this.userStore.getIsLogin && val.hash == '#following') {
           this.$G_UpdateWebTitleAndAppbarSubTitle(
             this.$t('Message.Client.Questions.QuestionsIAmFollowing'),
-            this.$t('Message.Client.Questions.WebSubTitle')
+            this.$t('Message.Client.Questions.WebSubTitle'),
           )
         } else if (val.hash == '#recent' || val.hash == '') {
           this.$G_UpdateWebTitleAndAppbarSubTitle(
             this.$t('Message.Client.Questions.LatestQuestions'),
-            this.$t('Message.Client.Questions.WebSubTitle')
+            this.$t('Message.Client.Questions.WebSubTitle'),
           )
         } else if (val.hash == '#popular') {
           this.$G_UpdateWebTitleAndAppbarSubTitle(
             this.$t('Message.Client.Questions.RecentlyPopularQuestions'),
-            this.$t('Message.Client.Questions.WebSubTitle')
+            this.$t('Message.Client.Questions.WebSubTitle'),
           )
         }
       }
@@ -191,11 +269,13 @@ export default {
         order: '-create_time',
         page: this.recent_pagination.next,
         per_page: this.recent_pagination.per_page,
-        user_token: this.$G_GetUserToken()
+        user_token: this.$G_GetUserToken(),
       })
       if (response.data.is_get == true) {
         var keys = `question_id`
-        this.recent_data == null ? this.recent_data = response.data.data : this.$G_FilterSameItems(keys, this.recent_data, response.data.data)
+        this.recent_data == null
+          ? (this.recent_data = response.data.data)
+          : this.$G_FilterSameItems(keys, this.recent_data, response.data.data)
         this.recent_pagination = response.data.pagination
         this.$forceUpdate()
       }
@@ -217,11 +297,13 @@ export default {
         order: '-follower_count',
         page: this.popular_pagination.next,
         per_page: this.popular_pagination.per_page,
-        user_token: this.$G_GetUserToken()
+        user_token: this.$G_GetUserToken(),
       })
       if (response.data.is_get == true) {
         var keys = `question_id`
-        this.popular_data == null ? this.popular_data = response.data.data : this.$G_FilterSameItems(keys, this.popular_data, response.data.data)
+        this.popular_data == null
+          ? (this.popular_data = response.data.data)
+          : this.$G_FilterSameItems(keys, this.popular_data, response.data.data)
         this.popular_pagination = response.data.pagination
         this.$forceUpdate()
       }
@@ -237,11 +319,13 @@ export default {
         page: this.following_pagination.next,
         per_page: this.following_pagination.per_page,
         following: true,
-        user_token: this.$G_GetUserToken()
+        user_token: this.$G_GetUserToken(),
       })
       if (response.data.is_get == true) {
         var keys = `question_id`
-        this.following_data == null ? this.following_data = response.data.data : this.$G_FilterSameItems(keys, this.following_data, response.data.data)
+        this.following_data == null
+          ? (this.following_data = response.data.data)
+          : this.$G_FilterSameItems(keys, this.following_data, response.data.data)
         this.following_pagination = response.data.pagination
         this.$forceUpdate()
       }
@@ -253,16 +337,16 @@ export default {
     this.UpdateWebTitleAndAppbarSubTitle(this.$route)
   },
   watch: {
-    '$route'(val) {
+    $route(val) {
       this.UpdateTabItems(val)
       this.UpdateWebTitleAndAppbarSubTitle(val)
     },
     '$i18n.locale'(val) {
       this.UpdateWebTitleAndAppbarSubTitle(this.$route)
-    }
+    },
   },
-};
+}
 </script>
 <style lang="less">
-@import "./index.less";
+@import './index.less';
 </style>

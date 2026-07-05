@@ -2,7 +2,7 @@
   <FabDialog :model="vmodel" :route_update_close="true" @model="vmodel = $event" :title="vtitle" :icon="vicon"
     name_id="mc-editor" :class="[
       {
-        'maximize': $store.getters.GetBreakpoint != 'xs' && vmodel == 'maximize',
+        'maximize': mainStore.getBreakpointName != 'xs' && vmodel == 'maximize',
         'minimize': vmodel == 'minimize',
         'with-title': vhas_title,
         'with-topics': vhas_topic,
@@ -34,13 +34,13 @@
       </template>
 
       <span class="placeholder" :title="$t('Message.Components.Editor.ClickToAddATopic')"
-        @click="$store.dispatch('Dialog/Set_TopicSelectorDialog', true)">
+        @click="dialogStore.setTopicSelectorDialog(true)">
         {{
         vmd_topics.length == 0 ? $t('Message.Components.Editor.PleaseSelectAtLeast1Topic') : ''
         }}
       </span>
 
-      <mdui-button-icon class="add" @click.prevent.stop="$store.dispatch('Dialog/Set_TopicSelectorDialog', true)"
+      <mdui-button-icon class="add" @click.prevent.stop="dialogStore.setTopicSelectorDialog(true)"
         :title="$t('Message.Components.Editor.ClickToAddATopic')">
         <mdi-icon icon="mdi-plus" />
       </mdui-button-icon>
@@ -65,7 +65,7 @@
             <mdi-icon icon="mdi-table" slot="icon" />
             {{ $t('Message.Components.Editor.Table') }}
           </mdui-menu-item>
-          
+
           <mdui-menu-item @click="addImage()">
             <mdi-icon icon="mdi-image" slot="icon" />
             {{ $t('Message.Components.Editor.AddImage') }}
@@ -102,7 +102,7 @@
             {{ $t('Message.Components.Editor.ClearNodes') }}
           </mdui-menu-item>
 
-          
+
           <mdui-menu-item @click="editor.chain().focus().setDetails().run()" :disabled="!editor.can().setDetails()">
             <mdi-icon icon="mdi-details" slot="icon" />
             {{ $t('Message.Components.Editor.SetDetails') }}
@@ -316,7 +316,7 @@
 
       <!-- <mdui-tooltip placement="bottom" :content="$t('Message.Components.Editor.InsertHTMLTable')">
         <mdui-button-icon :style="{'width': model == 'maximize' ? '40px' : '28px','height': model == 'maximize' ? '40px' : '28px',}"
-          :title="$t('Message.Components.Editor.InsertHTMLTable')" 
+          :title="$t('Message.Components.Editor.InsertHTMLTable')"
           @click="editor.chain().focus().insertContent(tableHTML, { parseOptions: { preserveWhitespace: false } }).run()"
         >
           <mdi-icon icon="mdi-table-edit" />
@@ -393,7 +393,7 @@
       <!-- <drag-handle v-if="editor" :editor="editor">
         <div class="custom-drag-handle" />
       </drag-handle> -->
-    
+
     <!-- <div class="editor-content"  style="overflow: auto;">
       <EditorContent :editor="editor"/>
       <drag-handle :editor="editor">
@@ -609,6 +609,10 @@
   </FabDialog>
 </template>
 <script>
+import { useMainStore } from '@/stores/main';
+import { useDialogStore } from '@/stores/dialog';
+import { useLocalDataStore } from '@/stores/local-data';
+
 import 'highlight.js/styles/github.css';
 import { all, createLowlight } from 'lowlight'
 import { Placeholder } from '@tiptap/extensions'
@@ -724,6 +728,9 @@ export default {
     // DragHandle,
   },
   data: () => ({
+    mainStore: useMainStore(),
+    dialogStore: useDialogStore(),
+      localDataStore: useLocalDataStore(),
     vmodel: 'close',//maximize
     vtitle: '',
     vicon: 'mdi-pencil-outline',
@@ -1027,11 +1034,11 @@ export default {
         var editor_type = this.vedit_type
         var json = JSON.stringify(this.editor.getJSON())
         if (editor_type == 'article') {
-          localStorage.setItem('article_cache', json)
+          this.localDataStore.setArticleCache(json)
         } else if (editor_type == 'question') {
-          localStorage.setItem('question_cache', json)
+          this.localDataStore.setQuestionCache(json)
         } else if (editor_type == 'answer') {
-          localStorage.setItem('answer_cache', json)
+          this.localDataStore.setAnswerCache(json)
         }
       }
     },
@@ -1051,11 +1058,11 @@ export default {
     DeleteContentFromLocal() {
       var editor_type = this.vedit_type
       if (editor_type == 'article') {
-        localStorage.removeItem('article_cache')
+        this.localDataStore.setArticleCache(null)
       } else if (editor_type == 'question') {
-        localStorage.removeItem('question_cache')
+        this.localDataStore.setQuestionCache(null)
       } else if (editor_type == 'answer') {
-        localStorage.removeItem('answer_cache')
+        this.localDataStore.setAnswerCache(null)
       }
       this.editor.commands.setContent('')
       this.vmodel = 'close'
@@ -1094,7 +1101,6 @@ export default {
       }
       content_rendered = encodeURIComponent(content_rendered)
       console.log('content_rendered3', content_rendered)
-
 
       // const content_rendered = this.editor.getJSON()//使用JSON存储
       const user_token = this.$G_GetUserToken()
@@ -1438,7 +1444,7 @@ export default {
     //     font-weight: 700;
     //   }
     // }
-    
+
   }
 
 

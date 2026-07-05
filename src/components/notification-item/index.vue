@@ -1,21 +1,20 @@
 <template>
-
-  <mdui-card 
-    @click="$router.push(SpawnLink(item))" :variant="$store.getters.GetDark ? 'filled' : 'elevated'"
-    style="width: 100%;">
-<!-- alignment="start"  -->
+  <mdui-card
+    @click="$router.push(SpawnLink(item))"
+    :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
+    style="width: 100%"
+  >
+    <!-- alignment="start"  -->
     <mdui-list-item alignment="start" description-line="2" :headline="item.sender_user.username">
       <UserPopover slot="icon" :user="item.sender_user" />
       <span slot="description">
         <p>
           {{
-            $t(`Message.Client.Notifications.Type.${item.type}`,
-              {
-                value: '',
-              }
-            )
+            $t(`Message.Client.Notifications.Type.${item.type}`, {
+              value: '',
+            })
           }}
-          <span style="font-weight: 800;" v-if="item.receiver_content">
+          <span style="font-weight: 800" v-if="item.receiver_content">
             {{ item.receiver_content }}
           </span>
         </p>
@@ -28,23 +27,24 @@
         <mdi-icon slot="end-icon" :icon="SpawnIcon(item)" />
       </mdui-button>
     </mdui-list-item>
-
   </mdui-card>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
 import UserPopover from '@/components/user-popover/index.vue'
 export default {
   name: 'notification-item',
   props: {
     item: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   components: {
     UserPopover,
   },
   data: () => ({
+    mainStore: useMainStore(),
     mouseover: false,
   }),
   methods: {
@@ -224,6 +224,6 @@ export default {
           return 'mdi-star'
       }
     },
-  }
+  },
 }
 </script>

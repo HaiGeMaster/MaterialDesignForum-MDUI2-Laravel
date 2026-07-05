@@ -1,4 +1,3 @@
-
 import { defineStore } from 'pinia'
 
 export const useLocalDataStore = defineStore('localData', {
@@ -7,7 +6,7 @@ export const useLocalDataStore = defineStore('localData', {
     articleCache: null,
     questionCache: null,
     cookiePreferences: null,
-    lang: '',//en_US
+    lang: '', //en_US
     themeColor: 'system',
     appbarShowLanguageButton: true,
     appbarShowThemeButton: true,
@@ -50,6 +49,6 @@ export const useLocalDataStore = defineStore('localData', {
   },
   persist: {
     key: 'local_data',
-    storage: localStorage,// 本地存储
-  }
+    storage: localStorage, // 本地存储
+  },
 })

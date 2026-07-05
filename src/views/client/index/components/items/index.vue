@@ -1,27 +1,40 @@
-
 <template>
   <div class="items-container">
-    <mdui-card :variant="$store.getters.GetDark?'filled':'elevated'" class="items" style="width: 100%;">
-      <Header :text="title" :to="title_url" :icon="title_icon" :icon_color="title_icon_color"
-        :disabled="title_disabled" />
+    <mdui-card
+      :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
+      class="items"
+      style="width: 100%"
+    >
+      <Header
+        :text="title"
+        :to="title_url"
+        :icon="title_icon"
+        :icon_color="title_icon_color"
+        :disabled="title_disabled"
+      />
       <div class="content">
-        <mdui-list >
+        <mdui-list>
           <template v-for="(item, index) in data">
             <!-- <mdui-divider v-if="index < show_count"></mdui-divider> -->
-            <ListItem v-if="index < show_count" 
-              :title="ListItemTitle(item)" 
+            <ListItem
+              v-if="index < show_count"
+              :title="ListItemTitle(item)"
               :subtitle="ListItemSubtitle(item)"
-              :action_time="ListItemActionTime(item)" :action_subtitle="ListItemActionSubtitle(item)" :item="item"
-              :type="type" :to="`${$G_UrlHeaderLang()}/${type}/${ListItemId(item)}`" />
-
+              :action_time="ListItemActionTime(item)"
+              :action_subtitle="ListItemActionSubtitle(item)"
+              :item="item"
+              :type="type"
+              :to="`${$G_UrlHeaderLang()}/${type}/${ListItemId(item)}`"
+            />
           </template>
-              <ListItemSkeleton v-if="loading" v-for="i in 5"/>
+          <ListItemSkeleton v-if="loading" v-for="i in 5" />
         </mdui-list>
       </div>
     </mdui-card>
   </div>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
 import {
   GetDatas,
   Get_G_INDEX_QUESTIONS_RECENT,
@@ -39,39 +52,39 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Title'
+      default: 'Title',
     },
     title_url: {
       type: String,
-      default: ''
+      default: '',
     },
     title_icon: {
       type: String,
-      default: 'mdi-arrow-right'
+      default: 'mdi-arrow-right',
     },
     title_icon_color: {
       type: String,
-      default: 'primary'
+      default: 'primary',
     },
     title_disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     type: {
       type: String,
-      default: 'questions'
+      default: 'questions',
     },
     order: {
       type: String,
-      default: '-update_time'
+      default: '-update_time',
     },
     users_type: {
       type: String,
-      default: 'recommended'
+      default: 'recommended',
     },
     show_count: {
       type: Number,
-      default: 5
+      default: 5,
     },
   },
   components: {
@@ -80,6 +93,7 @@ export default {
     ListItemSkeleton,
   },
   data: () => ({
+    mainStore: useMainStore(),
     loading: false,
     empty: false,
     data: null,
@@ -89,7 +103,7 @@ export default {
       total: 0,
       pages: 0,
       previous: 0,
-      next: 1
+      next: 1,
     },
   }),
   methods: {
@@ -128,7 +142,9 @@ export default {
           return this.$G_UserTimeStampToDateTime(item.update_time)
         case 'users':
           if (this.order == '-create_time' && this.type == 'users') {
-            return this.$t('Message.Components.UsersDialog.FollowersN', { value: item.follower_count })
+            return this.$t('Message.Components.UsersDialog.FollowersN', {
+              value: item.follower_count,
+            })
           }
           return this.$G_UserTimeStampToDateTime(item.update_time)
         default:
@@ -144,9 +160,13 @@ export default {
           return this.$t('Message.Components.ListItem.NAnswers', { value: item.answer_count })
         case 'users':
           if (this.order == '-create_time' && this.type == 'users') {
-            return this.$t('Message.Components.ListItem.JoinN', { value: this.$G_UserTimeStampToDateTime(item.create_time) })
+            return this.$t('Message.Components.ListItem.JoinN', {
+              value: this.$G_UserTimeStampToDateTime(item.create_time),
+            })
           }
-          return this.$t('Message.Components.UsersDialog.FollowersN', { value: item.follower_count })
+          return this.$t('Message.Components.UsersDialog.FollowersN', {
+            value: item.follower_count,
+          })
         default:
           return ''
       }
@@ -172,14 +192,14 @@ export default {
         case 'questions':
           if (this.order == '-update_time') {
             const QUESTIONS_RECENT = Get_G_INDEX_QUESTIONS_RECENT()
-                        if (QUESTIONS_RECENT !== null) {
+            if (QUESTIONS_RECENT !== null) {
               this.data = QUESTIONS_RECENT.data
               this.pagination = QUESTIONS_RECENT.pagination
               return
             }
           } else if (this.order == '-vote_count') {
             const QUESTIONS_POPULAR = Get_G_INDEX_QUESTIONS_POPULAR()
-                        if (QUESTIONS_POPULAR !== null) {
+            if (QUESTIONS_POPULAR !== null) {
               this.data = QUESTIONS_POPULAR.data
               this.pagination = QUESTIONS_POPULAR.pagination
               return
@@ -189,14 +209,14 @@ export default {
         case 'articles':
           if (this.order == '-update_time') {
             const ARTICLES_RECENT = Get_G_INDEX_ARTICLES_RECENT()
-                        if (ARTICLES_RECENT !== null) {
+            if (ARTICLES_RECENT !== null) {
               this.data = ARTICLES_RECENT.data
               this.pagination = ARTICLES_RECENT.pagination
               return
             }
           } else if (this.order == '-vote_count') {
             const ARTICLES_POPULAR = Get_G_INDEX_ARTICLES_POPULAR()
-                        if (ARTICLES_POPULAR !== null) {
+            if (ARTICLES_POPULAR !== null) {
               this.data = ARTICLES_POPULAR.data
               this.pagination = ARTICLES_POPULAR.pagination
               return
@@ -206,14 +226,14 @@ export default {
         case 'users':
           if (this.order == '-create_time') {
             const USERS_RECENT = Get_G_INDEX_USERS_RECENT()
-                        if (USERS_RECENT !== null) {
+            if (USERS_RECENT !== null) {
               this.data = USERS_RECENT.data
               this.pagination = USERS_RECENT.pagination
               return
             }
           } else if (this.order == '-follower_count') {
             const USERS_POPULAR = Get_G_INDEX_USERS_POPULAR()
-                        if (USERS_POPULAR !== null) {
+            if (USERS_POPULAR !== null) {
               this.data = USERS_POPULAR.data
               this.pagination = USERS_POPULAR.pagination
               return
@@ -232,7 +252,9 @@ export default {
         })
         if (response.data.is_get == true) {
           var keys = `${this.type}_id`
-          this.data == null ? this.data = response.data.data : this.$G_FilterSameItems(keys, this.data, response.data.data)
+          this.data == null
+            ? (this.data = response.data.data)
+            : this.$G_FilterSameItems(keys, this.data, response.data.data)
           this.pagination = response.data.pagination
           if (response.data.pagination.total == 0 || response.data.pagination.total == null) {
             this.empty = true
@@ -252,9 +274,9 @@ export default {
   created() {
     this.GetData()
   },
-};
+}
 </script>
 
 <style lang="less">
-@import "./index.less";
+@import './index.less';
 </style>

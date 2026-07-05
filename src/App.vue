@@ -5,11 +5,11 @@
     <Body :search_appbar="search_appbar" @search_appbar="search_appbar = $event">
       <template v-slot:appbar-right>
         <CustomInput
-          v-if="$store.getters.GetPc"
+          v-if="mainStore.getDesktop"
           :placeholder="$t('Message.Components.Search.SearchTooltop')"
           @model="
             (val) => {
-              $store.dispatch('FabDialog/Set_SearchFabDialog', {
+              fabDialogStore.setNewSearchFabDialog({
                 value: val,
                 model: 'moderate',
               })
@@ -17,50 +17,46 @@
           "
         />
         <mdui-button-icon
-          v-if="!$store.getters.GetPc"
+          v-if="!mainStore.getDesktop"
           style="margin-left: 4px; margin-right: 4px"
           @click="search_appbar = !search_appbar"
         >
           <mdi-icon icon="mdi-magnify" />
         </mdui-button-icon>
-        <ThemeButton :show="!$store.getters.GetMobile" />
-        <LanguageButton
-          :show="
-            !$store.getters['User/GetIsLogin'] ||
-            ($store.getters['User/GetIsLogin'] && !$store.getters.GetMobile)
-          "
-        />
-        <!-- <DeviceTypeButton :show="$store.getters.GetPc"/> -->
+        <ThemeButton v-if="!mainStore.getMobile && localDataStore.getAppbarShowThemeButton" />
+        <LanguageButton v-if="!mainStore.getMobile && localDataStore.getAppbarShowLanguageButton" />
+        <!-- :show="!userStore.getIsLogin || (userStore.getIsLogin && !mainStore.getMobile)" -->
+        <!-- <DeviceTypeButton :show="mainStore.getDesktop"/> -->
 
         <mdui-button
-          v-if="!$store.getters.GetMobile && !$store.getters['User/GetIsLogin']"
+          v-if="!mainStore.getMobile && !userStore.getIsLogin"
           variant="filled"
           style="margin-right: 4px; margin-left: 4px"
-          @click="$store.dispatch('Dialog/Set_LoginDialog', true)"
+          @click="dialogStore.setLoginDialog(true)"
         >
           <mdi-icon slot="icon" icon="mdi-login" />
           {{ $t('Message.Components.Account.Login') }}
         </mdui-button>
         <mdui-button
-          v-if="!$store.getters.GetMobile && !$store.getters['User/GetIsLogin']"
+          v-if="!mainStore.getMobile && !userStore.getIsLogin"
           variant="tonal"
-          @click="$store.dispatch('Dialog/Set_RegisterDialog', true)"
+          @click="dialogStore.setRegisterDialog(true)"
         >
           <mdi-icon slot="icon" icon="mdi-account-plus" />
           {{ $t('Message.Components.Account.Register') }}
         </mdui-button>
 
-        <NotificationButton v-if="$store.getters['User/GetIsLogin']" />
+        <NotificationButton v-if="userStore.getIsLogin" />
 
-        <AppbarAvatarMenu v-if="$store.getters['User/GetIsLogin']">
+        <AppbarAvatarMenu v-if="userStore.getIsLogin">
           <template v-slot:action>
-            <ThemeButton :show="$store.getters.GetMobile" />
-            <LanguageButton :show="$store.getters.GetMobile" />
-            <!-- <DeviceTypeButton :show="!$store.getters.GetPc"/> -->
+            <ThemeButton :show="mainStore.getMobile" />
+            <LanguageButton :show="mainStore.getMobile" />
+            <!-- <DeviceTypeButton :show="!mainStore.getDesktop"/> -->
           </template>
         </AppbarAvatarMenu>
 
-        <LoginRegisterMenu v-if="$store.getters.GetMobile && !$store.getters['User/GetIsLogin']" />
+        <LoginRegisterMenu v-if="mainStore.getMobile && !userStore.getIsLogin" />
       </template>
 
       <template v-slot:navigation-drawer-content>
@@ -100,7 +96,7 @@
           <mdui-divider style="margin: 8px 0 8px 0"></mdui-divider>
           <mdui-list-item
             rounded
-            v-if="$store.getters['User/GetIsLogin']"
+            v-if="userStore.getIsLogin"
             :active="`${$G_UrlHeaderLang()}/users/${$G_GetUserID()}` === $route.path"
             @click="$router.push($G_UrlHeaderLang() + '/users/' + $G_GetUserID())"
           >
@@ -117,18 +113,14 @@
           </mdui-list-item>
           <mdui-list-item
             rounded
-            v-if="$store.getters['User/GetIsLogin']"
+            v-if="userStore.getIsLogin"
             :active="`${$G_UrlHeaderLang()}/notifications` === $route.path"
             @click="$router.push($G_UrlHeaderLang() + '/notifications')"
           >
             <!-- <mdi-icon slot="icon" icon="mdi-bell"></mdi-icon> -->
             <mdi-icon
               slot="icon"
-              :icon="
-                $store.getters['User/GetUser'].notification_unread > 0
-                  ? 'mdi-bell-badge'
-                  : 'mdi-bell'
-              "
+              :icon="userStore.getUser.notification_unread > 0 ? 'mdi-bell-badge' : 'mdi-bell'"
             />
             {{ $t('Message.Components.DrawerNavigation.Notice') }}
           </mdui-list-item>
@@ -176,7 +168,7 @@
         <mdui-divider style="width: 100%"></mdui-divider>
         <mdui-navigation-rail-item
           style="-webkit-app-region: no-drag"
-          v-if="$store.getters['User/GetIsLogin']"
+          v-if="userStore.getIsLogin"
           :value="$G_UrlHeaderLang() + '/users/' + $G_GetUserID()"
           @click="$router.push($G_UrlHeaderLang() + '/users/' + $G_GetUserID())"
         >
@@ -193,16 +185,14 @@
         </mdui-navigation-rail-item>
         <mdui-navigation-rail-item
           style="-webkit-app-region: no-drag"
-          v-if="$store.getters['User/GetIsLogin']"
+          v-if="userStore.getIsLogin"
           :value="$G_UrlHeaderLang() + '/notifications'"
           @click="$router.push($G_UrlHeaderLang() + '/notifications')"
         >
           <!-- <mdi-icon slot="icon" icon="mdi-bell"></mdi-icon> -->
           <mdi-icon
             slot="icon"
-            :icon="
-              $store.getters['User/GetUser'].notification_unread > 0 ? 'mdi-bell-badge' : 'mdi-bell'
-            "
+            :icon="userStore.getUser.notification_unread > 0 ? 'mdi-bell-badge' : 'mdi-bell'"
           />
           {{ $t('Message.Components.DrawerNavigation.Notice') }}
         </mdui-navigation-rail-item>
@@ -254,7 +244,7 @@
         </mdui-navigation-bar-item>
 
         <mdui-navigation-bar-item
-          v-if="$store.getters['User/GetIsLogin']"
+          v-if="userStore.getIsLogin"
           :value="$G_UrlHeaderLang() + '/users/' + $G_GetUserID()"
           @click="$router.push($G_UrlHeaderLang() + '/users/' + $G_GetUserID())"
         >
@@ -262,7 +252,7 @@
           {{ $t('Message.Components.DrawerNavigation.PersonalData') }}
         </mdui-navigation-bar-item>
         <mdui-navigation-bar-item
-          v-if="!$store.getters['User/GetIsLogin']"
+          v-if="!userStore.getIsLogin"
           :value="$G_UrlHeaderLang() + '/users'"
           @click="$router.push($G_UrlHeaderLang() + '/users')"
         >
@@ -281,36 +271,34 @@
       <Reset />
 
       <FabDialogSearch
-        :model="$store.getters['FabDialog/GetSearchFabDialog'].model"
+        :model="fabDialogStore.getSearchFabDialog.model"
         @model="
           (val) => {
-            $store.dispatch('FabDialog/Set_SearchFabDialog', {
+            fabDialogStore.setSearchFabDialog({
               model: val,
             })
           }
         "
-        :value="$store.getters['FabDialog/GetSearchFabDialog'].value"
+        :value="fabDialogStore.getSearchFabDialog.value"
       />
 
       <MDEditor
-        :model="$store.getters['FabDialog/GetEditorFabDialog'].model"
-        :title="$store.getters['FabDialog/GetEditorFabDialog'].title"
-        :icon="$store.getters['FabDialog/GetEditorFabDialog'].icon"
-        :has_title="$store.getters['FabDialog/GetEditorFabDialog'].has_title"
-        :has_topic="$store.getters['FabDialog/GetEditorFabDialog'].has_topic"
-        :submit_text="$store.getters['FabDialog/GetEditorFabDialog'].submit_text"
-        :edit_type="$store.getters['FabDialog/GetEditorFabDialog'].edit_type"
-        :edit_mode="$store.getters['FabDialog/GetEditorFabDialog'].edit_mode"
-        :edit_mode_id="$store.getters['FabDialog/GetEditorFabDialog'].edit_mode_id"
-        :answer_to_question_id="
-          $store.getters['FabDialog/GetEditorFabDialog'].answer_to_question_id
-        "
-        :md_title="$store.getters['FabDialog/GetEditorFabDialog'].md_title"
-        :md_topics="$store.getters['FabDialog/GetEditorFabDialog'].md_topics"
-        :md_content="$store.getters['FabDialog/GetEditorFabDialog'].md_content"
+        :model="fabDialogStore.getEditorFabDialog.model"
+        :title="fabDialogStore.getEditorFabDialog.title"
+        :icon="fabDialogStore.getEditorFabDialog.icon"
+        :has_title="fabDialogStore.getEditorFabDialog.has_title"
+        :has_topic="fabDialogStore.getEditorFabDialog.has_topic"
+        :submit_text="fabDialogStore.getEditorFabDialog.submit_text"
+        :edit_type="fabDialogStore.getEditorFabDialog.edit_type"
+        :edit_mode="fabDialogStore.getEditorFabDialog.edit_mode"
+        :edit_mode_id="fabDialogStore.getEditorFabDialog.edit_mode_id"
+        :answer_to_question_id="fabDialogStore.getEditorFabDialog.answer_to_question_id"
+        :md_title="fabDialogStore.getEditorFabDialog.md_title"
+        :md_topics="fabDialogStore.getEditorFabDialog.md_topics"
+        :md_content="fabDialogStore.getEditorFabDialog.md_content"
         @model="
           (val) => {
-            $store.dispatch('FabDialog/Set_EditorFabDialog', {
+            fabDialogStore.setEditorFabDialog({
               model: val,
             })
           }
@@ -327,114 +315,118 @@
         "
         @add_answer="
           (answer) => {
-            $store.dispatch('Update/Set_AnswerUpdate', answer)
+            updateStore.setAnswerUpdate(answer)
           }
         "
         @edit_article="
           (article) => {
-            $store.dispatch('Update/Set_ArticleUpdate', article)
+            updateStore.setArticleUpdate(article)
           }
         "
         @edit_question="
           (question) => {
-            $store.dispatch('Update/Set_QuestionUpdate', question)
+            updateStore.setQuestionUpdate(question)
           }
         "
         @edit_answer="
           (answer) => {
-            $store.dispatch('Update/Set_AnswerUpdate', answer)
+            updateStore.setAnswerUpdate(answer)
           }
         "
       />
       <TopicSelectorDialog
-        :model="$store.getters['Dialog/GetTopicSelectorDialog']"
-        :pre_selected_topics="$store.getters['FabDialog/GetEditorFabDialog'].md_topics"
+        :model="dialogStore.getTopicSelectorDialog"
+        :pre_selected_topics="fabDialogStore.getEditorFabDialog.md_topics"
         @model="
           (model, selector_topics) => {
-            $store.dispatch('Dialog/Set_TopicSelectorDialog', model)
-            $store.dispatch('FabDialog/Set_EditorFabDialog', {
+            dialogStore.setTopicSelectorDialog(model)
+            fabDialogStore.setEditorFabDialog({
               md_topics: selector_topics,
             })
           }
         "
       />
       <TopicDialog
-        :model="$store.getters['Dialog/GetTopicDialog'].model"
-        :mode="$store.getters['Dialog/GetTopicDialog'].mode"
-        :edit_topic="$store.getters['Dialog/GetTopicDialog'].edit_topic"
+        :model="dialogStore.getTopicDialog.model"
+        :mode="dialogStore.getTopicDialog.mode"
+        :edit_topic="dialogStore.getTopicDialog.edit_topic"
         @add_topic="
           (topic) => {
-            $router.push(`${$G_UrlHeaderLang()}/topics/${topic.topic_id}`)
+            $router.push(`${UrlHeaderLang()}/topics/${topic.topic_id}`)
           }
         "
         @edit_topic="
           (topic) => {
-            $store.dispatch('Update/Set_TopicUpdate', topic)
+            updateStore.setTopicUpdate(topic)
           }
         "
         @model="
           (val) => {
-            $store.dispatch('Dialog/Set_TopicDialog', {
+            dialogStore.setTopicDialog({
               model: val,
             })
           }
         "
       />
       <UsersDialog
-        :id="$store.getters['Dialog/GetUsersDialog'].id"
-        :type="$store.getters['Dialog/GetUsersDialog'].type"
-        :modes="$store.getters['Dialog/GetUsersDialog'].modes"
-        :model="$store.getters['Dialog/GetUsersDialog'].model"
+        :id="dialogStore.getUsersDialog.id"
+        :type="dialogStore.getUsersDialog.type"
+        :modes="dialogStore.getUsersDialog.modes"
+        :model="dialogStore.getUsersDialog.model"
         @model="
           (val) => {
-            $store.dispatch('Dialog/Set_UsersDialog', { model: val })
+            dialogStore.setUsersDialog({ model: val })
           }
         "
       />
       <CommentReplyEditDialog
-        :model="$store.getters['Dialog/GetCommentReplyEditDialog'].model"
-        :title="$store.getters['Dialog/GetCommentReplyEditDialog'].title"
-        :type="$store.getters['Dialog/GetCommentReplyEditDialog'].type"
-        :edit_id="$store.getters['Dialog/GetCommentReplyEditDialog'].edit_id"
-        :content="$store.getters['Dialog/GetCommentReplyEditDialog'].content"
+        :model="dialogStore.getCommentReplyEditDialog.model"
+        :title="dialogStore.getCommentReplyEditDialog.title"
+        :type="dialogStore.getCommentReplyEditDialog.type"
+        :edit_id="dialogStore.getCommentReplyEditDialog.edit_id"
+        :content="dialogStore.getCommentReplyEditDialog.content"
         @edit_comment="
           (comment) => {
-            $store.dispatch('Update/Set_CommentUpdate', comment)
+            updateStore.setCommentUpdate(comment)
           }
         "
         @edit_reply="
           (reply) => {
-            $store.dispatch('Update/Set_ReplyUpdate', reply)
+            updateStore.setReplyUpdate(reply)
           }
         "
         @model="
           (val) => {
-            $store.dispatch('Dialog/Set_CommentReplyEditDialog', {
+            dialogStore.setCommentReplyEditDialog({
               model: val,
             })
           }
         "
       />
       <ReportDialog
-        :model="$store.getters['Dialog/GetReportDialog'].model"
-        :item="$store.getters['Dialog/GetReportDialog'].item"
-        :type="$store.getters['Dialog/GetReportDialog'].type"
-        :report_preview_text="$store.getters['Dialog/GetReportDialog'].report_preview_text"
+        :model="dialogStore.getReportDialog.model"
+        :item="dialogStore.getReportDialog.item"
+        :type="dialogStore.getReportDialog.type"
+        :report_preview_text="dialogStore.getReportDialog.report_preview_text"
         @model="
           (val) => {
-            $store.dispatch('Dialog/Set_ReportDialog', val)
+            dialogStore.setReportDialog({
+              model: val,
+            })
           }
         "
       />
       <DeleteDialog
-        :model="$store.getters['Dialog/GetDeleteDialog'].model"
-        :item="$store.getters['Dialog/GetDeleteDialog'].item"
-        :type="$store.getters['Dialog/GetDeleteDialog'].type"
-        :item_ids="$store.getters['Dialog/GetDeleteDialog'].item_ids"
-        :delete_preview_text="$store.getters['Dialog/GetDeleteDialog'].delete_preview_text"
+        :model="dialogStore.getDeleteDialog.model"
+        :item="dialogStore.getDeleteDialog.item"
+        :type="dialogStore.getDeleteDialog.type"
+        :item_ids="dialogStore.getDeleteDialog.item_ids"
+        :delete_preview_text="dialogStore.getDeleteDialog.delete_preview_text"
         @model="
           (val) => {
-            $store.dispatch('Dialog/Set_DeleteDialog', val)
+            dialogStore.setDeleteDialog({
+              model: val,
+            })
           }
         "
         @delete_topic="
@@ -454,18 +446,18 @@
         "
         @delete_answer="
           (answer) => {
-            $store.dispatch('Update/Set_AnswerUpdate', answer)
+            updateStore.setAnswerUpdate(answer)
           }
         "
         @delete_comment="
           (comment) => {
-            $store.dispatch('Update/Set_CommentUpdate', comment)
+            updateStore.setCommentUpdate(comment)
           }
         "
         @delete_user="(user) => {}"
         @delete_reply="
           (reply) => {
-            $store.dispatch('Update/Set_ReplyUpdate', reply)
+            updateStore.setReplyUpdate(reply)
           }
         "
         @delete_report="(report) => {}"
@@ -481,50 +473,49 @@
         @delete_user_groups="(user_groups) => {}"
       />
       <EditInfoDialog
-        :user="$store.getters['Dialog/GetEditInfoDialog'].user"
-        :model="$store.getters['Dialog/GetEditInfoDialog'].model"
+        :user="dialogStore.getEditInfoDialog.user"
+        :model="dialogStore.getEditInfoDialog.model"
         @model="
           (val) =>
-            $store.dispatch('Dialog/Set_EditInfoDialog', {
+            dialogStore.setEditInfoDialog({
               model: val,
-              user: null,
             })
         "
         @edit_user="
           (user) => {
-            $store.dispatch('Update/Set_UserUpdate', user)
+            updateStore.setUserUpdate(user)
           }
         "
       />
 
       <CommentsDialog
-        :title="$store.getters['Dialog/GetCommentsDialog'].title"
-        :model="$store.getters['Dialog/GetCommentsDialog'].model"
-        :external_loading="$store.getters['Dialog/GetCommentsDialog'].external_loading"
-        :commentable_id="$store.getters['Dialog/GetCommentsDialog'].commentable_id"
-        :commentable_type="$store.getters['Dialog/GetCommentsDialog'].commentable_type"
-        :comment_count="$store.getters['Dialog/GetCommentsDialog'].comment_count"
-        @close_comments_dialog="$store.dispatch('Dialog/Set_CommentsDialog', { model: false })"
+        :title="dialogStore.getCommentDialog.title"
+        :model="dialogStore.getCommentDialog.model"
+        :external_loading="dialogStore.getCommentDialog.external_loading"
+        :commentable_id="dialogStore.getCommentDialog.commentable_id"
+        :commentable_type="dialogStore.getCommentDialog.commentable_type"
+        :comment_count="dialogStore.getCommentDialog.comment_count"
+        @close_comments_dialog="dialogStore.setCommentDialog({ model: false })"
         @return_update_comments="
           (comment) => {
-            $store.getters['Dialog/GetCommentsDialog'].return_update_comments(comment)
+            dialogStore.getCommentDialog.return_update_comments(comment)
           }
         "
       />
 
       <UseCookieDialog
-        :model="$store.getters['Dialog/GetUseCookieDialog']"
-        @model="$store.dispatch('Dialog/Set_UseCookieDialog', false)"
+        :model="dialogStore.getCookieUseDialog"
+        @model="dialogStore.setCookieUseDialog(false)"
       />
 
       <Snackbar />
 
-      <Dialog
+      <!-- <Dialog
         :model="$store.getters['Dialog/GetDialog'].model"
         :title="$store.getters['Dialog/GetDialog'].title"
         :content="$store.getters['Dialog/GetDialog'].content"
         @model="$store.dispatch('Dialog/Set_Dialog', false)"
-      />
+      /> -->
     </Body>
   </div>
 </template>
@@ -575,8 +566,12 @@ import {
   GetAppBaseInfo,
 } from '@/api/global.js'
 
-import { useUserStore } from './stores/user'
-import { useMainStore } from './stores/main'
+import { useUserStore } from '@/stores/user'
+import { useUpdateStore } from '@/stores/update'
+import { useDialogStore } from '@/stores/dialog'
+import { useFabDialogStore } from '@/stores/fab-dialog'
+import { useMainStore } from '@/stores/main'
+import { useLocalDataStore } from '@/stores/local-data'
 export default {
   name: 'App',
   components: {
@@ -639,7 +634,11 @@ export default {
   data() {
     return {
       userStore: useUserStore(),
+      updateStore: useUpdateStore(),
+      dialogStore: useDialogStore(),
+      fabDialogStore: useFabDialogStore(),
       mainStore: useMainStore(),
+      localDataStore: useLocalDataStore(),
       search_appbar: false,
     }
   },
@@ -662,16 +661,16 @@ export default {
         // Do something with response data
         // console.log('拦截请求')
         if (response.data.snackbar) {
-          _this.$store.dispatch('Snackbar/Show_Snackbar', {
-            text: _this.$t(response.data.snackbar),
-          })
+          // _this.$store.dispatch('Snackbar/Show_Snackbar', {
+          //   text: _this.$t(response.data.snackbar),
+          // })
         }
         if (response.data.error) {
-          _this.$store.dispatch('Dialog/Set_Dialog', {
-            model: true,
-            title: 'Error',
-            content: response.data.error,
-          })
+          // _this.$store.dispatch('Dialog/Set_Dialog', {
+          //   model: true,
+          //   title: 'Error',
+          //   content: response.data.error,
+          // })
         }
         return response
       },
@@ -782,14 +781,14 @@ export default {
       var value = parseInt(atob(response.data.v))
       var time = atob(response.data.t)
       var lang = JSON.parse(atob(response.data.l))
-      this.$store.dispatch('Set_AppVersionExpirationTime', time)
-      this.$store.dispatch('Set_AppAllowUseLangpack', lang)
+      this.mainStore.setAppVersionExpirationTime(time)
+      this.mainStore.setAppAllowUseLangpack(lang)
       var now_time = Math.round(new Date().getTime() / 1000)
       console.log(value)
       if (value == 1) {
-        this.$store.dispatch('Set_AppAllowUse', true)
+        this.mainStore.setAppAllowUse(true)
       } else {
-        this.$store.dispatch('Set_AppAllowUse', false)
+        this.mainStore.setAppAllowUse(false)
       }
     },
     /**
@@ -797,55 +796,7 @@ export default {
      * @return {String} mobile | tablet | desktop
      */
     GetDeviceType() {
-      // this.$store.getters.GetMobile = false
-      // this.$store.getters.GetPad = false
-      // this.$store.getters.GetPc = false
-
-      // var a = ''
-      // switch (this.$vuetify.breakpoint.name) {
-      //   case 'xs':
-      //     a = 'mobile'
-      //     break
-      //   case 'sm':
-      //   case 'md':
-      //     a = 'tablet'
-      //     break
-      //   case 'lg':
-      //   case 'xl':
-      //   case 'xxl':
-      //     if (this.GetDeviceTypeString() == 'tablet') {
-      //       a = 'tablet'
-      //     } else {
-      //       a = 'desktop'
-      //     }
-      //     break
-      // }
-      // this.$store.dispatch('Set_Device', a)
-
       var a = ''
-      // switch (this.$vuetify.breakpoint.name) {
-      //   case 'xs':
-      //     a = 'mobile'
-      //     this.$store.dispatch('Set_Mobile', true)
-      //     break
-      //   case 'sm':
-      //   case 'md':
-      //     a = 'tablet'
-      //     this.$store.dispatch('Set_Pad', true)
-      //     break
-      //   case 'lg':
-      //   case 'xl':
-      //   case 'xxl':
-      //     if (this.GetDeviceTypeString() == 'tablet') {
-      //       a = 'tablet'
-      //       this.$store.dispatch('Set_Pad', true)
-      //     } else {
-      //       a = 'desktop'
-      //       this.$store.dispatch('Set_Pc', true)
-      //     }
-      //     break
-      // }
-      // this.$store.dispatch('Set_Device', a)
       return a
     },
     /**
@@ -883,11 +834,9 @@ export default {
 
         var scrollPercent = (scrollTop / scrollHeight) * 100
         var a = parseInt(scrollPercent.toFixed(2))
-        // console.log(a)
-        _this.$store.commit('SetScrollValue', a === 99 ? 100 : a)
+        _this.mainStore.setScrollValue(a === 99 ? 100 : a)
       }
       if (main) {
-        // console.log('main', main)
         main.addEventListener('scroll', updateScrollValue)
       }
     },
@@ -938,7 +887,7 @@ export default {
      * @return {String}
      */
     GetUserToken() {
-      var token = this.$store.getters['User/GetUserToken'] || GetUserToken()
+      var token = this.userStore.getUserToken || GetUserToken()
       return token
     },
     /**
@@ -1099,44 +1048,33 @@ export default {
      */
     UpdateWebTitleAndAppbarSubTitle(title, appbar_subtitle = '') {
       const titlehtml = document.querySelector('title')
-      this.$store.dispatch(
-        'Set_AppbarSubtitle',
-        appbar_subtitle || this.$store.getters.GetAppbarSubtitle,
-      )
-      this.$store.dispatch(
-        'Set_CacheWebLeftTitle',
-        title || this.$store.getters.GetCacheWebLeftTitle,
-      )
 
-      titlehtml.innerHTML = `${title} - ${this.$store.getters.GetTitle}`
+      // this.$store.dispatch(
+      //   'Set_CacheWebLeftTitle',
+      //   title || this.mainStore.getAppBaseInfo.site_name,
+      // )
+
+      this.mainStore.setAppbarSubtitle(appbar_subtitle || this.mainStore.getAppbarSubtitle)
+
+      titlehtml.innerHTML = `${title} - ${this.mainStore.getAppBaseInfo.option_list?.site_name || ''}`
     },
     GetUserID() {
-      if (this.$store.getters['User/GetIsLogin']) {
-        return this.$store.getters['User/GetUser'].user_id
+      if (this.userStore.getIsLogin) {
+        return this.userStore.getUser.user_id
       } else {
         return 0
       }
     },
     AppIsCanUse() {
       return (
-        this.$store.getters.GetAppAllowUse &&
-        this.$store.getters.GetAppVersionExpirationTime > Math.round(new Date().getTime() / 1000)
+        this.mainStore.getAppAllowUse &&
+        this.mainStore.getAppVersionExpirationTime > Math.round(new Date().getTime() / 1000)
       )
-    },
-    async GetInfo() {
-      // const response = await GetInfoData()
-      // if (response.data.is_get) {
-      //   this.$store.dispatch('Set_Title', response.data.form_data.site_name)
-      //   const titlehtml = document.querySelector('title')
-      //   titlehtml.innerHTML = `${this.$store.getters.GetCacheWebLeftTitle} - ${this.$store.getters.GetTitle}`
-      // }
     },
   },
   created() {
     // 获取应用基本信息
     this.GetAppBaseInfoData()
-    // console.log(window.location.href)
-    // this.GetInfo()
     //获取当前实例来挂载全局方法
     const instance = getCurrentInstance()
     if (instance) {
@@ -1168,11 +1106,12 @@ export default {
   },
   watch: {
     $route() {
-      this.$store.dispatch('Set_ReadTitle', '')
+      // this.mainStore.setReadTitle( '')
+      this.mainStore.setReadTitle('')
     },
     search_appbar(val) {
       if (!val) {
-        this.$store.dispatch('FabDialog/Set_SearchFabDialog', {
+        this.fabDialogStore.setSearchFabDialog({
           value: false,
           model: 'close',
         })

@@ -1,34 +1,14 @@
 
 <template>
   <div id="page-question"
-    :style="!$store.getters.GetMobile ? 'padding:16px;' : ''">
-    
+    :style="!mainStore.getMobile ? 'padding:16px;' : ''">
+
     <ReturnButton />
-    <mdui-card v-if="question" :variant="$store.getters.GetDark ? 'filled' : 'elevated'" class="question" style="width: 100%;"
+    <mdui-card v-if="question" :variant="mainStore.getIsDark ? 'filled' : 'elevated'" class="question" style="width: 100%;"
       >
       <h1 class="title">
         {{ question.title }}
 
-        <!-- <div class="flex-grow" />
-        <mdui-button @click="
-          $store.dispatch('FabDialog/Set_EditorFabDialog', {
-            title:$t('Message.Components.Editor.EditQuestion'),
-            icon:'mdi-forum',
-            has_title:true,
-            has_topic:true,
-            submit_text:$t('Message.Components.Editor.Release'),
-            edit_type:'question',
-            edit_mode:'edit',
-            edit_mode_id:question.question_id,
-            md_title:question.title,
-            md_topics:question.topics,
-            md_content:question.content_rendered,
-            model:'moderate',
-          })
-        " style="margin: auto;">
-          <mdi-icon slot="icon" icon="mdi-pencil"></mdi-icon>
-          {{ $t('Message.Components.OptionsButton.EditQuestion') }}
-        </mdui-button> -->
       </h1>
       <UserLine :user="question.user" :time="$G_UserTimeStampToDateTime(question.update_time)"
       />
@@ -54,13 +34,13 @@
         <div style="margin-left: 8px;"></div>
 
         <CommentButton :count="question.comment_count" @comment_button_click="
-          $store.dispatch('Dialog/Set_CommentsDialog', {
+          dialogStore.setCommentDialog({
             model: true,
             title: $t('Message.Client.Article.NComment', { value: question.comment_count }),
             commentable_id: question.question_id,
             commentable_type: 'question',
             comment_count: question.comment_count,
-            return_update_comments: (comment) => { 
+            return_update_comments: (comment) => {
               question.comment_count++
             }
           })
@@ -87,19 +67,12 @@
 
     <AnswersPage v-if="question != null" :question="question" />
 
-    <!-- <CommentsDialog :title="$store.getters['Dialog/GetCommentsDialog'].title"
-      :model="$store.getters['Dialog/GetCommentsDialog'].model"
-      :external_loading="$store.getters['Dialog/GetCommentsDialog'].external_loading"
-      :commentable_id="$store.getters['Dialog/GetCommentsDialog'].commentable_id"
-      :commentable_type="$store.getters['Dialog/GetCommentsDialog'].commentable_type"
-      :comment_count="$store.getters['Dialog/GetCommentsDialog'].comment_count"
-      @close_comments_dialog="$store.dispatch('Dialog/Set_CommentsDialog', { model: false })" @return_update_comments="(comment) => {
-    $store.getters['Dialog/GetCommentsDialog'].return_update_comments(comment)
-  }" /> -->
-
   </div>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
+import { useDialogStore } from '@/stores/dialog'
+import { useUpdateStore } from '@/stores/update'
 import {
   GetQuestion,
   Get_G_QUESTION,
@@ -126,14 +99,17 @@ export default {
     ListItemSkeleton,
   },
   data: () => ({
+    mainStore: useMainStore(),
+    dialogStore: useDialogStore(),
+    updateStore: useUpdateStore(),
     question: null,
   }),
   computed: {
     ReturnUpdateGetQuestionUpdate() {
-      return this.$store.getters['Update/GetQuestionUpdate']
+      return this.updateStore.getQuestionUpdate
     },
     ReturnGetScrollValue() {
-      return this.$store.getters.GetScrollValue
+      return this.mainStore.getScrollValue
     },
   },
   methods: {
@@ -172,7 +148,7 @@ export default {
   watch: {
     '$route.path'(val) {
       this.UpdateWebTitleAndAppbarSubTitle(val)
-      this.$store.dispatch('Set_ReadTitle','');
+      this.mainStore.setReadTitle('');
     },
     '$i18n.locale'(val) {
       this.UpdateWebTitleAndAppbarSubTitle(this.$route)
@@ -184,9 +160,9 @@ export default {
       // console.log('GetScrollValue', val);
       const path = this.$route.name
       if(val>=4&&(path=='question'||path=='lang-question')){
-        this.$store.dispatch('Set_ReadTitle',this.question.title);
+        this.mainStore.setReadTitle(this.question.title);
       }else{
-        this.$store.dispatch('Set_ReadTitle','');
+        this.mainStore.setReadTitle('');
       }
     },
   },

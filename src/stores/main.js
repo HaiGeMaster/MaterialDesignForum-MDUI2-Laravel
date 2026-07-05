@@ -10,7 +10,7 @@ export const useMainStore = defineStore('main', {
     desktop: false, // 控制桌面端的响应式变量
     breakpointName: '', // 控制当前断点名称的响应式变量
     scrollValue: 0, // 控制滚动值的响应式变量
-    scrollMode: 'up',//up down
+    scrollMode: 'up', //up down
     infoData: {
       // site_name: "Material Design Forum",
       // site_description: "基于 Vuetify与MDUI2 的 Material Design 样式的社区;A community based on Vuetify And MDUI2 for Material Design styles",
@@ -18,12 +18,12 @@ export const useMainStore = defineStore('main', {
       // site_icp_beian: "",
       // site_gongan_beian: "",
       // default_language: "zh_CN"
-      site_name: "",
-      site_description: "",
-      site_keywords: "",
-      site_icp_beian: "",
-      site_gongan_beian: "",
-      default_language: "en_US"
+      site_name: '',
+      site_description: '',
+      site_keywords: '',
+      site_icp_beian: '',
+      site_gongan_beian: '',
+      default_language: 'en_US',
     },
     isDark: null,
     uiConfig: {
@@ -36,12 +36,25 @@ export const useMainStore = defineStore('main', {
       theme_list: null,
       oauth_list: null,
     },
-    appVersion: "26.6.24",
+    appVersion: '26.7.5',
     appAllowUse: true,
-    appAllowUseLangpack: ["zh_CN","en_US","zh_TW","en_GB","ru_RU","fr_FR","de_DE","ja_JP","ko_KR"],//[],//
+    appAllowUseLangpack: [
+      'zh_CN',
+      'en_US',
+      'zh_TW',
+      'en_GB',
+      'ru_RU',
+      'fr_FR',
+      'de_DE',
+      'ja_JP',
+      'ko_KR',
+    ], //[],//
     appVersionExpirationTime: 253402271999,
     langMessages: {},
-    pageLayout: 'default',//default csd
+    pageLayout: 'default', //default csd
+
+    readTitle: '',
+    appbarSubtitle: '',
   }),
   getters: {
     getAppVersion: (state) => state.appVersion,
@@ -62,6 +75,8 @@ export const useMainStore = defineStore('main', {
     getAppVersionExpirationTime: (state) => state.appVersionExpirationTime,
     getLangMessages: (state) => state.langMessages,
     getPageLayout: (state) => state.pageLayout,
+    getReadTitle: (state) => state.readTitle,
+    getAppbarSubtitle: (state) => state.appbarSubtitle,
   },
   actions: {
     setAppVersion(version) {
@@ -94,6 +109,9 @@ export const useMainStore = defineStore('main', {
       this.tablet = false
       this.breakpointName = 'desktop'
     },
+    setBreakpointName(breakpointName) {
+      this.breakpointName = breakpointName
+    },
     setScrollValue(scrollValue) {
       // console.log(scrollValue)
       this.scrollValue = scrollValue
@@ -107,14 +125,21 @@ export const useMainStore = defineStore('main', {
         this.scrollMode = ''
       }
     },
-    setInfoData({ site_name, site_description, site_keywords, site_icp_beian, site_gongan_beian, default_language }) {
+    setInfoData({
+      site_name,
+      site_description,
+      site_keywords,
+      site_icp_beian,
+      site_gongan_beian,
+      default_language,
+    }) {
       this.infoData = {
         site_name,
         site_description,
         site_keywords,
         site_icp_beian,
         site_gongan_beian,
-        default_language
+        default_language,
       }
       // console.log(this.infoData)
     },
@@ -143,5 +168,11 @@ export const useMainStore = defineStore('main', {
     setPageLayout(pageLayout) {
       this.pageLayout = pageLayout
     },
-  }
+    setReadTitle(readTitle) {
+      this.readTitle = readTitle
+    },
+    setAppbarSubtitle(appbarSubtitle) {
+      this.appbarSubtitle = appbarSubtitle
+    },
+  },
 })

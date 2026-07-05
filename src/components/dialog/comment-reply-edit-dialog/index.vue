@@ -1,35 +1,43 @@
 <template>
-  
-
-  
-  
-
-  <mdui-dialog close-on-overlay-click :fullscreen="$store.getters.GetMobile" @close="vmodel = false"
-    style="margin: auto;" ref="comments_reply_edit_dialog"
+  <mdui-dialog
+    close-on-overlay-click
+    :fullscreen="mainStore.getMobile"
+    @close="vmodel = false"
+    style="margin: auto"
+    ref="comments_reply_edit_dialog"
     :headline="title"
-    >
+  >
     <mdui-button-icon class="close" @click="OnCancel()" slot="icon">
       <mdi-icon icon="mdi-close" />
     </mdui-button-icon>
 
-    <mdui-text-field :style="!$store.getters.GetMobile ? 'min-width: 450px;' : ''" autosize min-rows="2" max-rows="5" 
-      :value="vcontent" @input="vcontent = $event.target.value"></mdui-text-field>
+    <mdui-text-field
+      :style="!mainStore.getMobile ? 'min-width: 450px;' : ''"
+      autosize
+      min-rows="2"
+      max-rows="5"
+      :value="vcontent"
+      @input="vcontent = $event.target.value"
+    ></mdui-text-field>
 
     <mdui-button slot="action" variant="text" @click="OnCancel()">
       {{ $t('Message.Components.TopicSelectDialog.Cancel') }}
     </mdui-button>
-    <mdui-button slot="action" variant="tonal" @click="OnEdit()" :disabled="vcontent.length > 1000||vcontent.length == 0">
+    <mdui-button
+      slot="action"
+      variant="tonal"
+      @click="OnEdit()"
+      :disabled="vcontent.length > 1000 || vcontent.length == 0"
+    >
       {{ $t('Message.Components.DataTable.Edit') }}
     </mdui-button>
   </mdui-dialog>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
 // import Confirm from '@/components/button/confirm.vue'
 // import Cancel from '@/components/button/cancel.vue'
-import {
-  EditReply,
-  EditComment,
-} from '@/api/global.js'
+import { EditReply, EditComment } from '@/api/global.js'
 export default {
   name: 'comment-reply-edit-dialog',
   props: {
@@ -37,13 +45,14 @@ export default {
       type: Boolean,
       default: false,
     },
-    title: {//编辑 评论 回复
+    title: {
+      //编辑 评论 回复
       type: String,
       default: 'Message.Components.DataTable.Edit',
     },
     type: {
       type: String,
-      default: 'reply',//comment reply
+      default: 'reply', //comment reply
     },
     edit_id: {
       type: Number,
@@ -59,6 +68,7 @@ export default {
     // Cancel
   },
   data: () => ({
+    mainStore: useMainStore(),
     vmodel: false,
     vcontent: '',
   }),

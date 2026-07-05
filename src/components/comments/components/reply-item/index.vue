@@ -1,23 +1,23 @@
-
 <template>
   <div class="item reply" v-if="reply != null">
-    <UserLine :user="reply.user"
+    <UserLine
+      :user="reply.user"
       :is_reply="reply.replyable_user != null && reply.replyable_type == 'reply'"
-      :reply_user="reply.replyable_user" :time="$G_UserTimeStampToDateTime(reply.update_time)"
-      :small_avatar="true" />
+      :reply_user="reply.replyable_user"
+      :time="$G_UserTimeStampToDateTime(reply.update_time)"
+      :small_avatar="true"
+    />
     <div class="content">{{ reply.content }}</div>
     <div class="actions">
-      <VoteButton :vote="reply.vote" :vote_up_count="reply.vote_up_count"
-        :vote_down_count="reply.vote_down_count" />
-      
-      
+      <VoteButton
+        :vote="reply.vote"
+        :vote_up_count="reply.vote_up_count"
+        :vote_down_count="reply.vote_down_count"
+      />
 
-      
       <mdui-tooltip :content="$t('Message.Components.Comments.Item.Reply')" placement="bottom">
-        <mdui-button-icon
-          @click="new_comment_or_reply_show = !new_comment_or_reply_show">
-          <mdi-icon icon="mdi-reply" 
-          />
+        <mdui-button-icon @click="new_comment_or_reply_show = !new_comment_or_reply_show">
+          <mdi-icon icon="mdi-reply" />
         </mdui-button-icon>
       </mdui-tooltip>
 
@@ -25,21 +25,26 @@
       <OptionsButton v-if="reply != null" type="reply" :item="reply" />
     </div>
 
-    <NewCommentOrReply v-if="reply != null" 
+    <NewCommentOrReply
+      v-if="reply != null"
       :show="new_comment_or_reply_show"
-      :new_comment_reply_need_glass_container="false" 
+      :new_comment_reply_need_glass_container="false"
       :replyable_id="reply.reply_id"
-      :replyable_type="reply.replyable_user != null || reply.replyable_type == 'comment' ? 'reply' : 'comment'"
+      :replyable_type="
+        reply.replyable_user != null || reply.replyable_type == 'comment' ? 'reply' : 'comment'
+      "
       :replyable_user_id="reply.user.user_id"
-      :replyable_comment_id="reply.replyable_type == 'comment' ? reply.replyable_id : comment.comment_id"
-      :label="$t('Message.Components.Comments.Item.ReplyTo',
-    { value: reply.user.username }
-  )" @add_reply="add_reply" />
-
+      :replyable_comment_id="
+        reply.replyable_type == 'comment' ? reply.replyable_id : comment.comment_id
+      "
+      :label="$t('Message.Components.Comments.Item.ReplyTo', { value: reply.user.username })"
+      @add_reply="add_reply"
+    />
   </div>
 </template>
 
 <script>
+import { useUpdateStore } from '@/stores/update'
 import UserLine from '@/components/user-line/index.vue'
 import VoteButton from '@/components/vote-button/index.vue'
 import OptionsButton from '@/components/options-button/index.vue'
@@ -59,38 +64,39 @@ export default {
   props: {
     reply: {
       type: Object,
-          },
+    },
     comment: {
       type: Object,
-          },
+    },
   },
   computed: {
     ReturnUpdateGetReplyUpdate() {
-      return this.$store.getters['Update/GetReplyUpdate']
-    }
+      return this.updateStore.GetReplyUpdate
+    },
   },
   data() {
     return {
+      updateStore: useUpdateStore(),
       editDialog: false,
       editDialog_id: 0,
       editDialog_content: '',
       new_comment_or_reply_show: false,
       local_reply: null,
-      local_comment: null
+      local_comment: null,
     }
   },
   methods: {
-        //   this.editDialog_id = item.reply_id
+    //   this.editDialog_id = item.reply_id
     //   this.editDialog_content = item.content
-            add_reply(reply) {
+    add_reply(reply) {
       this.new_comment_or_reply_show = false
       this.$emit('add_reply', reply)
-    }
+    },
   },
   created() {
     // this.local_reply = this.reply
     // this.local_comment = this.comment
-      },
+  },
   watch: {
     ReturnUpdateGetReplyUpdate(val) {
       if (val.reply_id == this.reply.reply_id) {
@@ -99,11 +105,11 @@ export default {
         this.$forceUpdate()
       }
     },
-                                                              }
+  },
 }
 </script>
 <style lang="less">
-@import "../../../../vendor/variable.less";
+@import '../../../../vendor/variable.less';
 
 .mc-comments .item .item {
   border-left: 3px solid #e0e0e0;

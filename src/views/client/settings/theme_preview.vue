@@ -1,5 +1,4 @@
 <template>
-
   <div class="container" id="theme_preview">
     <div class="header">
       <h1>MaterialDesignForum-Vuetify2 <span class="version-tag">v25.7.15</span></h1>
@@ -7,24 +6,48 @@
     </div>
 
     <!-- 新增的轮播图部分 -->
-    <mdui-card :variant="$store.getters.GetDark ? 'filled' : 'elevated'">
+    <mdui-card :variant="mainStore.getIsDark ? 'filled' : 'elevated'">
       <h2><i class="material-icons">collections</i>主题预览</h2>
       <div class="swiper-container">
         <div class="swiper-wrapper">
-          <div class="swiper-slide"
-            style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://source.unsplash.com/random/800x400/?material,design');">
+          <div
+            class="swiper-slide"
+            style="
+              background-image:
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url('https://source.unsplash.com/random/800x400/?material,design');
+            "
+          >
             首页预览
           </div>
-          <div class="swiper-slide"
-            style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://source.unsplash.com/random/800x400/?forum,discussion');">
+          <div
+            class="swiper-slide"
+            style="
+              background-image:
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url('https://source.unsplash.com/random/800x400/?forum,discussion');
+            "
+          >
             论坛页面
           </div>
-          <div class="swiper-slide"
-            style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://source.unsplash.com/random/800x400/?dark,theme');">
+          <div
+            class="swiper-slide"
+            style="
+              background-image:
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url('https://source.unsplash.com/random/800x400/?dark,theme');
+            "
+          >
             暗黑模式
           </div>
-          <div class="swiper-slide"
-            style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://source.unsplash.com/random/800x400/?dark,theme');">
+          <div
+            class="swiper-slide"
+            style="
+              background-image:
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url('https://source.unsplash.com/random/800x400/?dark,theme');
+            "
+          >
             暗黑模式
           </div>
         </div>
@@ -36,7 +59,7 @@
       </div>
     </mdui-card>
 
-    <mdui-card :variant="$store.getters.GetDark ? 'filled' : 'elevated'">
+    <mdui-card :variant="mainStore.getIsDark ? 'filled' : 'elevated'">
       <h2><i class="material-icons">palette</i>简介</h2>
       <div class="info-item">
         <!-- <span class="info-label">图标:</span>
@@ -45,12 +68,12 @@
         <span class="info-value">XXXXXXXXXXXXXXXXXXXX</span>
       </div>
       <!-- <div class="info-item"> -->
-        <!-- <span class="info-label">图标颜色:</span>
+      <!-- <span class="info-label">图标颜色:</span>
         <span class="info-value" style="color: #2196f3;">#2196f3</span> -->
       <!-- </div> -->
     </mdui-card>
 
-    <mdui-card :variant="$store.getters.GetDark ? 'filled' : 'elevated'">
+    <mdui-card :variant="mainStore.getIsDark ? 'filled' : 'elevated'">
       <h2><i class="material-icons">info</i>基本信息</h2>
       <div class="info-item">
         <span class="info-label">名称:</span>
@@ -70,7 +93,7 @@
       </div>
     </mdui-card>
 
-    <mdui-card :variant="$store.getters.GetDark ? 'filled' : 'elevated'">
+    <mdui-card :variant="mainStore.getIsDark ? 'filled' : 'elevated'">
       <h2><i class="material-icons">settings</i>功能设置</h2>
       <div class="info-item">
         <span class="info-label">是否禁用:</span>
@@ -92,14 +115,14 @@
   </div>
 </template>
 <script>
-
 import Swiper from 'swiper'
 import 'swiper/css'
 export default {
   name: 'ThemePreview',
   mounted() {
     // 初始化Swiper
-    new Swiper('.swiper-container', {// 启用所需模块
+    new Swiper('.swiper-container', {
+      // 启用所需模块
       // loop: true, // 禁用循环模式
       // slidesPerView: 1,
       autoplay: {
@@ -186,7 +209,7 @@ export default {
   }
 
   /* .info-value { */
-    /* color: #333; */
+  /* color: #333; */
   /* } */
 
   .disabled-notice {

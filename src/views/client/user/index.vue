@@ -1,7 +1,10 @@
 <template>
-  <div id="page-user" :style="{
-    'padding': $store.getters.GetMobile ? '0' : '0px 16px 16px 16px',
-  }">
+  <div
+    id="page-user"
+    :style="{
+      padding: mainStore.getMobile ? '0' : '0px 16px 16px 16px',
+    }"
+  >
     <User :user="user" />
 
     <!-- <mdui-list v-if="ShowAssetList">
@@ -9,7 +12,7 @@
         <mdui-collapse-item>
           <mdui-list-item rounded slot="header">
             资产列表/Asset List
-            
+
           <mdi-icon slot="end-icon" icon="mdi-dots-horizontal" />
 
           </mdui-list-item>
@@ -29,10 +32,10 @@
   </div>
 </template>
 <script>
-import {
-  GetUser,
-  Get_G_USER,
-} from '@/api/global.js';
+import { useUpdateStore } from '@/stores/update'
+import { useUserStore } from '@/stores/user'
+import { useMainStore } from '@/stores/main'
+import { GetUser, Get_G_USER } from '@/api/global.js'
 import User from './components/user/index.vue'
 import Contexts from './components/contexts/index.vue'
 // import EditInfoDialog from '@/components/dialog/edit-info-dialog/index.vue'
@@ -45,19 +48,24 @@ export default {
     DeviceList,
   },
   data: () => ({
+    updateStore: useUpdateStore(),
+    userStore: useUserStore(),
+    mainStore: useMainStore(),
     tab_item: 'question',
     user: null,
   }),
   computed: {
     ReturnUpdateGetUserUpdate() {
-      return this.$store.getters['Update/GetUserUpdate']
+      return this.updateStore.getUserUpdate
     },
-    ReturnGetIsLogin(){
-      return this.$store.getters['User/GetIsLogin']
+    ReturnGetIsLogin() {
+      return this.userStore.getIsLogin
     },
     ShowAssetList() {
       //需要域名中包含xbedrock.com且用户ID为1
-      return window.location.href.includes('xbedrock.com') && this.user != null && this.user.user_id == 1;
+      return (
+        window.location.href.includes('xbedrock.com') && this.user != null && this.user.user_id == 1
+      )
     },
   },
   methods: {
@@ -74,23 +82,23 @@ export default {
     },
     UpdateWebTitleAndAppbarSubTitle(val) {
       if (this.user == null) {
-        return;
+        return
       }
       if (val.name == 'user' || val.name == 'lang-user') {
         if (val.hash == '#article') {
           this.$G_UpdateWebTitleAndAppbarSubTitle(
             this.$t('Message.Client.User.NPersonalHomepage', { value: this.user.username }),
-            this.$t('Message.Client.User.NPersonalHomepage', { value: this.user.username })
+            this.$t('Message.Client.User.NPersonalHomepage', { value: this.user.username }),
           )
         } else if (val.hash == '#question' || val.hash == '') {
           this.$G_UpdateWebTitleAndAppbarSubTitle(
             this.$t('Message.Client.User.NPersonalHomepage', { value: this.user.username }),
-            this.$t('Message.Client.User.NPersonalHomepage', { value: this.user.username })
+            this.$t('Message.Client.User.NPersonalHomepage', { value: this.user.username }),
           )
         } else if (val.hash == '#answer') {
           this.$G_UpdateWebTitleAndAppbarSubTitle(
             this.$t('Message.Client.User.NPersonalHomepage', { value: this.user.username }),
-            this.$t('Message.Client.User.NPersonalHomepage', { value: this.user.username })
+            this.$t('Message.Client.User.NPersonalHomepage', { value: this.user.username }),
           )
         }
       }
@@ -111,7 +119,7 @@ export default {
       if (response.data.is_get) {
         this.user = response.data.user
       }
-    }
+    },
   },
   created() {
     this.UpdateTabItems(this.$route)
@@ -119,7 +127,7 @@ export default {
     this.GetUser()
   },
   watch: {
-    '$route'(val) {
+    $route(val) {
       this.UpdateTabItems(val)
       this.UpdateWebTitleAndAppbarSubTitle(val)
     },
@@ -135,12 +143,13 @@ export default {
     ReturnUpdateGetUserUpdate(val) {
       this.GetUser()
     },
-    ReturnGetIsLogin(val) {//让其在登录时重新请求，以免用户编辑时出现字段空缺
+    ReturnGetIsLogin(val) {
+      //让其在登录时重新请求，以免用户编辑时出现字段空缺
       this.GetUser()
     },
   },
-};
+}
 </script>
 <style lang="less">
-@import "./index.less";
+@import './index.less';
 </style>

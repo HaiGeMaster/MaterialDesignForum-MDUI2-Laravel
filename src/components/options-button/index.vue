@@ -1,6 +1,11 @@
 <template>
   <mdui-dropdown>
-    <mdui-button-icon variant="tonal" @click.prevent.stop="" class="mc-options-button" slot="trigger">
+    <mdui-button-icon
+      variant="tonal"
+      @click.prevent.stop=""
+      class="mc-options-button"
+      slot="trigger"
+    >
       <mdi-icon icon="mdi-dots-vertical" />
     </mdui-button-icon>
     <mdui-menu>
@@ -8,17 +13,19 @@
         <mdi-icon slot="icon" icon="mdi-link" />
         {{ $t('Message.Client.Topic.Topic.CopyLink') }}
       </mdui-menu-item>
-      <mdui-menu-item @click.prevent.stop="$store.dispatch('Dialog/Set_UsersDialog', {
-          id:GetItemID(),
-          type:type,
-          modes:'followers',
-          model:true
-        })
-        " v-if="LookFollowersShowRule">
+      <mdui-menu-item
+        @click.prevent.stop="
+          dialogStore.setUsersDialog({
+            id: GetItemID(),
+            type: type,
+            modes: 'followers',
+            model: true,
+          })
+        "
+        v-if="LookFollowersShowRule"
+      >
         <mdi-icon slot="icon" icon="mdi-account-star" />
-        {{
-          $t('Message.Client.Topic.Topic.LookFollowers',{value:FollowCount})
-        }}
+        {{ $t('Message.Client.Topic.Topic.LookFollowers', { value: FollowCount }) }}
       </mdui-menu-item>
       <mdui-menu-item @click.prevent.stop="AddReport()" v-if="LookReportDialogShowRule">
         <mdi-icon slot="icon" icon="mdi-flag" />
@@ -44,7 +51,12 @@
   </mdui-dropdown>
 </template>
 <script>
-import copy from 'copy-to-clipboard';
+import { useMainStore } from '@/stores/main'
+import { useUserStore } from '@/stores/user'
+import { useFabDialogStore } from '@/stores/fab-dialog'
+import { useDialogStore } from '@/stores/dialog'
+import { useSnackbarStore } from '@/stores/snackbar'
+import copy from 'copy-to-clipboard'
 import {
   ResetAvatar,
   ResetCover,
@@ -62,14 +74,19 @@ export default {
     },
     item: {
       type: Object,
-      default: null
+      default: null,
     },
     is_admin: {
       type: Boolean,
-      default: false
+      default: false,
     },
   },
   data: () => ({
+    mainStore: useMainStore(),
+    userStore: useUserStore(),
+    fabDialogStore: useFabDialogStore(),
+    dialogStore: useDialogStore(),
+    snackbarStore: useSnackbarStore(),
     delete_preview_text: '',
     report_preview_text: '',
     editDialog: true,
@@ -102,14 +119,14 @@ export default {
     SpawnCopyLink() {
       var text = ''
       var origin = ''
-      if(IsTauri()||IsElectron()||IsMobileApp()){
+      if (IsTauri() || IsElectron() || IsMobileApp()) {
         console.log(GetBaseUrl())
         origin = GetBaseUrl()
         console.log(origin)
-      }else{
+      } else {
         origin = window.location.origin
       }
-      switch(this.type) {
+      switch (this.type) {
         case 'answer':
           text = `${origin}${this.$G_UrlHeaderLang()}/questions/${this.item.question_id}/answers/${this.item.answer_id}`
           break
@@ -128,15 +145,15 @@ export default {
       }
       if (copy(text)) {
         // alert(text)
-        this.$store.dispatch('Snackbar/Show_Snackbar', {
+        this.snackbarStore.addMessage({
           text: this.$t('Message.Client.Topic.Topic.Copied') + ' ' + text,
         })
       }
     },
     AddReport() {
-      if (!this.$store.getters['User/GetIsLogin']) {
-        this.$store.dispatch('Dialog/Set_LoginDialog', true)
-        this.$store.dispatch('Snackbar/Show_Snackbar', {
+      if (!this.userStore.getIsLogin) {
+        this.dialogStore.setLoginDialog(true)
+        this.snackbarStore.addMessage({
           text: this.$t('Message.Components.Account.YouMustLoginToUseThisFeature'),
         })
         return
@@ -164,7 +181,7 @@ export default {
           this.report_preview_text = this.item.username
           break
       }
-      this.$store.dispatch('Dialog/Set_ReportDialog', {
+      this.dialogStore.setReportDialog({
         type: this.type,
         item: this.item,
         report_preview_text: this.report_preview_text,
@@ -174,25 +191,26 @@ export default {
     EditItem() {
       const item = this.item
 
-      if(IsTauri()||IsMobileApp()){//适配
+      if (IsTauri() || IsMobileApp()) {
+        //适配
         //把 item.content_rendered 里面的GetBaseUrl() + '/public/static/'替换为 /public/static/
-          const regex = '/public/static/';
-          const newBaseUrl = GetBaseUrl() + '/public/static/';
-          // 执行替换
-          item.content_rendered = item.content_rendered.replaceAll(regex, newBaseUrl);
+        const regex = '/public/static/'
+        const newBaseUrl = GetBaseUrl() + '/public/static/'
+        // 执行替换
+        item.content_rendered = item.content_rendered.replaceAll(regex, newBaseUrl)
         console.log('item.content_rendered', item.content_rendered)
       }
 
       switch (this.type) {
         case 'topic':
-          this.$store.dispatch('Dialog/Set_TopicDialog', {
+          this.dialogStore.setTopicDialog({
             mode: 'edit',
             edit_topic: item,
             model: true,
           })
           break
         case 'answer':
-          this.$store.dispatch('FabDialog/Set_EditorFabDialog', {
+          this.fabDialogStore.setEditorFabDialog({
             title: this.$t('Message.Components.Editor.EditAnswer'),
             icon: 'mdi-comment-plus-outline',
             has_title: false,
@@ -206,7 +224,7 @@ export default {
           })
           break
         case 'question':
-          this.$store.dispatch('FabDialog/Set_EditorFabDialog', {
+          this.fabDialogStore.setEditorFabDialog({
             title: this.$t('Message.Components.Editor.EditQuestion'),
             icon: 'mdi-forum',
             has_title: true,
@@ -222,7 +240,7 @@ export default {
           })
           break
         case 'article':
-          this.$store.dispatch('FabDialog/Set_EditorFabDialog', {
+          this.fabDialogStore.setEditorFabDialog({
             title: this.$t('Message.Components.Editor.EditArticle'),
             icon: 'mdi-file-document',
             has_title: true,
@@ -238,7 +256,7 @@ export default {
           })
           break
         case 'comment':
-          this.$store.dispatch('Dialog/Set_CommentReplyEditDialog', {
+          this.dialogStore.setCommentReplyEditDialog({
             title: this.$t('Message.Components.OptionsButton.EditComment'),
             type: 'comment',
             edit_id: item.comment_id,
@@ -247,7 +265,7 @@ export default {
           })
           break
         case 'reply':
-          this.$store.dispatch('Dialog/Set_CommentReplyEditDialog', {
+          this.dialogStore.setCommentReplyEditDialog({
             title: this.$t('Message.Components.OptionsButton.EditReply'),
             type: 'reply',
             edit_id: item.reply_id,
@@ -298,7 +316,7 @@ export default {
           this.delete_preview_text = this.item.content
           break
       }
-      this.$store.dispatch('Dialog/Set_DeleteDialog', {
+      this.dialogStore.setDeleteDialog({
         type: this.type,
         item: this.item,
         item_ids: [this.GetItemID()],
@@ -308,34 +326,57 @@ export default {
     },
   },
   computed: {
-    LookButtonShowRule() {//显示按钮规则
+    LookButtonShowRule() {
+      //显示按钮规则
       var a = false
       switch (this.type) {
         case 'topic':
-          a = this.LookEditShowRule||this.LookDeleteShowRule||this.LookReportDialogShowRule||this.LookFollowersShowRule||this.LookCopyShowRule
+          a =
+            this.LookEditShowRule ||
+            this.LookDeleteShowRule ||
+            this.LookReportDialogShowRule ||
+            this.LookFollowersShowRule ||
+            this.LookCopyShowRule
           break
         case 'question':
-          a = this.LookEditShowRule||this.LookDeleteShowRule||this.LookReportDialogShowRule||this.LookCopyShowRule
+          a =
+            this.LookEditShowRule ||
+            this.LookDeleteShowRule ||
+            this.LookReportDialogShowRule ||
+            this.LookCopyShowRule
           break
         case 'article':
-          a = this.LookEditShowRule||this.LookDeleteShowRule||this.LookReportDialogShowRule||this.LookCopyShowRule
+          a =
+            this.LookEditShowRule ||
+            this.LookDeleteShowRule ||
+            this.LookReportDialogShowRule ||
+            this.LookCopyShowRule
           break
         case 'answer':
-          a = this.LookEditShowRule||this.LookDeleteShowRule||this.LookReportDialogShowRule||this.LookCopyShowRule
+          a =
+            this.LookEditShowRule ||
+            this.LookDeleteShowRule ||
+            this.LookReportDialogShowRule ||
+            this.LookCopyShowRule
           break
         case 'comment':
-          a = this.LookEditShowRule||this.LookDeleteShowRule||this.LookReportDialogShowRule
+          a = this.LookEditShowRule || this.LookDeleteShowRule || this.LookReportDialogShowRule
           break
         case 'reply':
-          a = this.LookEditShowRule||this.LookDeleteShowRule||this.LookReportDialogShowRule
+          a = this.LookEditShowRule || this.LookDeleteShowRule || this.LookReportDialogShowRule
           break
         case 'user':
-          a = this.LookResetAvatarShowRule||this.LookResetCoverShowRule||this.LookReportDialogShowRule||this.LookCopyShowRule
+          a =
+            this.LookResetAvatarShowRule ||
+            this.LookResetCoverShowRule ||
+            this.LookReportDialogShowRule ||
+            this.LookCopyShowRule
           break
       }
       return a
     },
-    EditText() {//编辑按钮文本实时计算
+    EditText() {
+      //编辑按钮文本实时计算
       var a = ''
       switch (this.type) {
         case 'topic':
@@ -359,7 +400,8 @@ export default {
       }
       return a
     },
-    DeleteText() {//删除按钮文本实时计算
+    DeleteText() {
+      //删除按钮文本实时计算
       var a = ''
       switch (this.type) {
         case 'topic':
@@ -383,7 +425,8 @@ export default {
       }
       return a
     },
-    FollowCount() {//关注数量实时计算
+    FollowCount() {
+      //关注数量实时计算
       var a = 0
       switch (this.type) {
         case 'topic':
@@ -398,23 +441,27 @@ export default {
       }
       return a
     },
-    LookEditShowRule() {//显示编辑按钮规则
+    LookEditShowRule() {
+      //显示编辑按钮规则
       var a = false
       try {
         switch (this.type) {
           case 'topic':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_edit_own_topic'] &&
+              this.userStore.getUser.user_group['ability_edit_own_topic'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_edit_topic_only_no_article_or_question']) {
+              if (
+                this.userStore.getUser.user_group['ability_edit_topic_only_no_article_or_question']
+              ) {
                 if (this.item.article_count == 0 && this.item.question_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_topic'];
+                  let time = this.userStore.getUser.user_group['time_before_edit_topic']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -425,12 +472,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_topic'];
+                let time = this.userStore.getUser.user_group['time_before_edit_topic']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -444,17 +492,18 @@ export default {
             break
           case 'question':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_edit_own_question'] &&
+              this.userStore.getUser.user_group['ability_edit_own_question'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_edit_question_only_no_answer']) {
+              if (this.userStore.getUser.user_group['ability_edit_question_only_no_answer']) {
                 if (this.item.answer_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_question'];
+                  let time = this.userStore.getUser.user_group['time_before_edit_question']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -465,12 +514,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_question'];
+                let time = this.userStore.getUser.user_group['time_before_edit_question']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -478,14 +528,15 @@ export default {
                   }
                 }
               }
-              if (this.$store.getters['User/GetUser'].user_group['ability_edit_question_only_no_comment']) {
+              if (this.userStore.getUser.user_group['ability_edit_question_only_no_comment']) {
                 if (this.item.comment_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_question'];
+                  let time = this.userStore.getUser.user_group['time_before_edit_question']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -496,12 +547,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_question'];
+                let time = this.userStore.getUser.user_group['time_before_edit_question']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -515,17 +567,18 @@ export default {
             break
           case 'article':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_edit_own_article'] &&
+              this.userStore.getUser.user_group['ability_edit_own_article'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_edit_article_only_no_comment']) {
+              if (this.userStore.getUser.user_group['ability_edit_article_only_no_comment']) {
                 if (this.item.comment_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_article'];
+                  let time = this.userStore.getUser.user_group['time_before_edit_article']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -536,12 +589,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_article'];
+                let time = this.userStore.getUser.user_group['time_before_edit_article']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -555,17 +609,18 @@ export default {
             break
           case 'answer':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_edit_own_answer'] &&
+              this.userStore.getUser.user_group['ability_edit_own_answer'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_edit_answer_only_no_comment']) {
+              if (this.userStore.getUser.user_group['ability_edit_answer_only_no_comment']) {
                 if (this.item.comment_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_answer'];
+                  let time = this.userStore.getUser.user_group['time_before_edit_answer']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -576,12 +631,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_answer'];
+                let time = this.userStore.getUser.user_group['time_before_edit_answer']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -595,17 +651,18 @@ export default {
             break
           case 'comment':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_edit_own_comment'] &&
+              this.userStore.getUser.user_group['ability_edit_own_comment'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_edit_comment_only_no_reply']) {
+              if (this.userStore.getUser.user_group['ability_edit_comment_only_no_reply']) {
                 if (this.item.reply_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_comment'];
+                  let time = this.userStore.getUser.user_group['time_before_edit_comment']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -616,12 +673,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_comment'];
+                let time = this.userStore.getUser.user_group['time_before_edit_comment']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -635,17 +693,18 @@ export default {
             break
           case 'reply':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_edit_own_reply'] &&
+              this.userStore.getUser.user_group['ability_edit_own_reply'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_edit_reply_only_no_reply']) {
+              if (this.userStore.getUser.user_group['ability_edit_reply_only_no_reply']) {
                 if (this.item.reply_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_reply'];
+                  let time = this.userStore.getUser.user_group['time_before_edit_reply']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -656,12 +715,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_edit_reply'];
+                let time = this.userStore.getUser.user_group['time_before_edit_reply']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -674,15 +734,15 @@ export default {
             }
             break
         }
-      } catch (e) {
-      }
+      } catch (e) {}
       return a
     },
-    LookCopyShowRule() {//显示复制链接规则
+    LookCopyShowRule() {
+      //显示复制链接规则
       var a = false
       switch (this.type) {
         case 'user':
-          if(!this.is_admin){
+          if (!this.is_admin) {
             a = true
           }
           break
@@ -695,23 +755,29 @@ export default {
       }
       return a
     },
-    LookDeleteShowRule() {//显示删除按钮规则
+    LookDeleteShowRule() {
+      //显示删除按钮规则
       var a = false
       try {
         switch (this.type) {
           case 'topic':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_delete_own_topic'] &&
+              this.userStore.getUser.user_group['ability_delete_own_topic'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_delete_topic_only_no_article_or_question']) {
+              if (
+                this.userStore.getUser.user_group[
+                  'ability_delete_topic_only_no_article_or_question'
+                ]
+              ) {
                 if (this.item.article_count == 0 && this.item.question_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_topic'];
+                  let time = this.userStore.getUser.user_group['time_before_delete_topic']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -722,12 +788,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_topic'];
+                let time = this.userStore.getUser.user_group['time_before_delete_topic']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -741,17 +808,18 @@ export default {
             break
           case 'question':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_delete_own_question'] &&
+              this.userStore.getUser.user_group['ability_delete_own_question'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_delete_question_only_no_answer']) {
+              if (this.userStore.getUser.user_group['ability_delete_question_only_no_answer']) {
                 if (this.item.answer_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_question'];
+                  let time = this.userStore.getUser.user_group['time_before_delete_question']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -762,12 +830,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_question'];
+                let time = this.userStore.getUser.user_group['time_before_delete_question']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -775,14 +844,15 @@ export default {
                   }
                 }
               }
-              if (this.$store.getters['User/GetUser'].user_group['ability_delete_question_only_no_comment']) {
+              if (this.userStore.getUser.user_group['ability_delete_question_only_no_comment']) {
                 if (this.item.comment_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_question'];
+                  let time = this.userStore.getUser.user_group['time_before_delete_question']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -793,12 +863,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_question'];
+                let time = this.userStore.getUser.user_group['time_before_delete_question']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -812,17 +883,18 @@ export default {
             break
           case 'article':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_delete_own_article'] &&
+              this.userStore.getUser.user_group['ability_delete_own_article'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_delete_article_only_no_comment']) {
+              if (this.userStore.getUser.user_group['ability_delete_article_only_no_comment']) {
                 if (this.item.comment_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_article'];
+                  let time = this.userStore.getUser.user_group['time_before_delete_article']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -833,12 +905,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_article'];
+                let time = this.userStore.getUser.user_group['time_before_delete_article']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -852,17 +925,18 @@ export default {
             break
           case 'answer':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_delete_own_answer'] &&
+              this.userStore.getUser.user_group['ability_delete_own_answer'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_delete_answer_only_no_comment']) {
+              if (this.userStore.getUser.user_group['ability_delete_answer_only_no_comment']) {
                 if (this.item.comment_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_answer'];
+                  let time = this.userStore.getUser.user_group['time_before_delete_answer']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -873,12 +947,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_answer'];
+                let time = this.userStore.getUser.user_group['time_before_delete_answer']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -892,17 +967,18 @@ export default {
             break
           case 'comment':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_delete_own_comment'] &&
+              this.userStore.getUser.user_group['ability_delete_own_comment'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_delete_comment_only_no_reply']) {
+              if (this.userStore.getUser.user_group['ability_delete_comment_only_no_reply']) {
                 if (this.item.reply_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_comment'];
+                  let time = this.userStore.getUser.user_group['time_before_delete_comment']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -913,12 +989,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_comment'];
+                let time = this.userStore.getUser.user_group['time_before_delete_comment']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -932,17 +1009,18 @@ export default {
             break
           case 'reply':
             if (
-              this.$store.getters['User/GetUser'].user_group['ability_delete_own_reply'] &&
+              this.userStore.getUser.user_group['ability_delete_own_reply'] &&
               this.item.user_id == this.$G_GetUserID()
             ) {
-              if (this.$store.getters['User/GetUser'].user_group['ability_delete_reply_only_no_reply']) {
+              if (this.userStore.getUser.user_group['ability_delete_reply_only_no_reply']) {
                 if (this.item.reply_count == 0) {
-                  let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_reply'];
+                  let time = this.userStore.getUser.user_group['time_before_delete_reply']
                   if (time == 0) {
                     a = true
                   } else {
-                    time = time * 60;
-                    const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                    time = time * 60
+                    const time1 =
+                      Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                     if (time1 < time) {
                       a = true
                     } else {
@@ -953,12 +1031,13 @@ export default {
                   a = false
                 }
               } else {
-                let time = this.$store.getters['User/GetUser'].user_group['time_before_delete_reply'];
+                let time = this.userStore.getUser.user_group['time_before_delete_reply']
                 if (time == 0) {
                   a = true
                 } else {
-                  time = time * 60;
-                  const time1 = Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time);
+                  time = time * 60
+                  const time1 =
+                    Math.floor(Date.now() / 1000) - this.$G_GetTimeStamp(this.item.create_time)
                   if (time1 < time) {
                     a = true
                   } else {
@@ -971,11 +1050,11 @@ export default {
             }
             break
         }
-      } catch (e) {
-      }
+      } catch (e) {}
       return a
     },
-    LookFollowersShowRule() {//显示关注按钮规则
+    LookFollowersShowRule() {
+      //显示关注按钮规则
       var a = false
       switch (this.type) {
         case 'topic':
@@ -988,24 +1067,35 @@ export default {
           a = true
           break
       }
-      if(this.FollowCount==0){
+      if (this.FollowCount == 0) {
         a = false
       }
       return a
     },
-    LookResetCoverShowRule() {//显示重置封面按钮规则
-      return (this.is_admin)|| (
-        this.type == 'user' && this.item.user_id == this.$G_GetUserID()&&(this.$route.name=='user'||this.$route.name=='lang-user'))
+    LookResetCoverShowRule() {
+      //显示重置封面按钮规则
+      return (
+        this.is_admin ||
+        (this.type == 'user' &&
+          this.item.user_id == this.$G_GetUserID() &&
+          (this.$route.name == 'user' || this.$route.name == 'lang-user'))
+      )
     },
-    LookResetAvatarShowRule() {//显示重置头像按钮规则
-      return (this.is_admin)|| (
-        this.type == 'user' && this.item.user_id == this.$G_GetUserID()&&(this.$route.name=='user'||this.$route.name=='lang-user'))
+    LookResetAvatarShowRule() {
+      //显示重置头像按钮规则
+      return (
+        this.is_admin ||
+        (this.type == 'user' &&
+          this.item.user_id == this.$G_GetUserID() &&
+          (this.$route.name == 'user' || this.$route.name == 'lang-user'))
+      )
     },
-    LookReportDialogShowRule() {//显示举报对话框按钮规则
-      if(!this.is_admin){
+    LookReportDialogShowRule() {
+      //显示举报对话框按钮规则
+      if (!this.is_admin) {
         // return true
         return this.item.user_id != this.$G_GetUserID()
-      }else{
+      } else {
         return false
       }
     },

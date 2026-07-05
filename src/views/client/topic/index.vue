@@ -1,21 +1,22 @@
 <template>
-  <div id="page-topic" :style="{
-    'padding': $store.getters.GetMobile ? '0' : '16px',
-  }">
-
+  <div
+    id="page-topic"
+    :style="{
+      padding: mainStore.getMobile ? '0' : '16px',
+    }"
+  >
     <ReturnButton />
     <Topic :topic="topic" />
     <Contexts :topic="topic" />
   </div>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
+import { useUpdateStore } from '@/stores/update'
 import ReturnButton from '@/components/return-button/index.vue'
 import Topic from './components/topic/index.vue'
 import Contexts from './components/contexts/index.vue'
-import {
-  GetTopic,
-  Get_G_TOPIC,
-} from '@/api/global.js';
+import { GetTopic, Get_G_TOPIC } from '@/api/global.js'
 export default {
   name: 'topic',
   components: {
@@ -24,19 +25,21 @@ export default {
     Contexts,
   },
   data: () => ({
+    mainStore: useMainStore(),
+    updateStore: useUpdateStore(),
     topic: null,
   }),
   computed: {
     ReturnUpdateGetTopicUpdate() {
-      return this.$store.getters['Update/GetTopicUpdate']
-    }
+      return this.updateStore.getTopicUpdate
+    },
   },
   methods: {
     UpdateWebTitleAndAppbarSubTitle(val) {
       if (val.name == 'topic' || val.name == 'lang-topic') {
         this.$G_UpdateWebTitleAndAppbarSubTitle(
           this.$t('Message.Client.Topic.WebSubTitle'),
-          this.$t('Message.Client.Topic.WebSubTitle')
+          this.$t('Message.Client.Topic.WebSubTitle'),
         )
         if (this.topic == null) {
           this.GetTopic()
@@ -60,13 +63,13 @@ export default {
       if (response.data.is_get) {
         this.topic = response.data.topic
       }
-    }
+    },
   },
   created() {
     this.UpdateWebTitleAndAppbarSubTitle(this.$route)
   },
   watch: {
-    '$route'(val) {
+    $route(val) {
       this.UpdateWebTitleAndAppbarSubTitle(val)
     },
     '$i18n.locale'(val) {
@@ -74,10 +77,10 @@ export default {
     },
     ReturnUpdateGetTopicUpdate(val) {
       this.topic = val
-    }
+    },
   },
 }
 </script>
 <style lang="less">
-@import "./index.less";
+@import './index.less';
 </style>

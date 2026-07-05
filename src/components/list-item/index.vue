@@ -1,34 +1,38 @@
 <template>
   <!-- style="min-height: 60px;" -->
-  <mdui-list-item class="list-item" style="min-height: 60px;"
+  <mdui-list-item
+    class="list-item"
+    style="min-height: 60px"
     headline-line="1"
     description-line="1"
-   :headline="title"
-   :description="$store.getters.GetMobile ? `${action_subtitle}  ${action_time}` : `${subtitle?subtitle:''}`" 
+    :headline="title"
+    :description="
+      mainStore.getMobile ? `${action_subtitle}  ${action_time}` : `${subtitle ? subtitle : ''}`
+    "
     @mouseover="mouseover = true"
-    @mouseleave="mouseover = false" 
-    @click="$router.push(to)" :class="{ 'mdui-list-item--no-padding': no_padding }"
+    @mouseleave="mouseover = false"
+    @click="$router.push(to)"
+    :class="{ 'mdui-list-item--no-padding': no_padding }"
     :nonclickable="nonclickable"
-    >
-    <UserPopover slot="icon" :user="UserPopoverUser"/>
-    <div slot="end-icon" v-if="!$store.getters.GetMobile">
-      {{
-    mouseover ? `${action_time}` : ''
-  }}
+  >
+    <UserPopover slot="icon" :user="UserPopoverUser" />
+    <div slot="end-icon" v-if="!mainStore.getMobile">
+      {{ mouseover ? `${action_time}` : '' }}
 
-      <br v-if="mouseover">
-      <br v-if="mouseover">
-      <br v-if="mouseover">
+      <br v-if="mouseover" />
+      <br v-if="mouseover" />
+      <br v-if="mouseover" />
 
       {{ action_subtitle }}
     </div>
   </mdui-list-item>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
 import UserPopover from '@/components/user-popover/index.vue'
 export default {
   props: {
-    show:{
+    show: {
       type: Boolean,
       default: true,
     },
@@ -60,7 +64,7 @@ export default {
       type: String,
       default: '/',
     },
-    
+
     no_padding: {
       type: Boolean,
       default: false,
@@ -74,14 +78,15 @@ export default {
     UserPopover,
   },
   data: () => ({
+    mainStore: useMainStore(),
     mouseover: false,
   }),
   computed: {
     UserPopoverUser() {
-      return this.type == 'users' ? this.item : this.item.user;
-    }
+      return this.type == 'users' ? this.item : this.item.user
+    },
   },
-};
+}
 </script>
 
 <style lang="less">

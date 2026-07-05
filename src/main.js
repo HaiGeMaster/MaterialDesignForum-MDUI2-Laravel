@@ -8,7 +8,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'mdui/mdui.css'
 import 'mdui'
 import router from './router'
-import store from './store'
+// import store from './store'
 import './vendor/mdui2-global.less'
 import './vendor/skeleton.less'
 import i18n from './i18n'
@@ -17,13 +17,17 @@ import { createPinia } from 'pinia'
 // import { Fancybox } from '@fancyapps/ui'
 // import '@fancyapps/ui/dist/fancybox/fancybox.css'
 import { Fancybox } from '@fancyapps/ui'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 import MdiIcon from '@/components/mdi-icon/index.vue'
+
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 const app = createApp(App)
 app.use(i18n)
-app.use(store)
+// app.use(store)
 app.use(router)
-app.use(createPinia())
+app.use(pinia)
 app.config.globalProperties.$axios = axios
 app.config.globalProperties.$Fancybox = Fancybox
 // app.config.globalProperties.$Fancybox = Fancybox

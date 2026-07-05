@@ -1,34 +1,14 @@
 
 <template>
   <div id="page-article"
-    :style="!$store.getters.GetMobile ? 'padding:16px;' : ''"
+    :style="!mainStore.getMobile ? 'padding:16px;' : ''"
   >
     <ReturnButton />
-    <mdui-card :variant="$store.getters.GetDark ? 'filled' : 'elevated'" class="article" style="width: 100%;"
+    <mdui-card :variant="mainStore.getIsDark ? 'filled' : 'elevated'" class="article" style="width: 100%;"
       v-if="article != null">
       <h1 class="title">
         {{ article.title }}
-        
-        <!-- <div class="flex-grow" />
-        <mdui-button @click="
-          $store.dispatch('FabDialog/Set_EditorFabDialog', {
-            title:$t('Message.Components.Editor.EditArticle'),
-            icon:'mdi-forum',
-            has_title:true,
-            has_topic:true,
-            submit_text:$t('Message.Components.Editor.Release'),
-            edit_type:'article',
-            edit_mode:'edit',
-            edit_mode_id:article.article_id,
-            md_title:article.title,
-            md_topics:article.topics,
-            md_content:article.content_rendered,
-            model:'moderate',
-          })
-        " style="margin: auto;">
-          <mdi-icon slot="icon" icon="mdi-pencil"></mdi-icon>
-          {{ $t('Message.Components.OptionsButton.EditQuestion') }}
-        </mdui-button> -->
+
       </h1>
       <UserLine :user="article.user" :time="$G_UserTimeStampToDateTime(article.update_time)"></UserLine>
       <TiptapEditor class="content" :editable="false" :content="article.content_rendered" />
@@ -48,19 +28,19 @@
         </template>
       </div>
       <div class="actions">
-        <VoteButton 
+        <VoteButton
           :vote="article.vote"
           :vote_up_count="article.vote_up_count"
           :vote_down_count="article.vote_down_count"
         />
         <FollowButton followable_type="article" :followable_id="article.article_id" :is_follow="article.is_follow" />
-        
+
         <div class="flex-grow" />
         <OptionsButton type="article" :item="article" />
       </div>
     </mdui-card>
 
-    
+
     <!-- 骨架屏卡片 -->
     <mdui-card class="article" style="width: 100%;" v-else>
       <h1 class="title">
@@ -74,7 +54,7 @@
         <div class="skeleton-item" style="width: 100px; height: 24px; margin-right: 8px;" v-for="i in 5"></div>
       </div>
     </mdui-card>
-    
+
     <CommentsPage v-if="article != null"
       :external_loading="true"
       :commentable_type="'article'"
@@ -86,6 +66,8 @@
   </div>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
+import { useUpdateStore } from '@/stores/update'
 import {
   GetArticle,
   Get_G_ARTICLE,
@@ -110,14 +92,16 @@ export default {
     ListItemSkeleton,
   },
   data: () => ({
+    mainStore: useMainStore(),
+    updateStore: useUpdateStore(),
     article: null,
   }),
   computed: {
     ReturnUpdateGetArticleUpdate() {
-      return this.$store.getters['Update/GetArticleUpdate']
+      return this.updateStore.getArticleUpdate
     },
     ReturnGetScrollValue() {
-      return this.$store.getters.GetScrollValue
+      return this.mainStore.getScrollValue
     },
   },
   methods: {
@@ -156,7 +140,7 @@ export default {
   watch: {
     '$route.path'(val) {
       this.UpdateWebTitleAndAppbarSubTitle(val)
-      this.$store.dispatch('Set_ReadTitle','');
+      this.mainStore.setReadTitle('');
     },
     '$i18n.locale'(val) {
       this.UpdateWebTitleAndAppbarSubTitle(this.$route)
@@ -168,9 +152,9 @@ export default {
       // console.log('GetScrollValue', val);
       const path = this.$route.name
       if(val>=4&&(path=='article'||path=='lang-article')){
-        this.$store.dispatch('Set_ReadTitle',this.article.title);
+        this.mainStore.setReadTitle(this.article.title);
       }else{
-        this.$store.dispatch('Set_ReadTitle','');
+        this.mainStore.setReadTitle('');
       }
     },
   },

@@ -1,48 +1,57 @@
 <template>
-  
-
-  
-  <mdui-card :class="[
-    'new-comment',
-    {
-      'rounded-xxl': dialog_mode && !$store.getters.GetMobile,
-      'rounded-t-xxl': !dialog_mode && !$store.getters.GetMobile,
-      'rounded-0': $store.getters.GetMobile,
-      'glass-container': new_comment_reply_need_glass_container,
-      'layout-colourless': !new_comment_reply_need_glass_container,
-    }
-  ]" key="new-comment" v-show="show" :elevation="new_comment_reply_elevation"
-  variant="filled"
+  <mdui-card
+    :class="[
+      'new-comment',
+      {
+        'rounded-xxl': dialog_mode && !mainStore.getMobile,
+        'rounded-t-xxl': !dialog_mode && !mainStore.getMobile,
+        'rounded-0': mainStore.getMobile,
+        'glass-container': new_comment_reply_need_glass_container,
+        'layout-colourless': !new_comment_reply_need_glass_container,
+      },
+    ]"
+    key="new-comment"
+    v-show="show"
+    :elevation="new_comment_reply_elevation"
+    variant="filled"
   >
-    
-
-    
-
-    <mdui-text-field variant="outlined"   @focus="$emit('on_focus')" @blur="$emit('on_blur')"
-      :label="label || $t('Message.Components.Comments.NewCommentOrReply.WriteYourComment')" :value="SubmitText"
+    <mdui-text-field
+      variant="outlined"
+      @focus="$emit('on_focus')"
+      @blur="$emit('on_blur')"
+      :label="label || $t('Message.Components.Comments.NewCommentOrReply.WriteYourComment')"
+      :value="SubmitText"
       @input="SubmitText = $event.target.value"
-      style="padding-top: 16px !important;"
-      >
+      style="padding-top: 16px !important"
+    >
     </mdui-text-field>
-    
 
-    <mdui-button :class="['submit']" :loading="is_loading" @click="OnSubmit()" style="margin-bottom: 8px;">
-      {{ Submitting ? $t('Message.Components.Comments.NewCommentOrReply.Publlishing') :
-    $t('Message.Components.Comments.NewCommentOrReply.Publish') }}
+    <mdui-button
+      :class="['submit']"
+      :loading="is_loading"
+      @click="OnSubmit()"
+      style="margin-bottom: 8px"
+    >
+      {{
+        Submitting
+          ? $t('Message.Components.Comments.NewCommentOrReply.Publlishing')
+          : $t('Message.Components.Comments.NewCommentOrReply.Publish')
+      }}
     </mdui-button>
   </mdui-card>
 </template>
 <script>
-import {
-  AddComment,
-  AddReply
-} from '@/api/global.js';
+import { useMainStore } from '@/stores/main'
+import { useUserStore } from '@/stores/user'
+import { useDialogStore } from '@/stores/dialog'
+import { useSnackbarStore } from '@/stores/snackbar'
+import { AddComment, AddReply } from '@/api/global.js'
 export default {
   name: 'new-comment-reply',
   props: {
     show: {
       type: Boolean,
-      default: false
+      default: false,
     },
     label: {
       type: String,
@@ -91,6 +100,10 @@ export default {
   },
   data() {
     return {
+      mainStore: useMainStore(),
+      userStore: useUserStore(),
+      dialogStore: useDialogStore(),
+      snackbarStore: useSnackbarStore(),
       SubmitText: '',
       Submitting: false,
       is_loading: false,
@@ -98,14 +111,18 @@ export default {
   },
   methods: {
     OnSubmit() {
-      if (!this.$store.getters['User/GetIsLogin']) {
-        this.$store.dispatch('Dialog/Set_LoginDialog', true)
-        this.$store.dispatch('Snackbar/Show_Snackbar', {
+      if (!this.userStore.getIsLogin) {
+        this.dialogStore.setLoginDialog(true)
+        this.snackbarStore.addMessage({
           text: this.$t('Message.Components.Account.YouMustLoginToUseThisFeature'),
         })
         return
       }
-      if (this.commentable_type == 'question' || this.commentable_type == 'answer' || this.commentable_type == 'article') {
+      if (
+        this.commentable_type == 'question' ||
+        this.commentable_type == 'answer' ||
+        this.commentable_type == 'article'
+      ) {
         this.AddComment()
       } else if (this.replyable_type == 'comment' || this.replyable_type == 'reply') {
         this.AddReply()
@@ -146,15 +163,12 @@ export default {
         this.is_loading = false
         this.IsEmpty = true
       }
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="less">
-@import "../../../../vendor/variable.less";
-
-
-
+@import '../../../../vendor/variable.less';
 
 .mc-comments-dialog,
 .mc-comments-page {
@@ -163,20 +177,18 @@ export default {
     align-items: flex-end;
     box-sizing: border-box;
     width: 100%;
-    
+
     padding-bottom: 16px;
-            
+
     mdui-text-field,
     textarea {
       flex: 1;
       max-height: 60vh;
-            margin-right: 16px;
+      margin-right: 16px;
       overflow: auto;
       font-size: inherit;
       border-bottom: none !important;
-
-      
-                }
+    }
 
     .submit {
       width: 76px;

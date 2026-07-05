@@ -1,40 +1,74 @@
 <template>
-
-
-  <mdui-dialog close-on-overlay-click :fullscreen="$store.getters.GetMobile" @close="vmodel = false"
-    style="margin: auto;" ref="edit_info_dialog" :headline="$t('Message.Components.EditInfoDialog.EditInfo')">
+  <mdui-dialog
+    close-on-overlay-click
+    :fullscreen="mainStore.getMobile"
+    @close="vmodel = false"
+    style="margin: auto"
+    ref="edit_info_dialog"
+    :headline="$t('Message.Components.EditInfoDialog.EditInfo')"
+  >
     <mdui-button-icon class="close" @click="vmodel = false" slot="icon">
       <mdi-icon icon="mdi-close" />
     </mdui-button-icon>
 
-    <div :style="!$store.getters.GetMobile ? 'min-width: 450px;' : ''">
-      <mdui-text-field :value="UserName" @input="UserName = $event.target.value"
-        :label="$t('Message.Components.EditInfoDialog.UserName')" maxlength="100" counter="100">
+    <div :style="!mainStore.getMobile ? 'min-width: 450px;' : ''">
+      <mdui-text-field
+        :value="UserName"
+        @input="UserName = $event.target.value"
+        :label="$t('Message.Components.EditInfoDialog.UserName')"
+        maxlength="100"
+        counter="100"
+      >
       </mdui-text-field>
 
-      <mdui-text-field :value="OneSentenceIntroduction" @input="OneSentenceIntroduction = $event.target.value"
-        :label="$t('Message.Components.EditInfoDialog.OneSentenceIntroduction')" maxlength="40" counter="40">
+      <mdui-text-field
+        :value="OneSentenceIntroduction"
+        @input="OneSentenceIntroduction = $event.target.value"
+        :label="$t('Message.Components.EditInfoDialog.OneSentenceIntroduction')"
+        maxlength="40"
+        counter="40"
+      >
       </mdui-text-field>
 
-      <mdui-text-field :value="PersonalHomepage" @input="PersonalHomepage = $event.target.value"
-        :label="$t('Message.Components.EditInfoDialog.PersonalHomepage')" maxlength="40" counter="40">
+      <mdui-text-field
+        :value="PersonalHomepage"
+        @input="PersonalHomepage = $event.target.value"
+        :label="$t('Message.Components.EditInfoDialog.PersonalHomepage')"
+        maxlength="40"
+        counter="40"
+      >
       </mdui-text-field>
 
-      <mdui-text-field :value="AffiliatedSchoolOrEnterprise" @input="AffiliatedSchoolOrEnterprise = $event.target.value"
-        :label="$t('Message.Components.EditInfoDialog.AffiliatedSchoolOrEnterprise')" maxlength="80" counter="80">
+      <mdui-text-field
+        :value="AffiliatedSchoolOrEnterprise"
+        @input="AffiliatedSchoolOrEnterprise = $event.target.value"
+        :label="$t('Message.Components.EditInfoDialog.AffiliatedSchoolOrEnterprise')"
+        maxlength="80"
+        counter="80"
+      >
       </mdui-text-field>
 
-      <mdui-text-field :value="Location" @input="Location = $event.target.value"
-        :label="$t('Message.Components.EditInfoDialog.Location')" maxlength="80" counter="80">
+      <mdui-text-field
+        :value="Location"
+        @input="Location = $event.target.value"
+        :label="$t('Message.Components.EditInfoDialog.Location')"
+        maxlength="80"
+        counter="80"
+      >
       </mdui-text-field>
 
-
-      <mdui-text-field autosize min-rows="2" max-rows="5" :value="PersonalIntroduction"
+      <mdui-text-field
+        autosize
+        min-rows="2"
+        max-rows="5"
+        :value="PersonalIntroduction"
         @input="PersonalIntroduction = $event.target.value"
-        :label="$t('Message.Components.EditInfoDialog.PersonalIntroduction')" maxlength="160" counter="160">
+        :label="$t('Message.Components.EditInfoDialog.PersonalIntroduction')"
+        maxlength="160"
+        counter="160"
+      >
       </mdui-text-field>
     </div>
-
 
     <mdui-button slot="action" variant="text" @click="vmodel = false">
       {{ $t('Message.Components.OptionsButton.Cancel') }}
@@ -45,12 +79,9 @@
   </mdui-dialog>
 </template>
 <script>
-
+import { useMainStore } from '@/stores/main'
 import OptionsButton from '@/components/options-button/index.vue'
-import {
-  EditInfo,
-  GetUserGroups,
-} from '@/api/global.js'
+import { EditInfo, GetUserGroups } from '@/api/global.js'
 export default {
   name: 'edit-info-dialog',
   props: {
@@ -68,6 +99,7 @@ export default {
     },
   },
   data: () => ({
+    mainStore: useMainStore(),
     vmodel: false,
     EMail: '',
     UserName: '',
@@ -90,18 +122,18 @@ export default {
     user: {
       handler: function (val, oldVal) {
         if (val != null) {
-          this.EMail = val.email;
-          this.UserName = val.username;
-          this.UserGroupID = val.user_group_id;
-          this.OneSentenceIntroduction = val.headline;
-          this.PersonalHomepage = val.blog;
-          this.AffiliatedSchoolOrEnterprise = val.company;
-          this.Location = val.location;
-          this.PersonalIntroduction = val.bio;
+          this.EMail = val.email
+          this.UserName = val.username
+          this.UserGroupID = val.user_group_id
+          this.OneSentenceIntroduction = val.headline
+          this.PersonalHomepage = val.blog
+          this.AffiliatedSchoolOrEnterprise = val.company
+          this.Location = val.location
+          this.PersonalIntroduction = val.bio
           console.log(val)
         }
       },
-      deep: true
+      deep: true,
     },
     model(val) {
       if (val == true) {
@@ -118,19 +150,17 @@ export default {
     search_user_group_value(val) {
       this.GetUserGroups()
       console.log(this.UserGroupID)
-    }
+    },
   },
   methods: {
     async OnSubmitEditInfo() {
       if (this.is_loading) {
         return
       }
-      this.is_loading = true;
+      this.is_loading = true
       // if (this.$refs.form.validate() == false || this.user == null) {
-      if (this.EMail == '' ||
-        this.UserName == '' ||
-        this.UserGroupID == '') {
-        this.is_loading = false;
+      if (this.EMail == '' || this.UserName == '' || this.UserGroupID == '') {
+        this.is_loading = false
         return
       }
       const response = await EditInfo({
@@ -149,7 +179,7 @@ export default {
         this.$emit('edit_user', response.data.user)
         this.vmodel = false
       }
-      this.is_loading = false;
+      this.is_loading = false
     },
     async GetUserGroups() {
       this.search_user_group_is_loading = true
@@ -226,7 +256,7 @@ export default {
       border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 
       .theme-layout-dark & {
-        border-bottom-color: rgba(255, 255, 255, .12);
+        border-bottom-color: rgba(255, 255, 255, 0.12);
       }
     }
 

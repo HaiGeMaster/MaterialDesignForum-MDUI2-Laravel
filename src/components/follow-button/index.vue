@@ -1,18 +1,20 @@
-
 <template>
-  <mdui-button-icon 
-  v-if="show"
-  class="mc-follow" variant="tonal" @click.stop="" @click="OnFollowClickCallback()"
-  :loading="is_loading"
+  <mdui-button-icon
+    v-if="show"
+    class="mc-follow"
+    variant="tonal"
+    @click.stop=""
+    @click="OnFollowClickCallback()"
+    :loading="is_loading"
   >
     <mdi-icon :icon="IsFollow ? 'mdi-star' : 'mdi-star-outline'"></mdi-icon>
   </mdui-button-icon>
-
 </template>
 <script>
-import {
-  Follow,
-} from '@/api/global.js';
+import { useUserStore } from '@/stores/user'
+import { useDialogStore } from '@/stores/dialog'
+import { useSnackbarStore } from '@/stores/snackbar'
+import { Follow } from '@/api/global.js'
 export default {
   name: 'follow',
   props: {
@@ -20,16 +22,18 @@ export default {
     followable_id: Number,
     is_follow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     show: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
-  components: {
-  },
+  components: {},
   data: () => ({
+    userStore: useUserStore(),
+    dialogStore: useDialogStore(),
+    snackbarStore: useSnackbarStore(),
     IsFollow: false,
     is_loading: false,
   }),
@@ -38,9 +42,9 @@ export default {
   },
   methods: {
     async OnFollowClickCallback() {
-      if (!this.$store.getters['User/GetIsLogin']) {
-        this.$store.dispatch('Dialog/Set_LoginDialog', true)
-        this.$store.dispatch('Snackbar/Show_Snackbar', {
+      if (!this.userStore.getIsLogin) {
+        this.dialogStore.setLoginDialog(true)
+        this.snackbarStore.addMessage({
           text: this.$t('Message.Components.Account.YouMustLoginToUseThisFeature'),
         })
         return
@@ -58,8 +62,8 @@ export default {
       }
       this.is_loading = false
       this.$forceUpdate()
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -1,31 +1,48 @@
 <template>
-
-  <mdui-dialog 
-    close-on-overlay-click 
-    :fullscreen="$store.getters.GetMobile" 
+  <mdui-dialog
+    close-on-overlay-click
+    :fullscreen="mainStore.getMobile"
     ref="comments_dialog"
-    @close.self="dialog = false" 
-    class="mc-comments-dialog" 
-    style="margin: auto;"
-    >
+    @close.self="dialog = false"
+    class="mc-comments-dialog"
+    style="margin: auto"
+  >
+    <ListHeader
+      slot="header"
+      :show_close="true"
+      :title="title"
+      :total="comment_count"
+      :show_total="true"
+      type="topics"
+      class="mc-list-header"
+      @list_header_close_click="dialog = !dialog"
+      @menu_order_item_select="menu_order_item_select"
+    />
 
-
-    <ListHeader slot="header" :show_close="true" :title="title" :total="comment_count" :show_total="true" type="topics"
-      class="mc-list-header" @list_header_close_click="dialog = !dialog"
-      @menu_order_item_select="menu_order_item_select" />
-
-    <div :style="!$store.getters.GetMobile ? 'min-width: 500px;' : ''">
-      <Comments :order="order" :dialog_mode="true" :need_glass_container="false" :need_rounded="false"
-        :need_outlined="false" :commentable_id="commentable_id" :commentable_type="commentable_type"
-        card_list_elevation="0" item_classes="layout-colourless" new_comment_reply_rounded_t_or_b="b"
+    <div :style="!mainStore.getMobile ? 'min-width: 500px;' : ''">
+      <Comments
+        :order="order"
+        :dialog_mode="true"
+        :need_glass_container="false"
+        :need_rounded="false"
+        :need_outlined="false"
+        :commentable_id="commentable_id"
+        :commentable_type="commentable_type"
+        card_list_elevation="0"
+        item_classes="layout-colourless"
+        new_comment_reply_rounded_t_or_b="b"
         @list_header_close_click="dialog = false"
-        @return_update_comments="(comment) => { $emit('return_update_comments', comment) }" />
+        @return_update_comments="
+          (comment) => {
+            $emit('return_update_comments', comment)
+          }
+        "
+      />
     </div>
-
-
   </mdui-dialog>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
 import ListHeader from '@/components/list-header/index.vue'
 import Comments from '@/components/comments/index.vue'
 export default {
@@ -58,6 +75,7 @@ export default {
   },
   data() {
     return {
+      mainStore: useMainStore(),
       dialog: false,
       order: '-update_time',
       list_header: [
@@ -94,15 +112,14 @@ export default {
         this.dialog = val
         this.$refs.comments_dialog.open = true
       }
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="less">
-@import "../../vendor/variable.less";
+@import '../../vendor/variable.less';
 
 .mc-comments-dialog {
-
   .panel {
     border-radius: 14px !important;
   }
@@ -125,7 +142,7 @@ export default {
 
   .mc-comments {
     // height: 100%;
-    .item{
+    .item {
       padding: 16px;
       // .content {
       //   padding: 16px;
@@ -143,7 +160,7 @@ export default {
     height: 60px;
     margin: 0 !important;
     padding: 0 16px;
-    border-bottom: 1px solid rgba(0, 0, 0, .12);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 
     .close {
       display: none;
@@ -154,7 +171,7 @@ export default {
     }
 
     .mdui-theme-dark & {
-      border-bottom-color: #494949
+      border-bottom-color: #494949;
     }
 
     @media (max-width: @screen-sm-max) {
@@ -192,7 +209,7 @@ export default {
     border-radius: 0;
   }
 
-  .mc-comments>.new-comment {
+  .mc-comments > .new-comment {
     // position: absolute;//mdui2不要这个
     // .mdui-theme-dark & {
   }

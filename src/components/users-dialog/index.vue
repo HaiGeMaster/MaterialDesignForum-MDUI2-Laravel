@@ -1,45 +1,66 @@
 <template>
-  <mdui-dialog close-on-overlay-click :fullscreen="$store.getters.GetMobile" ref="users_dialog" @close="vmodel = false"
-    style="margin: auto;"
-    :headline="modes == 'followers' ? $t('Message.Components.UsersDialog.FollowersN', { value: pagination.total }) : $t('Message.Components.UsersDialog.FolloweesN', { value: pagination.total })">
-
+  <mdui-dialog
+    close-on-overlay-click
+    :fullscreen="mainStore.getMobile"
+    ref="users_dialog"
+    @close="vmodel = false"
+    style="margin: auto"
+    :headline="
+      modes == 'followers'
+        ? $t('Message.Components.UsersDialog.FollowersN', { value: pagination.total })
+        : $t('Message.Components.UsersDialog.FolloweesN', { value: pagination.total })
+    "
+  >
     <mdui-button-icon class="close" @click="vmodel = !vmodel" slot="icon">
       <mdi-icon icon="mdi-close" />
     </mdui-button-icon>
 
-    <mdui-card :variant="$store.getters.GetDark ? 'filled' : 'elevated'" 
-      :style="!$store.getters.GetMobile ? 'min-width: 500px;' : 'width:100%;'" style="overflow-x: hidden;">
-      <mdui-list :style="!$store.getters.GetMobile ? 'min-width: 480px;' : ''">
-        <mdui-list-item v-for="(user,index) in data" 
-          :key="index" 
+    <mdui-card
+      :variant="mainStore.getIsDark ? 'filled' : 'elevated'"
+      :style="!mainStore.getMobile ? 'min-width: 500px;' : 'width:100%;'"
+      style="overflow-x: hidden"
+    >
+      <mdui-list :style="!mainStore.getMobile ? 'min-width: 480px;' : ''">
+        <mdui-list-item
+          v-for="(user, index) in data"
+          :key="index"
           @click="GoUserID(user.user_id)"
           :headline="user.username"
-          >
+        >
           <!-- @click="GoUserID()$router.push(`${$G_UrlHeaderLang()}/users/${user.user_id}`)" -->
           <mdui-avatar slot="icon" :src="$G_ImgHandle(user.avatar.small)"></mdui-avatar>
-          <Follow slot="end-icon" v-if="$store.getters['User/GetUser'].user_id != user.user_id"
-            :followable_id="user.user_id" followable_type="user" :is_follow="user.is_follow" />
+          <Follow
+            slot="end-icon"
+            v-if="userStore.getUser.user_id != user.user_id"
+            :followable_id="user.user_id"
+            followable_type="user"
+            :is_follow="user.is_follow"
+          />
         </mdui-list-item>
       </mdui-list>
 
-      <Loading :empty="!data==null" :need_margin_bottom="false" :loading="is_loading" :pagination="pagination"
-        @autoload="GetFollows" />
+      <Loading
+        :empty="!data == null"
+        :need_margin_bottom="false"
+        :loading="is_loading"
+        :pagination="pagination"
+        @autoload="GetFollows"
+      />
     </mdui-card>
-    
   </mdui-dialog>
 </template>
 <script>
+import { useUserStore } from '@/stores/user'
+import { useMainStore } from '@/stores/main'
 import Loading from '@/components/loading/index.vue'
 import Follow from '@/components/follow-button/index.vue'
-import {
-  GetFollows
-} from '@/api/global.js';
+import { GetFollows } from '@/api/global.js'
 export default {
   name: 'users-dialog',
   props: {
     id: {
       Number,
-      default: 0
+      default: 0,
     },
     type: {
       String,
@@ -56,9 +77,11 @@ export default {
   },
   components: {
     Loading,
-        Follow,
-      },
+    Follow,
+  },
   data: () => ({
+    userStore: useUserStore(),
+    mainStore: useMainStore(),
     vmodel: false,
     is_loading: false,
     is_empty: true,
@@ -69,7 +92,7 @@ export default {
       total: 0,
       pages: 0,
       previous: 0,
-      next: 1
+      next: 1,
     },
   }),
   methods: {
@@ -94,7 +117,9 @@ export default {
         user_token: this.$G_GetUserToken(),
       })
       if (response.data.is_get == true) {
-        this.data == null ? this.data = response.data.data : this.$G_FilterSameItems('user_id', this.data, response.data.data)
+        this.data == null
+          ? (this.data = response.data.data)
+          : this.$G_FilterSameItems('user_id', this.data, response.data.data)
         this.pagination = response.data.pagination
         if (response.data.pagination.total == 0 || response.data.pagination.total == null) {
           this.is_empty = true
@@ -112,9 +137,9 @@ export default {
         total: 0,
         pages: 0,
         previous: 0,
-        next: 1
+        next: 1,
       }
-    }
+    },
   },
   watch: {
     model(val) {
@@ -131,7 +156,7 @@ export default {
         this.$emit('model', val)
       }
     },
-    '$route'() {
+    $route() {
       this.vmodel = false
     },
   },
@@ -175,7 +200,7 @@ export default {
       border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 
       .theme-layout-dark & {
-        border-bottom-color: rgba(255, 255, 255, .12);
+        border-bottom-color: rgba(255, 255, 255, 0.12);
       }
     }
 
