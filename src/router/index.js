@@ -14,6 +14,7 @@ import Users from '@/views/client/users/index.vue'
 import Notifications from '@/views/client/notifications/index.vue'
 import NotificationsSetting from '@/views/client/notifications/setting/index.vue'
 import Settings from '@/views/client/settings/index.vue'
+import Login from '@/views/client/login/index.vue'
 import NullPage404 from '@/views/404.vue'
 
 const routes = [
@@ -38,7 +39,8 @@ const routes = [
     component: NotificationsSetting,
   },
   { path: '/settings', name: 'settings', component: Settings },
-  // { path: '/mc', name: 'mc', component: MC },
+  { path: '/login', name: 'login', component: Login },
+
 
   { path: '/:lang([a-z]{2}_[A-Z]{2})', name: 'lang-home', component: Home },
   { path: '/:lang([a-z]{2}_[A-Z]{2})/topics', name: 'lang-topics', component: Topics },
@@ -73,6 +75,7 @@ const routes = [
     component: NotificationsSetting,
   },
   { path: '/:lang([a-z]{2}_[A-Z]{2})/settings', name: 'lang-settings', component: Settings },
+  { path: '/:lang([a-z]{2}_[A-Z]{2})/login', name: 'lang-login', component: Login },
   // { path: '/:lang([a-z]{2}_[A-Z]{2})/mc', name: 'lang-mc', component: MC },
   { path: '/:pathMatch(.*)*', name: '404', component: NullPage404 },
 ]

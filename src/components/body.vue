@@ -12,7 +12,10 @@
       scroll-target=".layout-main"
     >
       <mdui-tooltip :content="GetBarDrawerText" placement="right">
-        <mdui-button-icon @click="navigation_drawer = !navigation_drawer">
+        <mdui-button-icon
+          @click="navigation_drawer = !navigation_drawer"
+          style="margin-right: 16px"
+        >
           <mdi-icon :icon="GetBarDrawerIcon" />
         </mdui-button-icon>
       </mdui-tooltip>
@@ -56,7 +59,15 @@
         :placeholder="$t('Message.Components.Search.SearchTooltop')"
         @model="
           (val) => {
-            fabDialogStore.setNewSearchFabDialog({
+            fabDialogStore.setSearchFabDialog({
+              value: val,
+              model: 'moderate',
+            })
+          }
+        "
+        @enter="
+          (val) => {
+            fabDialogStore.setSearchFabDialog({
               value: val,
               model: 'moderate',
             })
@@ -172,7 +183,7 @@ export default {
       dialogStore: useDialogStore(),
       fabDialogStore: useFabDialogStore(),
       v_search_appbar: false,
-      navigation_drawer: false,
+      // navigation_drawer: false,
       bp_smlg: false,
       bp_xssm: false,
       IsElectron: IsElectron(),
@@ -189,6 +200,14 @@ export default {
     // let randomColor = '#' + Math.floor(Math.random() * 0xffffff).toString(16).padEnd(6, '0');
   },
   computed: {
+    navigation_drawer: {
+      get() {
+        return this.mainStore.getDrawer
+      },
+      set(val) {
+        this.mainStore.setDrawer(val)
+      },
+    },
     IsTauri() {
       return IsTauri()
     },
@@ -328,9 +347,9 @@ export default {
     breakpoints() {
       this.v_search_appbar = false
     },
-    navigation_drawer(val) {
-      this.mainStore.setDrawer(val)
-    },
+    // navigation_drawer(val) {
+    //   this.mainStore.setDrawer(val)
+    // },
   },
 }
 </script>

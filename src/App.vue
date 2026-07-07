@@ -9,7 +9,7 @@
           :placeholder="$t('Message.Components.Search.SearchTooltop')"
           @model="
             (val) => {
-              fabDialogStore.setNewSearchFabDialog({
+              fabDialogStore.setSearchFabDialog({
                 value: val,
                 model: 'moderate',
               })
@@ -23,8 +23,10 @@
         >
           <mdi-icon icon="mdi-magnify" />
         </mdui-button-icon>
-        <ThemeButton v-if="!mainStore.getMobile && localDataStore.getAppbarShowThemeButton" />
-        <LanguageButton v-if="!mainStore.getMobile && localDataStore.getAppbarShowLanguageButton" />
+        <ThemeButton :show="!mainStore.getMobile && localDataStore.getAppbarShowThemeButton" />
+        <LanguageButton
+          :show="!mainStore.getMobile && localDataStore.getAppbarShowLanguageButton"
+        />
         <!-- :show="!userStore.getIsLogin || (userStore.getIsLogin && !mainStore.getMobile)" -->
         <!-- <DeviceTypeButton :show="mainStore.getDesktop"/> -->
 
@@ -32,8 +34,14 @@
           v-if="!mainStore.getMobile && !userStore.getIsLogin"
           variant="filled"
           style="margin-right: 4px; margin-left: 4px"
-          @click="dialogStore.setLoginDialog(true)"
+          @click="
+            () => {
+              mainStore.setDrawer(false)
+              $router.push(UrlHeaderLang() + '/login')
+            }
+          "
         >
+          <!-- @click="dialogStore.setLoginDialog(true)" -->
           <mdi-icon slot="icon" icon="mdi-login" />
           {{ $t('Message.Components.Account.Login') }}
         </mdui-button>

@@ -15,6 +15,7 @@
   />
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
 export default {
   name: 'custom-input',
   props: {
@@ -53,16 +54,22 @@ export default {
   },
   data() {
     return {
+      mainStore: useMainStore(),
       v_text: '',
       fkname: '',
     }
   },
   methods: {
     input(e) {
+      if (!this.mainStore.getDesktop) {
+        return
+      }
       this.v_text = e.target.value
       this.$emit('model', e.target.value)
     },
-    model_enter(e) {},
+    model_enter(e) {
+      this.$emit('enter', e.target.value)
+    },
   },
   mounted() {
     this.fkname = '88888888888'

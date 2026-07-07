@@ -7,9 +7,9 @@
       <a @click="dialogStore.setCookieUseDialog(true)">
         {{ $t('Message.Components.UseCookieDialog.cookieConsent.manage') }} </a
       >|
-      <!-- <a @click="mainStore.setRightDrawer(!mainStore.getRightDrawer)">
-              {{ $t('Message.Components.DevDialog.Setting') }}
-            </a>| -->
+      <a @click="mainStore.setRightDrawer(!mainStore.getRightDrawer)">
+        {{ $t('Message.Components.DevDialog.Setting') }} </a
+      >|
       <a>
         {{ mainStore.getAppVersion }}
       </a>

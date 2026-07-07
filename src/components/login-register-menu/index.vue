@@ -4,7 +4,16 @@
       <mdi-icon icon="mdi-dots-vertical" />
     </mdui-button-icon>
     <mdui-menu>
-      <mdui-menu-item @click="dialogStore.setLoginDialog(true)">
+      <mdui-menu-item
+        @click="
+          () => {
+            mainStore.setDrawer(false)
+            $router.push($G_UrlHeaderLang() + '/login')
+          }
+        "
+      >
+        <!-- @click="dialogStore.setLoginDialog(true)" -->
+
         <mdi-icon slot="icon" icon="mdi-login" />
         {{ $t('Message.Components.Account.Login') }}
       </mdui-menu-item>
@@ -16,6 +25,7 @@
   </mdui-dropdown>
 </template>
 <script>
+import { useMainStore } from '@/stores/main'
 import { useUserStore } from '@/stores/user'
 import { useDialogStore } from '@/stores/dialog'
 export default {
@@ -28,6 +38,7 @@ export default {
   },
   data() {
     return {
+      mainStore: useMainStore(),
       userStore: useUserStore(),
       dialogStore: useDialogStore(),
     }

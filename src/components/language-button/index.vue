@@ -340,6 +340,16 @@ export default {
         if (this.$route.params.hasOwnProperty('lang')) {
         } else {
         }
+
+        // console.log(this.mainStore.getAppBaseInfo.lang_locale_list)
+        // console.log(this.LanguageList.length)
+
+        if (
+          this.mainStore.getAppBaseInfo.lang_locale_list != null &&
+          this.LanguageList.length == 0
+        ) {
+          this.getLocaleInfoList()
+        }
       },
       immediate: true,
     },
