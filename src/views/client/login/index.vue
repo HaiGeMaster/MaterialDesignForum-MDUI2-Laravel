@@ -69,18 +69,18 @@
       </div>
 
       <!-- OAuth 第三方登录 -->
-      <div class="login-oauth">
+      <div class="login-oauth" v-if="hasOauth">
         <div class="login-divider">
-          <span class="login-divider-line" />
+          <mdui-divider></mdui-divider>
           <span class="login-divider-text">{{
             $t('Message.Components.Account.ThirdPartyAccounts')
           }}</span>
-          <span class="login-divider-line" />
+          <mdui-divider></mdui-divider>
         </div>
         <div class="login-oauth-buttons">
-          <GithubButton />
-          <GoogleButton />
-          <MicrosoftButton />
+          <GithubButton v-if="oauthList.github == true" />
+          <GoogleButton v-if="oauthList.google == true" />
+          <MicrosoftButton v-if="oauthList.microsoft == true" />
         </div>
       </div>
     </div>
@@ -124,6 +124,14 @@ export default {
       ErrorCount: 0,
       is_loading: false,
     }
+  },
+  computed: {
+    oauthList() {
+      return this.mainStore.getAppBaseInfo?.oauth_list || {}
+    },
+    hasOauth() {
+      return this.oauthList.github || this.oauthList.google || this.oauthList.microsoft
+    },
   },
   methods: {
     validate() {
@@ -265,10 +273,8 @@ export default {
   margin-bottom: 20px;
 }
 
-.login-divider-line {
+.login-divider mdui-divider {
   flex: 1;
-  height: 1px;
-  background: var(--mdui-color-outline-variant);
 }
 
 .login-divider-text {

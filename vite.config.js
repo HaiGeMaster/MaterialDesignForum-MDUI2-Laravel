@@ -26,11 +26,22 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 //   },
 // })
 
+// 生成打包日期版本号，格式：YYYY.MM.DD
+const getBuildVersion = () => {
+  const now = new Date()
+  const y = now.getFullYear()
+  const m = String(now.getMonth() + 1).padStart(2, '0')
+  const d = String(now.getDate()).padStart(2, '0')
+  return `${y}.${m}.${d}`
+}
+
 export default defineConfig(({ mode }) => {
   // 开发环境配置
   const isDev = mode === 'development'
   // 生产环境配置
   const isProd = mode === 'production'
+
+  const buildVersion = getBuildVersion()
 
   // 基础配置
   const config = {
@@ -45,11 +56,35 @@ export default defineConfig(({ mode }) => {
       }),
       // vueJsx(),
       vueDevTools(),
+      // 构建时写入 theme.json 和 package.json，自动更新版本号
+      {
+        name: 'write-build-version',
+        apply: 'build',
+        writeBundle() {
+          const fs = require('fs')
+          const path = require('path')
+          const themePath = path.resolve(__dirname, 'public/theme.json')
+          if (fs.existsSync(themePath)) {
+            const theme = JSON.parse(fs.readFileSync(themePath, 'utf-8'))
+            theme.version = buildVersion
+            fs.writeFileSync(themePath, JSON.stringify(theme, null, 2) + '\n')
+          }
+          const pkgPath = path.resolve(__dirname, 'package.json')
+          if (fs.existsSync(pkgPath)) {
+            const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
+            pkg.version = buildVersion
+            fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+          }
+        },
+      },
     ],
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
+    },
+    define: {
+      __BUILD_VERSION__: JSON.stringify(buildVersion),
     },
   }
 

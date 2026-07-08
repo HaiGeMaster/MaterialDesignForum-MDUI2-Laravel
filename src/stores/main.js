@@ -36,7 +36,7 @@ export const useMainStore = defineStore('main', {
       theme_list: null,
       oauth_list: null,
     },
-    appVersion: '26.7.5',
+    appVersion: __BUILD_VERSION__,
     appAllowUse: true,
     appAllowUseLangpack: [
       'zh_CN',
