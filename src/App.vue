@@ -516,7 +516,7 @@
         @model="dialogStore.setCookieUseDialog(false)"
       />
 
-      <Snackbar />
+      <!-- <Snackbar /> -->
 
       <!-- <Dialog
         :model="$store.getters['Dialog/GetDialog'].model"
@@ -547,7 +547,7 @@ import NotificationButton from '@/components/notification-button/index.vue'
 import FabDialogSearch from '@/components/fab-dialog/search-fab-dialog/index.vue'
 import Copyright from '@/components/append-footer/components/copyright/index.vue'
 
-import Dialog from '@/components/dialog/index.vue'
+// import Dialog from '@/components/dialog/index.vue'
 import UsersDialog from '@/components/users-dialog/index.vue'
 import TopicDialog from '@/components/topic-dialog/index.vue'
 import CommentsDialog from '@/components/comments/dialog.vue'
@@ -558,7 +558,7 @@ import CommentReplyEditDialog from '@/components/dialog/comment-reply-edit-dialo
 import TopicSelectorDialog from '@/components/md-editor/components/topic-selector-dialog/index.vue'
 
 import UseCookieDialog from '@/components/dialog/use-cookie-dialog/index.vue'
-import Snackbar from '@/components/snackbar/index.vue'
+// import Snackbar from '@/components/snackbar/index.vue'
 
 import WinHeader from '@/components/win-header/index.vue'
 
@@ -626,7 +626,7 @@ export default {
     FabDialogSearch,
     Copyright,
 
-    Dialog,
+    // Dialog,
     UsersDialog,
     TopicDialog,
     CommentsDialog,
@@ -637,7 +637,7 @@ export default {
     TopicSelectorDialog,
 
     UseCookieDialog,
-    Snackbar,
+    // Snackbar,
   },
   data() {
     return {

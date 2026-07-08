@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-
+import { snackbar } from 'mdui/functions/snackbar.js'
 export const useSnackbarStore = defineStore('snackbar', {
   state: () => ({
     messages: [], //里面将包含多条消息
@@ -15,14 +15,21 @@ export const useSnackbarStore = defineStore('snackbar', {
      * @param {string} color - 消息颜色，默认 ''，success, info, error,warning
      */
     addMessage({ text, color }) {
-      this.messages.push({
-        text,
-        color,
-        // closeText: closeText,
-        onDismiss(reason) {
-          // logs.value.unshift(`Message #${id}: Closed (${reason})`)
-        },
+      snackbar({
+        message: text,
+        // closeable: true,
+        // action: 'Undo',
+        // onActionClick: () => console.log('click action button'),
       })
+
+      // this.messages.push({
+      //   text,
+      //   color,
+      //   // closeText: closeText,
+      //   onDismiss(reason) {
+      //     // logs.value.unshift(`Message #${id}: Closed (${reason})`)
+      //   },
+      // })
     },
     setMessages(messages) {
       this.messages = messages
