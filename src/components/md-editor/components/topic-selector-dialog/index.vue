@@ -72,12 +72,12 @@
       />
     </mdui-card>
 
-    <mdui-button slot="action" variant="text" @click="vmodel = false">
+    <mdui-button slot="action" variant="outlined" @click="vmodel = false">
       {{ $t('Message.Components.TopicSelectDialog.Cancel') }}
     </mdui-button>
     <mdui-button
       slot="action"
-      variant="tonal"
+      variant="filled"
       @click="OnTopicSelectorDialogClose()"
       :disabled="selector_indexs.length == 0"
     >

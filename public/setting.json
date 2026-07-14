@@ -2,24 +2,24 @@
   "theme_color": {
     "light": {
       "colors": {
-        "primary": "#2196F3"
+        "primary": "#4c5e8b"
       }
     },
     "dark": {
       "colors": {
-        "primary": "#FF9800"
+        "primary": "#ecbe8a"
       }
     }
   },
   "default_theme_color": {
     "light": {
       "colors": {
-        "primary": "#2196F3"
+        "primary": "#4c5e8b"
       }
     },
     "dark": {
       "colors": {
-        "primary": "#FF9800"
+        "primary": "#ecbe8a"
       }
     }
   }

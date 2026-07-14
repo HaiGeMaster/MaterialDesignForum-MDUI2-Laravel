@@ -20,12 +20,12 @@
       @input="vcontent = $event.target.value"
     ></mdui-text-field>
 
-    <mdui-button slot="action" variant="text" @click="OnCancel()">
+    <mdui-button slot="action" variant="outlined" @click="OnCancel()">
       {{ $t('Message.Components.TopicSelectDialog.Cancel') }}
     </mdui-button>
     <mdui-button
       slot="action"
-      variant="tonal"
+      variant="filled"
       @click="OnEdit()"
       :disabled="vcontent.length > 1000 || vcontent.length == 0"
     >

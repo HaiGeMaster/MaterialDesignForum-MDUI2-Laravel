@@ -17,10 +17,10 @@
       </template>
     </span>
 
-    <mdui-button slot="action" variant="text" @click="vmodel = false">
+    <mdui-button slot="action" variant="outlined" @click="vmodel = false">
       {{ $t('Message.Components.TopicSelectDialog.Cancel') }}
     </mdui-button>
-    <mdui-button slot="action" variant="tonal" @click="DeleteItem()" :loading="loading">
+    <mdui-button slot="action" variant="filled" @click="DeleteItem()" :loading="loading">
       {{ $t('Message.Components.DataTable.Confirm') }}
     </mdui-button>
   </mdui-dialog>

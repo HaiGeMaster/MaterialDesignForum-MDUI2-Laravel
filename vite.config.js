@@ -65,15 +65,28 @@ export default defineConfig(({ mode }) => {
           const path = require('path')
           const themePath = path.resolve(__dirname, 'public/theme.json')
           if (fs.existsSync(themePath)) {
-            const theme = JSON.parse(fs.readFileSync(themePath, 'utf-8'))
-            theme.version = buildVersion
-            fs.writeFileSync(themePath, JSON.stringify(theme, null, 2) + '\n')
+            try {
+              const raw = fs.readFileSync(themePath, 'utf-8')
+              // 检查文件是否损坏（全是空字节等情况）
+              if (!raw || raw.charCodeAt(0) === 0) {
+                throw new Error('theme.json appears to be corrupted')
+              }
+              const theme = JSON.parse(raw)
+              theme.version = buildVersion
+              fs.writeFileSync(themePath, JSON.stringify(theme, null, 2) + '\n')
+            } catch (e) {
+              console.warn('[write-build-version] theme.json 跳过: ' + e.message)
+            }
           }
           const pkgPath = path.resolve(__dirname, 'package.json')
           if (fs.existsSync(pkgPath)) {
-            const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
-            pkg.version = buildVersion
-            fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+            try {
+              const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
+              pkg.version = buildVersion
+              fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+            } catch (e) {
+              console.warn('[write-build-version] package.json 跳过: ' + e.message)
+            }
           }
         },
       },

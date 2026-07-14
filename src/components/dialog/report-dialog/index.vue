@@ -34,10 +34,10 @@
       </mdui-card>
     </div>
 
-    <mdui-button slot="action" variant="text" @click="vmodel = false">
+    <mdui-button slot="action" variant="outlined" @click="vmodel = false">
       {{ $t('Message.Components.OptionsButton.Cancel') }}
     </mdui-button>
-    <mdui-button slot="action" variant="tonal" @click="AddReport()">
+    <mdui-button slot="action" variant="filled" @click="AddReport()">
       {{ $t('Message.Components.OptionsButton.Submit') }}
     </mdui-button>
   </mdui-dialog>

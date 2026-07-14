@@ -118,11 +118,34 @@ export default {
     updateColorScheme() {
       if (!this.theme_data) return
 
+      const lightColor = this.theme_data.light.colors?.primary
+      const darkColor = this.theme_data.dark.colors?.primary
+
       if (this.isDark) {
-        setColorScheme(this.theme_data.dark.colors.primary)
+        setColorScheme(darkColor)
+      } else if (!this.isDark) {
+        setColorScheme(lightColor)
       } else {
-        setColorScheme(this.theme_data.light.colors.primary)
+        setColorScheme('#4c5e8b')
       }
+
+      // 从 CSS 变量读取当前主题色，更新浏览器顶栏
+      this.updateThemeColorMeta()
+    },
+
+    updateThemeColorMeta() {
+      const color = getComputedStyle(document.documentElement)
+        .getPropertyValue('--mdui-color-surface')
+        .trim()
+      if (!color) return
+
+      let el = document.querySelector('meta[name="theme-color"]')
+      if (!el) {
+        el = document.createElement('meta')
+        el.setAttribute('name', 'theme-color')
+        document.head.appendChild(el)
+      }
+      el.setAttribute('content', `rgb(${color})`)
     },
 
     setRandomColor() {
@@ -135,6 +158,8 @@ export default {
     },
   },
   created() {
+    setColorScheme('#4c5e8b')
+
     // Initialize theme based on system preference
     const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
     setTheme(isSystemDark ? 'dark' : 'light')

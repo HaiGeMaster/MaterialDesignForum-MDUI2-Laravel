@@ -201,7 +201,7 @@
 <script>
 import { useMainStore } from '@/stores/main'
 import { useLocalDataStore } from '@/stores/local-data'
-import { AddClarityScript } from '@/api/global.js'
+// import { AddClarityScript } from '@/api/global.js'
 import LanguageButton from '@/components/language-button/index.vue'
 export default {
   name: 'UseCookieDialog',
@@ -276,13 +276,13 @@ export default {
           //console.log('已加载保存的Cookie偏好:', preferences);
           if (this.analyticsAccepted) {
             //console.log('用户同意 analyticsAccepted 添加Clarity脚本用来分析')
-            AddClarityScript() //添加Clarity脚本用来分析！！！
-          } else if ((window.location.origin = 'https://mdf.xbedrock.com')) {
+            // AddClarityScript() //添加Clarity脚本用来分析！！！
+          } else if ((window.location.origin = 'https://www.xbedrock.com')) {
             //console.log('官方网站开启分析')
-            AddClarityScript() //添加Clarity脚本用来分析！！！
+            // AddClarityScript() //添加Clarity脚本用来分析！！！
           } else {
             //console.log('非官方网站，不开启分析')
-            AddClarityScript() //添加Clarity脚本用来分析！！！
+            // AddClarityScript() //添加Clarity脚本用来分析！！！
           }
         } catch (e) {
           //console.error('解析保存的Cookie偏好失败:', e);

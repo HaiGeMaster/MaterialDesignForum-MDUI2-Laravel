@@ -18,9 +18,9 @@
         </span>
         <div class="flex-grow"></div>
         <!-- <SsoButton /> -->
-        <GithubButton />
-        <GoogleButton />
-        <MicrosoftButton />
+        <GithubButton v-if="oauthList.github == true" />
+        <GoogleButton v-if="oauthList.google == true" />
+        <MicrosoftButton v-if="oauthList.microsoft == true" />
       </div>
     </div>
 
@@ -195,6 +195,12 @@ export default {
     },
   },
   computed: {
+    oauthList() {
+      return this.mainStore.getAppBaseInfo?.oauth_list || {}
+    },
+    hasOauth() {
+      return this.oauthList.github || this.oauthList.google || this.oauthList.microsoft
+    },
     Store_DialogSetRegisterDialog() {
       return this.dialogStore.getRegisterDialog
     },
