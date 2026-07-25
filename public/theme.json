@@ -1,9 +1,9 @@
 {
   "name": "MaterialDesignForum-MDUI2",
-  "version": "2026.07.14",
+  "version": "2026.07.25",
   "description": "Material Design MaterialDesignForum for MDUI2",
   "author": "HaiGeMaster",
-  "icon": "mdui",
+  "icon": "mdi-material-design",
   "icon_color": "#2196F3",
   "disabled": false,
   "language_routes": true,
