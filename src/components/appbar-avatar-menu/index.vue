@@ -1,6 +1,9 @@
 <template>
   <mdui-dropdown placement="bottom-end">
-    <mdui-button-icon slot="trigger" style="margin-left: 4px; margin-right: 4px">
+    <mdui-button-icon
+      slot="trigger"
+      style="margin-left: 4px; margin-right: 4px; -webkit-app-region: no-drag"
+    >
       <mdui-avatar :src="$G_ImgHandle(userStore.getUser.avatar.small)"> </mdui-avatar>
     </mdui-button-icon>
 

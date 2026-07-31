@@ -1,11 +1,18 @@
 <template>
   <div>
-    <mdui-button-icon
-      style="margin-left: 4px; margin-right: 4px"
-      @click="$router.push(`${$G_UrlHeaderLang()}/notifications`)"
+    <mdui-tooltip
+      placement="bottom"
+      :content="`
+      ${$t('Message.Components.NoticeButton.Notice')}(${userStore.getUser.notification_unread > 99 ? '99+' : userStore.getUser.notification_unread})
+      `"
     >
-      <mdi-icon icon="mdi-bell" />
-    </mdui-button-icon>
+      <mdui-button-icon
+        style="margin-left: 4px; margin-right: 4px"
+        @click="$router.push(`${$G_UrlHeaderLang()}/notifications`)"
+      >
+        <mdi-icon icon="mdi-bell" />
+      </mdui-button-icon>
+    </mdui-tooltip>
     <mdui-badge
       style="position: absolute; right: 64px"
       v-show="userStore.getUser.notification_unread > 0"

@@ -1,13 +1,13 @@
 import axios from 'axios'
 import cookies from 'vue-cookies'
-// import { getCurrentWindow } from '@tauri-apps/api/window'
+import { getCurrentWindow } from '@tauri-apps/api/window'
 // import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
 
 // const MainCheckServer = 'aHR0cDovL2xvY2FsaG9zdDo4My9hcGkvYw==';//http://localhost:83/api/c
 // const MainCheckServer = 'aHR0cHM6Ly9tZGYueGJlZHJvY2suY29tL2FwaS9j';//https://demo.xbedrock.com/api/c
 
 // web 模式
-const Is_Tauri = false //true;//
+const Is_Tauri = true //false //
 const Is_Electron = false //true;//
 const Is_MobileApp = false //true;//
 
@@ -754,7 +754,7 @@ export function GetUserToken() {
   return (
     GetCookie('user_token') ||
     localStorage.getItem('user_token') ||
-    document.cookie.replace(/(?:(?:^|.*;\s*)user_token\s*\=\s*([^;]*).*$)|^.*$/, '$1') ||
+    document.cookie.replace(/(?:(?:^|.*;\s*)user_token\s*=\s*([^;]*).*$)|^.*$/, '$1') ||
     ''
   )
 }

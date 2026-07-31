@@ -1,33 +1,33 @@
-import axios from 'axios';
-import cookies from 'vue-cookies';
+import axios from 'axios'
+import cookies from 'vue-cookies'
 // import { getCurrentWindow } from "@tauri-apps/api/window";
-  // import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
+// import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
 
 // const MainCheckServer = 'aHR0cDovL2xvY2FsaG9zdDo4My9hcGkvYw==';//http://localhost:83/api/c
-const MainCheckServer = 'aHR0cHM6Ly9tZGYueGJlZHJvY2suY29tL2FwaS9j';//https://demo.xbedrock.com/api/c
+const MainCheckServer = 'aHR0cHM6Ly9tZGYueGJlZHJvY2suY29tL2FwaS9j' //https://demo.xbedrock.com/api/c
 
 // web 模式
-const Is_Tauri = false;//true;//
-const Is_Electron = false;//true;//
-const Is_MobileApp = false;//true;//
+const Is_Tauri = false //true;//
+const Is_Electron = false //true;//
+const Is_MobileApp = false //true;//
 
-console.log('当前环境', process.env.NODE_ENV);
+console.log('当前环境', process.env.NODE_ENV)
 //如果是开发环境
 if (process.env.NODE_ENV === 'development') {
-  axios.defaults.baseURL = 'http://localhost:83';
+  axios.defaults.baseURL = 'http://localhost:83'
   // axios.defaults.baseURL = 'http://192.168.43.162:83';
-    // axios.defaults.baseURL = 'https://mdf.xbedrock.com';
+  // axios.defaults.baseURL = 'https://www.xbedrock.com';
 }
 //如果是生产环境
 if (process.env.NODE_ENV === 'production') {
-  // axios.defaults.baseURL = 'https://mdf.xbedrock.com';
+  // axios.defaults.baseURL = 'https://www.xbedrock.com';
   //如果是tauri、electron、mobileapp
   if (Is_Tauri || Is_Electron || Is_MobileApp) {
-    axios.defaults.baseURL = 'https://mdf.xbedrock.com';
+    axios.defaults.baseURL = 'https://www.xbedrock.com'
   }
 }
-console.log('axios.defaults.baseURL', axios.defaults.baseURL);
-console.log('window.location.href', window.location.href);
+console.log('axios.defaults.baseURL', axios.defaults.baseURL)
+console.log('window.location.href', window.location.href)
 
 // async function TauriNotification() {
 //   let permissionGranted = await isPermissionGranted();
@@ -64,12 +64,15 @@ console.log('window.location.href', window.location.href);
 //   return Promise.reject(error);
 // });
 
-axios.interceptors.request.use(function (config) {
-  config.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
-  return config;
-}, function (error) {
-  return Promise.reject(error);
-});
+axios.interceptors.request.use(
+  function (config) {
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+    return config
+  },
+  function (error) {
+    return Promise.reject(error)
+  },
+)
 
 /***
  * @description 添加ClarityScript
@@ -77,7 +80,7 @@ axios.interceptors.request.use(function (config) {
 export function AddClarityScript() {
   //如果域名包含localhost
   if (window.location.href.indexOf('localhost') !== -1) {
-    return;
+    return
   }
   var a = `
     (function(c,l,a,r,i,t,y){
@@ -94,30 +97,29 @@ export function AddClarityScript() {
     })(window, document, "clarity", "script", "tmclixk8ed");
   `
   //将a添加到head中
-  var head = document.getElementsByTagName('head')[0];
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
+  var head = document.getElementsByTagName('head')[0]
+  var script = document.createElement('script')
+  script.type = 'text/javascript'
   // script.innerHTML = a;
   //如果域名是xbedrock.com
   if (window.location.href.indexOf('xbedrock.com') !== -1) {
-    script.innerHTML = a;
-  }else{//否则添加b
-    script.innerHTML = b;
+    script.innerHTML = a
+  } else {
+    //否则添加b
+    script.innerHTML = b
   }
-  head.appendChild(script);
+  head.appendChild(script)
 }
 /***
  * @description 添加域名活动记录
  * @param {String} domain_name_base64 域名
  * @returns {v:bool,t:time} v返回假则域名已经被封禁，不允许使用。t返回续费到期时间
  */
-export async function AddActivity({
-  domain_name_base64
-}) {
+export async function AddActivity({ domain_name_base64 }) {
   //将MainCheckServer使用base64解码
   const m = atob(MainCheckServer)
-  const response = await axios.post(m + '/aa/' + domain_name_base64);
-  return response;
+  const response = await axios.post(m + '/aa/' + domain_name_base64)
+  return response
 }
 /***
  * @description 续费域名
@@ -134,13 +136,13 @@ export async function RenewalDomain({
   //将MainCheckServer使用base64解码
   const m = atob(MainCheckServer)
   const response = await axios.post(m + '/rd/' + domain_name_base64 + '/' + renewal_key_base64, {
-    renewal_email_base64
-  });
-  return response;
+    renewal_email_base64,
+  })
+  return response
 }
 
-//如果域名==mdf.xbedrock.com
-// if (window.location.href.indexOf('mdf.xbedrock.com') !== -1) {
+//如果域名==www.xbedrock.com
+// if (window.location.href.indexOf('www.xbedrock.com') !== -1) {
 //   AddClarityScript();
 // }
 
@@ -149,7 +151,6 @@ export async function RenewalDomain({
 //以上内容不可公开使用
 //以上内容不可公开使用
 //以上内容不可公开使用
-
 
 /**
  * @typedef {Object} AnswerModel 回答
@@ -518,38 +519,37 @@ export function AddBodyClass_UseGlassMorphismBottomNav(val) {
 }
 
 const easeInOutQuad = (t, b, c, d) => {
-  t /= d / 2;
-  if (t < 1) return (c / 2) * t * t + b;
-  t -= 1;
-  return (-c / 2) * (t * (t - 2) - 1) + b;
-};
+  t /= d / 2
+  if (t < 1) return (c / 2) * t * t + b
+  t -= 1
+  return (-c / 2) * (t * (t - 2) - 1) + b
+}
 /**
  * 滚动到顶部
  * @param {number} duration 滚动时间，单位ms
  */
 export function scrollToTop(duration = 300) {
-
-  const start = window.scrollY || window.scrollY;//pageYOffset;
-  const stop = document.body.getBoundingClientRect().top + start;
-  const distance = stop - start;
-  let timeStart;
-  let timeElapsed;
-  let next;
+  const start = window.scrollY || window.scrollY //pageYOffset;
+  const stop = document.body.getBoundingClientRect().top + start
+  const distance = stop - start
+  let timeStart
+  let timeElapsed
+  let next
   function loop(timeCurrent) {
     if (!timeStart) {
-      timeStart = timeCurrent;
+      timeStart = timeCurrent
     }
-    timeElapsed = timeCurrent - timeStart;
-    next = easeInOutQuad(timeElapsed, start, distance, duration);
-    window.scrollTo(0, next);
+    timeElapsed = timeCurrent - timeStart
+    next = easeInOutQuad(timeElapsed, start, distance, duration)
+    window.scrollTo(0, next)
     if (timeElapsed < duration) {
-      window.requestAnimationFrame(loop);
+      window.requestAnimationFrame(loop)
     } else {
-      window.scrollTo(0, start + distance);
-      timeStart = false;
+      window.scrollTo(0, start + distance)
+      timeStart = false
     }
   }
-  window.requestAnimationFrame(loop);
+  window.requestAnimationFrame(loop)
 }
 /**
  * 水平滚动元素
@@ -560,53 +560,53 @@ export function scrollToTop(duration = 300) {
  * @param {function} options.callback 滚动结束后的回调函数
  */
 export function scrollHorizontal(element, options) {
-  const duration = options.duration || 500;
-  const offset = options.offset || 0;
-  const { callback } = options;
-  const start = element.scrollLeft;
-  let timeStart;
-  let timeElapsed;
-  let next;
+  const duration = options.duration || 500
+  const offset = options.offset || 0
+  const { callback } = options
+  const start = element.scrollLeft
+  let timeStart
+  let timeElapsed
+  let next
   function loop(timeCurrent) {
     if (!timeStart) {
-      timeStart = timeCurrent;
+      timeStart = timeCurrent
     }
-    timeElapsed = timeCurrent - timeStart;
-    next = easeInOutQuad(timeElapsed, start, offset, duration);
-    element.scrollLeft = next;
+    timeElapsed = timeCurrent - timeStart
+    next = easeInOutQuad(timeElapsed, start, offset, duration)
+    element.scrollLeft = next
     if (timeElapsed < duration) {
-      window.requestAnimationFrame(loop);
+      window.requestAnimationFrame(loop)
     } else {
       // 滚动结束后，纠正误差
-      element.scrollLeft = start + offset;
+      element.scrollLeft = start + offset
       if (callback) {
-        callback();
+        callback()
       }
-      timeStart = false;
+      timeStart = false
     }
   }
-  window.requestAnimationFrame(loop);
+  window.requestAnimationFrame(loop)
 }
 /**
  * 是否为tauri环境。第三方开发主题无法使用！！！
  * @returns {bool} true为tauri环境，false为非tauri环境
  */
 export function IsTauri() {
-  return Is_Tauri;
+  return Is_Tauri
 }
 /**
  * 是否为electron环境。第三方开发主题无法使用！！！
  * @returns {bool} true为electron环境，false为非electron环境
  */
 export function IsElectron() {
-  return Is_Electron;
+  return Is_Electron
 }
 /**
  * 是否为移动端应用环境。第三方开发主题无法使用！！！
  * @returns {bool} true为移动端应用环境，false为非移动端应用环境
  */
 export function IsMobileApp() {
-  return Is_MobileApp;
+  return Is_MobileApp
 }
 /**
  * 设置客户端主题，将主题名称保存到cookie由服务端输出。由于cookies不可用，请自行替换此方法
@@ -617,11 +617,11 @@ export function SwitchClientTheme(value) {
     console.log(`window-set-client-theme-${value}`)
     return false
   }
-  cookies.set('theme', value);
+  cookies.set('theme', value)
   if (cookies.get('theme') !== '') {
-    return true;
+    return true
   }
-  return false;
+  return false
 }
 /**
  * 切换electron窗口。第三方开发主题无法使用！！！
@@ -653,7 +653,7 @@ export async function OnWindowOpen(type) {
         console.log('window-top-cancel')
         break
     }
-    return;
+    return
   } else if (IsTauri()) {
     switch (type) {
       case 'window-open-admin':
@@ -661,19 +661,19 @@ export async function OnWindowOpen(type) {
       case 'window-open-home':
         break
       case 'window-min':
-        await getCurrentWindow().minimize();
+        await getCurrentWindow().minimize()
         break
       case 'window-max':
-        await getCurrentWindow().toggleMaximize();
+        await getCurrentWindow().toggleMaximize()
         break
       case 'window-close':
-        await getCurrentWindow().close();
+        await getCurrentWindow().close()
         break
       case 'window-top':
-        await getCurrentWindow().setAlwaysOnTop(true);
+        await getCurrentWindow().setAlwaysOnTop(true)
         break
       case 'window-top-cancel':
-        await getCurrentWindow().setAlwaysOnTop(false);
+        await getCurrentWindow().setAlwaysOnTop(false)
         break
     }
     return
@@ -689,7 +689,7 @@ export async function OnWindowOpen(type) {
 export function stringToBase64(str) {
   // 注意：btoa 只支持 Latin1（即单字节字符），如果字符串包含非 Latin1 字符（如中文），需要先转成 UTF-8 字节数组
   // return btoa(unescape(encodeURIComponent(str)));
-  return btoa(String.fromCharCode(...new TextEncoder().encode(str)));
+  return btoa(String.fromCharCode(...new TextEncoder().encode(str)))
 }
 /**
  * 将Base64编码的字符串转换为普通字符串
@@ -698,7 +698,7 @@ export function stringToBase64(str) {
  */
 export function base64ToString(base64Str) {
   // return decodeURIComponent(escape(atob(base64Str)));
-  return new TextDecoder().decode(new Uint8Array([...atob(base64Str)].map(c => c.charCodeAt(0))));
+  return new TextDecoder().decode(new Uint8Array([...atob(base64Str)].map((c) => c.charCodeAt(0))))
 }
 /**
  * 获取Cookie。第三方开发主题无法使用！！！
@@ -706,7 +706,7 @@ export function base64ToString(base64Str) {
  * @returns {String} Cookie值
  */
 export function GetCookie(name) {
-  return cookies.get(name);
+  return cookies.get(name)
 }
 /**
  * 设置Cookie。第三方开发主题无法使用！！！
@@ -716,7 +716,7 @@ export function GetCookie(name) {
  * @returns {String} Cookie值
  */
 export function SetCookie(name, value, options) {
-  return cookies.set(name, value, options);
+  return cookies.set(name, value, options)
 }
 /**
  * 检查更新
@@ -725,8 +725,8 @@ export function SetCookie(name, value, options) {
 export async function CheckUpdate({ user_token }) {
   const response = await axios.post('/api/core/update/check', {
     user_token: user_token,
-  });
-  return response;
+  })
+  return response
 }
 /**
  * 开始更新
@@ -735,45 +735,50 @@ export async function CheckUpdate({ user_token }) {
 export async function StartUpdate({ user_token }) {
   const response = await axios.post('/api/core/update/start', {
     user_token: user_token,
-  });
-  return response;
+  })
+  return response
 }
 /**
  * 获取基本url
  * @returns 基本url
  */
 export function GetBaseUrl() {
-  return axios.defaults.baseURL === undefined ? '' : axios.defaults.baseURL;
+  return axios.defaults.baseURL === undefined ? '' : axios.defaults.baseURL
 }
 /**
  * @description 获取用户token
  * @returns {String} user_token 用户token
  */
 export function GetUserToken() {
-  return GetCookie('user_token') || localStorage.getItem('user_token') || document.cookie.replace(/(?:(?:^|.*;\s*)user_token\s*\=\s*([^;]*).*$)|^.*$/, "$1") || '';
+  return (
+    GetCookie('user_token') ||
+    localStorage.getItem('user_token') ||
+    document.cookie.replace(/(?:(?:^|.*;\s*)user_token\s*\=\s*([^;]*).*$)|^.*$/, '$1') ||
+    ''
+  )
 }
 /**
  * @description 设置用户token
  * @param {String} user_token 用户token
- * @returns {Void} 
+ * @returns {Void}
  */
 export function SetUserToken(user_token) {
-  SetCookie('user_token', user_token, '1d');
-  localStorage.setItem('user_token', user_token);
+  SetCookie('user_token', user_token, '1d')
+  localStorage.setItem('user_token', user_token)
 }
 /**
  * @description 删除用户token
- * @returns {Void} 
+ * @returns {Void}
  */
 export function RemoveUserToken() {
-  cookies.remove('user_token');
+  cookies.remove('user_token')
   // document.cookie = 'user_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
-  localStorage.removeItem('user_token');
+  localStorage.removeItem('user_token')
 }
 /**
  * 获取数据
- * @param {String} type 
- * @param {Object} data 
+ * @param {String} type
+ * @param {Object} data
  * @returns {Object} response
  */
 export async function GetDatas(type, data) {
@@ -788,12 +793,12 @@ export async function GetDatas(type, data) {
     'replys',
     'reports',
     'user_groups',
-  ];
+  ]
   if (typeArr.indexOf(type) === -1) {
-    return null;
+    return null
   }
-  const response = await axios.post('/api/' + type + '/get', data);
-  return response;
+  const response = await axios.post('/api/' + type + '/get', data)
+  return response
 }
 /**
  * 删除数据
@@ -812,12 +817,12 @@ export async function DeleteDatas(type, data) {
     'replys',
     'reports',
     'user_groups',
-  ];
+  ]
   if (typeArr.indexOf(type) === -1) {
-    return null;
+    return null
   }
-  const response = await axios.post('/api/' + type + '/delete', data);
-  return response;
+  const response = await axios.post('/api/' + type + '/delete', data)
+  return response
 }
 //以下为获取SEO内容接口
 /**
@@ -826,11 +831,11 @@ export async function DeleteDatas(type, data) {
  */
 export function Get_G_INDEX_TEXT_PLAYERS() {
   if (window.G_INDEX_TEXT_PLAYERS !== null && window.G_INDEX_TEXT_PLAYERS !== undefined) {
-    const data = window.G_INDEX_TEXT_PLAYERS;
-    window.G_INDEX_TEXT_PLAYERS = null;
-    return data;
+    const data = window.G_INDEX_TEXT_PLAYERS
+    window.G_INDEX_TEXT_PLAYERS = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取首页话题列表
@@ -838,11 +843,11 @@ export function Get_G_INDEX_TEXT_PLAYERS() {
  */
 export function Get_G_INDEX_TOPICS() {
   if (window.G_INDEX_TOPICS !== null && window.G_INDEX_TOPICS !== undefined) {
-    const data = window.G_INDEX_TOPICS;
-    window.G_INDEX_TOPICS = null;
-    return data;
+    const data = window.G_INDEX_TOPICS
+    window.G_INDEX_TOPICS = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取首页最新问题列表
@@ -850,11 +855,11 @@ export function Get_G_INDEX_TOPICS() {
  */
 export function Get_G_INDEX_QUESTIONS_RECENT() {
   if (window.G_INDEX_QUESTIONS_RECENT !== null && window.G_INDEX_QUESTIONS_RECENT !== undefined) {
-    const data = window.G_INDEX_QUESTIONS_RECENT;
-    window.G_INDEX_QUESTIONS_RECENT = null;
-    return data;
+    const data = window.G_INDEX_QUESTIONS_RECENT
+    window.G_INDEX_QUESTIONS_RECENT = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取首页热门问题列表
@@ -862,11 +867,11 @@ export function Get_G_INDEX_QUESTIONS_RECENT() {
  */
 export function Get_G_INDEX_QUESTIONS_POPULAR() {
   if (window.G_INDEX_QUESTIONS_POPULAR !== null && window.G_INDEX_QUESTIONS_POPULAR !== undefined) {
-    const data = window.G_INDEX_QUESTIONS_POPULAR;
-    window.G_INDEX_QUESTIONS_POPULAR = null;
-    return data;
+    const data = window.G_INDEX_QUESTIONS_POPULAR
+    window.G_INDEX_QUESTIONS_POPULAR = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取首页最新文章列表
@@ -874,11 +879,11 @@ export function Get_G_INDEX_QUESTIONS_POPULAR() {
  */
 export function Get_G_INDEX_ARTICLES_RECENT() {
   if (window.G_INDEX_ARTICLES_RECENT !== null && window.G_INDEX_ARTICLES_RECENT !== undefined) {
-    const data = window.G_INDEX_ARTICLES_RECENT;
-    window.G_INDEX_ARTICLES_RECENT = null;
-    return data;
+    const data = window.G_INDEX_ARTICLES_RECENT
+    window.G_INDEX_ARTICLES_RECENT = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取首页热门文章列表
@@ -886,11 +891,11 @@ export function Get_G_INDEX_ARTICLES_RECENT() {
  */
 export function Get_G_INDEX_ARTICLES_POPULAR() {
   if (window.G_INDEX_ARTICLES_POPULAR !== null && window.G_INDEX_ARTICLES_POPULAR !== undefined) {
-    const data = window.G_INDEX_ARTICLES_POPULAR;
-    window.G_INDEX_ARTICLES_POPULAR = null;
-    return data;
+    const data = window.G_INDEX_ARTICLES_POPULAR
+    window.G_INDEX_ARTICLES_POPULAR = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取首页最新用户列表
@@ -898,11 +903,11 @@ export function Get_G_INDEX_ARTICLES_POPULAR() {
  */
 export function Get_G_INDEX_USERS_RECENT() {
   if (window.G_INDEX_USERS_RECENT !== null && window.G_INDEX_USERS_RECENT !== undefined) {
-    const data = window.G_INDEX_USERS_RECENT;
-    window.G_INDEX_USERS_RECENT = null;
-    return data;
+    const data = window.G_INDEX_USERS_RECENT
+    window.G_INDEX_USERS_RECENT = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取首页热门用户列表
@@ -910,11 +915,11 @@ export function Get_G_INDEX_USERS_RECENT() {
  */
 export function Get_G_INDEX_USERS_POPULAR() {
   if (window.G_INDEX_USERS_POPULAR !== null && window.G_INDEX_USERS_POPULAR !== undefined) {
-    const data = window.G_INDEX_USERS_POPULAR;
-    window.G_INDEX_USERS_POPULAR = null;
-    return data;
+    const data = window.G_INDEX_USERS_POPULAR
+    window.G_INDEX_USERS_POPULAR = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取推荐话题列表
@@ -922,11 +927,11 @@ export function Get_G_INDEX_USERS_POPULAR() {
  */
 export function Get_G_TOPICS_RECOMMENDED() {
   if (window.G_TOPICS_RECOMMENDED !== null && window.G_TOPICS_RECOMMENDED !== undefined) {
-    const data = window.G_TOPICS_RECOMMENDED;
-    window.G_TOPICS_RECOMMENDED = null;
-    return data;
+    const data = window.G_TOPICS_RECOMMENDED
+    window.G_TOPICS_RECOMMENDED = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取话题
@@ -934,11 +939,11 @@ export function Get_G_TOPICS_RECOMMENDED() {
  */
 export function Get_G_TOPIC() {
   if (window.G_TOPIC !== null && window.G_TOPIC !== undefined) {
-    const data = window.G_TOPIC;
-    window.G_TOPIC = null;
-    return data;
+    const data = window.G_TOPIC
+    window.G_TOPIC = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取最新问题列表
@@ -946,11 +951,11 @@ export function Get_G_TOPIC() {
  */
 export function Get_G_QUESTIONS_RECENT() {
   if (window.G_QUESTIONS_RECENT !== null && window.G_QUESTIONS_RECENT !== undefined) {
-    const data = window.G_QUESTIONS_RECENT;
-    window.G_QUESTIONS_RECENT = null;
-    return data;
+    const data = window.G_QUESTIONS_RECENT
+    window.G_QUESTIONS_RECENT = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取热门问题列表
@@ -958,11 +963,11 @@ export function Get_G_QUESTIONS_RECENT() {
  */
 export function Get_G_QUESTIONS_POPULAR() {
   if (window.G_QUESTIONS_POPULAR !== null && window.G_QUESTIONS_POPULAR !== undefined) {
-    const data = window.G_QUESTIONS_POPULAR;
-    window.G_QUESTIONS_POPULAR = null;
-    return data;
+    const data = window.G_QUESTIONS_POPULAR
+    window.G_QUESTIONS_POPULAR = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取问题
@@ -970,11 +975,11 @@ export function Get_G_QUESTIONS_POPULAR() {
  */
 export function Get_G_QUESTION() {
   if (window.G_QUESTION !== null && window.G_QUESTION !== undefined) {
-    const data = window.G_QUESTION;
-    window.G_QUESTION = null;
-    return data;
+    const data = window.G_QUESTION
+    window.G_QUESTION = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取问题回答列表
@@ -982,11 +987,11 @@ export function Get_G_QUESTION() {
  */
 export function Get_G_QUESTION_ANSWERS() {
   if (window.G_QUESTION_ANSWERS !== null && window.G_QUESTION_ANSWERS !== undefined) {
-    const data = window.G_QUESTION_ANSWERS;
-    window.G_QUESTION_ANSWERS = null;
-    return data;
+    const data = window.G_QUESTION_ANSWERS
+    window.G_QUESTION_ANSWERS = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取最新文章列表
@@ -994,11 +999,11 @@ export function Get_G_QUESTION_ANSWERS() {
  */
 export function Get_G_ARTICLES_RECENT() {
   if (window.G_ARTICLES_RECENT !== null && window.G_ARTICLES_RECENT !== undefined) {
-    const data = window.G_ARTICLES_RECENT;
-    window.G_ARTICLES_RECENT = null;
-    return data;
+    const data = window.G_ARTICLES_RECENT
+    window.G_ARTICLES_RECENT = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取热门文章列表
@@ -1006,11 +1011,11 @@ export function Get_G_ARTICLES_RECENT() {
  */
 export function Get_G_ARTICLES_POPULAR() {
   if (window.G_ARTICLES_POPULAR !== null && window.G_ARTICLES_POPULAR !== undefined) {
-    const data = window.G_ARTICLES_POPULAR;
-    window.G_ARTICLES_POPULAR = null;
-    return data;
+    const data = window.G_ARTICLES_POPULAR
+    window.G_ARTICLES_POPULAR = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取文章
@@ -1018,11 +1023,11 @@ export function Get_G_ARTICLES_POPULAR() {
  */
 export function Get_G_ARTICLE() {
   if (window.G_ARTICLE !== null && window.G_ARTICLE !== undefined) {
-    const data = window.G_ARTICLE;
-    window.G_ARTICLE = null;
-    return data;
+    const data = window.G_ARTICLE
+    window.G_ARTICLE = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取文章评论列表
@@ -1030,11 +1035,11 @@ export function Get_G_ARTICLE() {
  */
 export function Get_G_ARTICLE_COMMENTS() {
   if (window.G_ARTICLE_COMMENTS !== null && window.G_ARTICLE_COMMENTS !== undefined) {
-    const data = window.G_ARTICLE_COMMENTS;
-    window.G_ARTICLE_COMMENTS = null;
-    return data;
+    const data = window.G_ARTICLE_COMMENTS
+    window.G_ARTICLE_COMMENTS = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取用户
@@ -1042,11 +1047,11 @@ export function Get_G_ARTICLE_COMMENTS() {
  */
 export function Get_G_USER() {
   if (window.G_USER !== null && window.G_USER !== undefined) {
-    const data = window.G_USER;
-    window.G_USER = null;
-    return data;
+    const data = window.G_USER
+    window.G_USER = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取用户问题列表
@@ -1054,11 +1059,11 @@ export function Get_G_USER() {
  */
 export function Get_G_USER_QUESTIONS() {
   if (window.G_USER_QUESTIONS !== null && window.G_USER_QUESTIONS !== undefined) {
-    const data = window.G_USER_QUESTIONS;
-    window.G_USER_QUESTIONS = null;
-    return data;
+    const data = window.G_USER_QUESTIONS
+    window.G_USER_QUESTIONS = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取用户回答列表
@@ -1066,11 +1071,11 @@ export function Get_G_USER_QUESTIONS() {
  */
 export function Get_G_USER_ANSWERS() {
   if (window.G_USER_ANSWERS !== null && window.G_USER_ANSWERS !== undefined) {
-    const data = window.G_USER_ANSWERS;
-    window.G_USER_ANSWERS = null;
-    return data;
+    const data = window.G_USER_ANSWERS
+    window.G_USER_ANSWERS = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取用户文章列表
@@ -1078,11 +1083,11 @@ export function Get_G_USER_ANSWERS() {
  */
 export function Get_G_USER_ARTICLES() {
   if (window.G_USER_ARTICLES !== null && window.G_USER_ARTICLES !== undefined) {
-    const data = window.G_USER_ARTICLES;
-    window.G_USER_ARTICLES = null;
-    return data;
+    const data = window.G_USER_ARTICLES
+    window.G_USER_ARTICLES = null
+    return data
   }
-  return null;
+  return null
 }
 /**
  * @description 获取推荐用户列表
@@ -1090,11 +1095,11 @@ export function Get_G_USER_ARTICLES() {
  */
 export function Get_G_USERS_RECOMMENDED() {
   if (window.G_USERS_RECOMMENDED !== null && window.G_USERS_RECOMMENDED !== undefined) {
-    const data = window.G_USERS_RECOMMENDED;
-    window.G_USERS_RECOMMENDED = null;
-    return data;
+    const data = window.G_USERS_RECOMMENDED
+    window.G_USERS_RECOMMENDED = null
+    return data
   }
-  return null;
+  return null
 }
 //以下为UI客户端接口
 /**
@@ -1103,9 +1108,9 @@ export function Get_G_USERS_RECOMMENDED() {
  * @returns {Promise<String>} img_url 图片地址
  */
 export async function GetImageCaptcha() {
-  const img_url = axios.defaults.baseURL !== undefined ? axios.defaults.baseURL : '';
-  const captcha = img_url + '/api/user/image_captcha/' + new Date().getTime();
-  return captcha;
+  const img_url = axios.defaults.baseURL !== undefined ? axios.defaults.baseURL : ''
+  const captcha = img_url + '/api/user/image_captcha/' + new Date().getTime()
+  return captcha
 }
 /**
  * @description 设置激活码
@@ -1113,28 +1118,23 @@ export async function GetImageCaptcha() {
  * @param {String} site_activation_key 站点激活码
  * @returns {Promise} response 返回的响应
  */
-export async function SetActivationKey({
-  user_token,
-  site_activation_key
-}) {
+export async function SetActivationKey({ user_token, site_activation_key }) {
   const response = await axios.post('/api/option/set/site_activation_key', {
     user_token,
-    site_activation_key
-  });
-  return response;
+    site_activation_key,
+  })
+  return response
 }
 /**
  * @description 获取激活码
  * @param {String} user_token 用户token
  * @returns {Promise} response 返回的响应
  */
-export async function GetActivationKey({
-  user_token
-}) {
+export async function GetActivationKey({ user_token }) {
   const response = await axios.post('/api/option/get/site_activation_key', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @typedef {Object} InfoData
@@ -1153,8 +1153,8 @@ export async function GetActivationKey({
 export async function GetInfoData() {
   const response = await axios.post('/api/option/get/info', {
     // user_token
-  });
-  return response;
+  })
+  return response
 }
 /**
  * @description 设置信息设置
@@ -1162,14 +1162,12 @@ export async function GetInfoData() {
  * @param {String} user_token 用户token
  * @returns {Promise<{is_set: Boolean}>}
  */
-export async function SetInfoData({
-  form_data, user_token
-}) {
+export async function SetInfoData({ form_data, user_token }) {
   const response = await axios.post('/api/option/set/info', {
     form_data,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @typedef {Object} MailData
@@ -1186,13 +1184,11 @@ export async function SetInfoData({
  * @param {String} user_token 用户token
  * @returns {Promise<MailData>}
  */
-export async function GetMailData({
-  user_token
-}) {
+export async function GetMailData({ user_token }) {
   const response = await axios.post('/api/option/get/mail', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 设置邮件设置
@@ -1200,15 +1196,12 @@ export async function GetMailData({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_set: Boolean}>}
  */
-export async function SetMailData({
-  form_data,
-  user_token
-}) {
+export async function SetMailData({ form_data, user_token }) {
   const response = await axios.post('/api/option/set/mail', {
     form_data,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取主题配置
@@ -1216,15 +1209,12 @@ export async function SetMailData({
  * @param {String} theme_name 主题名称
  * @returns {Promise<{is_get: Boolean, themes: Array}>}
  */
-export async function GetThemeSettingColor({
-  user_token,
-  theme_name
-}) {
+export async function GetThemeSettingColor({ user_token, theme_name }) {
   const response = await axios.post('/api/option/get/theme/setting_color', {
     user_token,
-    theme_name
-  });
-  return response;
+    theme_name,
+  })
+  return response
 }
 /**
  * @description 设置主题配置
@@ -1233,38 +1223,32 @@ export async function GetThemeSettingColor({
  * @param {Array} theme_color 主题配置
  * @returns {Promise<{is_set: Boolean}>}
  */
-export async function SetThemeSettingColor({
-  user_token,
-  theme_name,
-  theme_color
-}) {
+export async function SetThemeSettingColor({ user_token, theme_name, theme_color }) {
   const response = await axios.post('/api/option/set/theme/setting_color', {
     user_token,
     theme_name,
-    theme_color
-  });
-  return response;
+    theme_color,
+  })
+  return response
 }
 /**
  * @description 获取主题设置
  * @param {String} user_token 用户token
  * @returns {Promise} [{path，files}，...]
  */
-export async function GetThemeData({
-  user_token
-}) {
+export async function GetThemeData({ user_token }) {
   const response = await axios.post('/api/option/get/theme', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取当前主题
  * @returns {Promise<{is_get: Boolean, theme: String}>}
  */
 export async function GetCurrentTheme() {
-  const response = await axios.post('/api/option/get/theme_current');
-  return response;
+  const response = await axios.post('/api/option/get/theme_current')
+  return response
 }
 /**
  * @description 设置当前主题
@@ -1272,28 +1256,23 @@ export async function GetCurrentTheme() {
  * @param {String} user_token 用户token
  * @returns {Promise<{is_set: Boolean}>}
  */
-export async function SetCurrentTheme({
-  theme_name,
-  user_token
-}) {
+export async function SetCurrentTheme({ theme_name, user_token }) {
   const response = await axios.post('/api/option/set/theme_current', {
     theme_name,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * 获取所有的配置信息
  * @param {String} user_token 用户token
  * @returns {Promise} response 返回的响应
  */
-export async function GetAllOptions({
-  user_token
-}) {
+export async function GetAllOptions({ user_token }) {
   const response = await axios.post('/api/option/get/all', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * 获取指定的配置信息
@@ -1301,15 +1280,12 @@ export async function GetAllOptions({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean, value: String}>}
  */
-export async function GetOption({
-  name,
-  user_token
-}) {
+export async function GetOption({ name, user_token }) {
   const response = await axios.post('/api/option/get', {
     name,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * 获取oauth配置信息
@@ -1317,23 +1293,18 @@ export async function GetOption({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean, value: String}>}
  */
-export async function GetOauthOptions({
-  user_token
-}) {
+export async function GetOauthOptions({ user_token }) {
   const response = await axios.post('/api/options/get/oauth', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
-export async function SetOauthOptions({
-  user_token,
-  form_data
-}) {
+export async function SetOauthOptions({ user_token, form_data }) {
   const response = await axios.post('/api/options/set/oauth', {
     user_token,
-    form_data
-  });
-  return response;
+    form_data,
+  })
+  return response
 }
 /**
  * 设置指定的配置信息
@@ -1342,17 +1313,13 @@ export async function SetOauthOptions({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_set: Boolean}>}
  */
-export async function SetOption({
-  name,
-  value,
-  user_token
-}) {
+export async function SetOption({ name, value, user_token }) {
   const response = await axios.post('/api/option/set', {
     name,
     value,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 设置主题颜色参数
@@ -1360,28 +1327,23 @@ export async function SetOption({
  * @param {String} json_text json文本
  * @returns {Promise<{is_set: Boolean, json_text: String}>}
  */
-export async function SetThemeColorParamJson({
-  user_token,
-  json_text
-}) {
+export async function SetThemeColorParamJson({ user_token, json_text }) {
   const response = await axios.post('/api/option/set/theme_color_param', {
     user_token,
-    json_text
-  });
-  return response;
+    json_text,
+  })
+  return response
 }
 /**
  * @description 获取主题颜色参数
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean, json_text: String}>}
  */
-export async function GetThemeColorParamJson({
-  user_token
-}) {
+export async function GetThemeColorParamJson({ user_token }) {
   const response = await axios.post('/api/option/get/theme_color_param', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 设置主题打字机参数
@@ -1389,28 +1351,23 @@ export async function GetThemeColorParamJson({
  * @param {String} json_text json文本
  * @returns {Promise<{is_set: Boolean, json_text: String}>}
  */
-export async function SetThemeTypedParamJson({
-  user_token,
-  json_text
-}) {
+export async function SetThemeTypedParamJson({ user_token, json_text }) {
   const response = await axios.post('/api/option/set/theme_typed_param', {
     user_token,
-    json_text
-  });
-  return response;
+    json_text,
+  })
+  return response
 }
 /**
  * @description 获取主题打字机参数
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean, json_text: String}>}
  */
-export async function GetThemeTypedParamJson({
-  user_token
-}) {
+export async function GetThemeTypedParamJson({ user_token }) {
   const response = await axios.post('/api/option/get/theme_typed_param', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 设置轮播图参数
@@ -1418,28 +1375,23 @@ export async function GetThemeTypedParamJson({
  * @param {String} json_text json文本
  * @returns {Promise<{is_set: Boolean, json_text: String}>}
  */
-export async function SetThemeCarouselParamJson({
-  user_token,
-  json_text
-}) {
+export async function SetThemeCarouselParamJson({ user_token, json_text }) {
   const response = await axios.post('/api/option/set/theme_carousel_param', {
     user_token,
-    json_text
-  });
-  return response;
+    json_text,
+  })
+  return response
 }
 /**
  * @description 获取轮播图参数
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean, json_text: String}>}
  */
-export async function GetThemeCarouselParamJson({
-  user_token
-}) {
+export async function GetThemeCarouselParamJson({ user_token }) {
   const response = await axios.post('/api/option/get/theme_carousel_param', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 用户头像重置
@@ -1447,15 +1399,12 @@ export async function GetThemeCarouselParamJson({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_reset: Boolean,user: UserModel}>}
  */
-export async function ResetAvatar({
-  user_id,
-  user_token
-}) {
+export async function ResetAvatar({ user_id, user_token }) {
   const response = await axios.post('/api/user/avatar/reset', {
     user_id,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 用户封面重置
@@ -1463,15 +1412,12 @@ export async function ResetAvatar({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_reset: Boolean,user: UserModel}>}
  */
-export async function ResetCover({
-  user_id,
-  user_token
-}) {
+export async function ResetCover({ user_id, user_token }) {
   const response = await axios.post('/api/user/cover/reset', {
     user_id,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取邮箱验证码
@@ -1479,34 +1425,30 @@ export async function ResetCover({
  * @param {String} lang 语言-可选-发送给对象邮箱的内容语言
  * @returns {Promise<{is_send: Boolean}>}
  */
-export async function GetEmailCaptcha(
-  email, lang
-) {
+export async function GetEmailCaptcha(email, lang) {
   // email = btoa(email);
   // lang = btoa(lang);
   // email = Buffer.from(email).toString('base64');
   // lang = Buffer.from(lang).toString('base64');
 
-  email = stringToBase64(email);
-  lang = stringToBase64(lang);
+  email = stringToBase64(email)
+  lang = stringToBase64(lang)
   const response = await axios.post('/api/user/email_captcha', {
     email,
-    lang
-  });
-  return response;
+    lang,
+  })
+  return response
 }
 /**
  * @description Token自动登录
  * @param {String} user_token 用户token
  * @returns {Promise<{is_login: Boolean,user: UserModelInfo}>}
  */
-export async function AutoLogin(
-  user_token
-) {
+export async function AutoLogin(user_token) {
   const response = await axios.post('/api/user/auto_login', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 注册
@@ -1517,13 +1459,7 @@ export async function AutoLogin(
  * @param {String} language 语言
  * @returns {Promise<{is_add: Boolean}>}
  */
-export async function Register({
-  username,
-  email,
-  password,
-  email_captcha,
-  language
-}) {
+export async function Register({ username, email, password, email_captcha, language }) {
   // email = btoa(email);
   // password = btoa(password);
   // email_captcha = btoa(email_captcha);
@@ -1531,17 +1467,17 @@ export async function Register({
   // password = Buffer.from(password).toString('base64');
   // email_captcha = Buffer.from(email_captcha).toString('base64');
 
-  email = stringToBase64(email);
-  password = stringToBase64(password);
-  email_captcha = stringToBase64(email_captcha);
+  email = stringToBase64(email)
+  password = stringToBase64(password)
+  email_captcha = stringToBase64(email_captcha)
   const response = await axios.post('/api/user/register', {
     username,
     email,
     password,
     email_captcha,
-    language
-  });
-  return response;
+    language,
+  })
+  return response
 }
 /**
  * @description 登录-使用Login获得 user_token 后-使用AutoLogin(user_token)进行登录来获取用户对象
@@ -1550,24 +1486,20 @@ export async function Register({
  * @param {String} image_capthca 图片验证码-可为空-5分钟有效-建议密码错误三次后请求<GetImageCaptcha>方法获取图片验证码-随后一起提交。
  * @returns {Promise<{is_login: Boolean,token: String}>}
  */
-export async function Login({
-  username_or_email,
-  password,
-  image_capthca
-}) {
+export async function Login({ username_or_email, password, image_capthca }) {
   // password = btoa(password);
   // image_capthca = image_capthca ? btoa(image_capthca) : '';
   // password = Buffer.from(password).toString('base64');
   // image_capthca = image_capthca ? Buffer.from(image_capthca).toString('base64') : '';
 
-  password = stringToBase64(password);
-  image_capthca = image_capthca ? stringToBase64(image_capthca) : '';
+  password = stringToBase64(password)
+  image_capthca = image_capthca ? stringToBase64(image_capthca) : ''
   const response = await axios.post('/api/user/login', {
     username_or_email,
     password,
-    image_capthca
-  });
-  return response;
+    image_capthca,
+  })
+  return response
 }
 /**
  * @description 重置密码
@@ -1576,11 +1508,7 @@ export async function Login({
  * @param {String} email_captcha 邮箱验证码 使用 GetEmailCaptcha(email, lang)
  * @returns {Promise<{is_reset: Boolean}>}
  */
-export async function Reset({
-  email,
-  password,
-  email_captcha
-}) {
+export async function Reset({ email, password, email_captcha }) {
   // email = btoa(email);
   // password = btoa(password);
   // email_captcha = btoa(email_captcha);
@@ -1589,15 +1517,15 @@ export async function Reset({
   // password = Buffer.from(password).toString('base64');
   // email_captcha = Buffer.from(email_captcha).toString('base64');
 
-  email = stringToBase64(email);
-  password = stringToBase64(password);
-  email_captcha = stringToBase64(email_captcha);
+  email = stringToBase64(email)
+  password = stringToBase64(password)
+  email_captcha = stringToBase64(email_captcha)
   const response = await axios.post('/api/user/reset', {
     email,
     password,
-    email_captcha
-  });
-  return response;
+    email_captcha,
+  })
+  return response
 }
 /**
  * @typedef {Object} UserModelInfo
@@ -1611,15 +1539,12 @@ export async function Reset({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean,user: UserModelInfo}>} UserModel对于自己视角和他人视角的字段不同
  */
-export async function GetUser({
-  user_id,
-  user_token
-}) {
+export async function GetUser({ user_id, user_token }) {
   const response = await axios.post('/api/user/get', {
     user_id,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @typedef {Object} FollowButtonModel
@@ -1635,17 +1560,13 @@ export async function GetUser({
  * @param {String} followable_id 关注ID
  * @returns {Promise<FollowButtonModel>} 关注按钮模型
  */
-export async function Follow({
-  user_token,
-  followable_type,
-  followable_id
-}) {
+export async function Follow({ user_token, followable_type, followable_id }) {
   const response = await axios.post('/api/user/follow', {
     user_token,
     followable_type,
-    followable_id
-  });
-  return response;
+    followable_id,
+  })
+  return response
 }
 /**
  * @description 获取关注按钮联系人列表
@@ -1654,17 +1575,13 @@ export async function Follow({
  * @param {Number} per_page 每页数量
  * @returns {Promise} response 返回的响应
  */
-export async function GetFollowMutualAttentionList({
-  user_token,
-  page,
-  per_page
-}) {
+export async function GetFollowMutualAttentionList({ user_token, page, per_page }) {
   const response = await axios.post('/api/user/follow/contacts', {
     user_token,
     page,
-    per_page
-  });
-  return response;
+    per_page,
+  })
+  return response
 }
 /**
  * @description 编辑用户信息
@@ -1678,7 +1595,7 @@ export async function GetFollowMutualAttentionList({
  * @param {String} bio 简介
  * @param {String} user_token 用户token
  * @param {String} edit_target_user_id 编辑目标用户ID
- * @returns {Promise<{is_edit: Boolean,user: UserModelInfo}>} 
+ * @returns {Promise<{is_edit: Boolean,user: UserModelInfo}>}
  */
 export async function EditInfo({
   email,
@@ -1690,7 +1607,7 @@ export async function EditInfo({
   location,
   bio,
   user_token,
-  edit_target_user_id
+  edit_target_user_id,
 }) {
   const response = await axios.post('/api/user/editinfo', {
     email,
@@ -1702,41 +1619,35 @@ export async function EditInfo({
     location,
     bio,
     user_token,
-    edit_target_user_id
-  });
-  return response;
+    edit_target_user_id,
+  })
+  return response
 }
 /**
  * @description 上传用户头像
  * @param {String} user_token 用户token
  * @param {String} avatar 头像
- * @returns {Promise<{is_upload: Boolean,user: UserModelInfo}>} 
+ * @returns {Promise<{is_upload: Boolean,user: UserModelInfo}>}
  */
-export async function UploadAvatar({
-  user_token,
-  avatar
-}) {
+export async function UploadAvatar({ user_token, avatar }) {
   const response = await axios.post('/api/user/avatar/upload', {
     user_token,
-    avatar
-  });
-  return response;
+    avatar,
+  })
+  return response
 }
 /**
  * @description 上传用户封面
  * @param {String} user_token 用户token
  * @param {String} cover 封面
- * @returns {Promise<{is_upload: Boolean,user: UserModelInfo}>} 
+ * @returns {Promise<{is_upload: Boolean,user: UserModelInfo}>}
  */
-export async function UploadCover({
-  user_token,
-  cover
-}) {
+export async function UploadCover({ user_token, cover }) {
   const response = await axios.post('/api/user/cover/upload', {
     user_token,
-    cover
-  });
-  return response;
+    cover,
+  })
+  return response
 }
 // 'is_get' => false,
 //       'data' => null,
@@ -1779,19 +1690,14 @@ export async function UploadCover({
  * @param {String} user_token 用户token
  * @returns {Promise<DataAndPagination>}
  */
-export async function GetUserQuestions({
-  user_id,
-  order,
-  page,
-  user_token
-}) {
+export async function GetUserQuestions({ user_id, order, page, user_token }) {
   const response = await axios.post('/api/user/questions/get', {
     user_id,
     order,
     page,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取用户回答列表
@@ -1801,19 +1707,14 @@ export async function GetUserQuestions({
  * @param {String} user_token 用户token
  * @returns {Promise<DataAndPagination>}
  */
-export async function GetUserAnswers({
-  user_id,
-  order,
-  page,
-  user_token
-}) {
+export async function GetUserAnswers({ user_id, order, page, user_token }) {
   const response = await axios.post('/api/user/answers/get', {
     user_id,
     order,
     page,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取用户文章列表
@@ -1823,39 +1724,30 @@ export async function GetUserAnswers({
  * @param {String} user_token 用户token
  * @returns {Promise<DataAndPagination>}
  */
-export async function GetUserArticles({
-  user_id,
-  order,
-  page,
-  user_token
-}) {
+export async function GetUserArticles({ user_id, order, page, user_token }) {
   const response = await axios.post('/api/user/articles/get', {
     user_id,
     order,
     page,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 用户上传图片
  * @param {String} user_token 用户token
  * @param {String} type 类型 question, answer, article
  * @param {String} image 图片
- * @returns {Promise<{is_upload: Boolean,user: UserModelInfo}>} 
+ * @returns {Promise<{is_upload: Boolean,user: UserModelInfo}>}
  */
-export async function UploadImage({
-  user_token,
-  type,
-  image
-}) {
-  const img_url = axios.defaults.baseURL !== undefined ? axios.defaults.baseURL : '';
+export async function UploadImage({ user_token, type, image }) {
+  const img_url = axios.defaults.baseURL !== undefined ? axios.defaults.baseURL : ''
   const response = await axios.post(img_url + '/api/user/upload/image', {
     user_token,
     type,
-    image
-  });
-  return response;
+    image,
+  })
+  return response
 }
 /**
  * @description 获取用户通知列表
@@ -1865,19 +1757,14 @@ export async function UploadImage({
  * @param {Number} per_page 每页数量
  * @returns {Promise<DataAndPagination>}
  */
-export async function GetUserInteractionNotifications({
-  user_token,
-  order,
-  page,
-  per_page
-}) {
+export async function GetUserInteractionNotifications({ user_token, order, page, per_page }) {
   const response = await axios.post('/api/user/notifications/get', {
     user_token,
     order,
     page,
-    per_page
-  });
-  return response;
+    per_page,
+  })
+  return response
 }
 /**
  * @description 设置通知为删除状态
@@ -1885,28 +1772,23 @@ export async function GetUserInteractionNotifications({
  * @param {String} notification_id 通知ID
  * @returns {Promise<{is_set: Boolean,notification: NotificationModel}>}
  */
-export async function DeleteNotification({
-  user_token,
-  notification_id
-}) {
+export async function DeleteNotification({ user_token, notification_id }) {
   const response = await axios.post('/api/user/notification/delete', {
     user_token,
-    notification_id
-  });
-  return response;
+    notification_id,
+  })
+  return response
 }
 /**
  * @description 删除用户所有通知
  * @param {String} user_token 用户token
  * @returns {Promise<{is_delete: Boolean}>}
  */
-export async function DeleteAllNotifications({
-  user_token
-}) {
+export async function DeleteAllNotifications({ user_token }) {
   const response = await axios.post('/api/user/notifications/delete/all', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 设置用户语言
@@ -1914,15 +1796,12 @@ export async function DeleteAllNotifications({
  * @param {String} language 语言
  * @returns {Promise<{is_set: Boolean,user: UserModelInfo}>}
  */
-export async function SetUserLanguage({
-  user_token,
-  language
-}) {
+export async function SetUserLanguage({ user_token, language }) {
   const response = await axios.post('/api/user/set/language', {
     user_token,
-    language
-  });
-  return response;
+    language,
+  })
+  return response
 }
 /**
  * @description 获取用户列表
@@ -1944,7 +1823,7 @@ export async function GetUsers({
   per_page,
   search_keywords,
   search_field,
-  is_admin
+  is_admin,
 }) {
   const response = await axios.post('/api/users/get', {
     order,
@@ -1954,9 +1833,9 @@ export async function GetUsers({
     per_page,
     search_keywords,
     search_field,
-    is_admin
-  });
-  return response;
+    is_admin,
+  })
+  return response
 }
 /**
  * @description 设置用户组
@@ -1970,15 +1849,15 @@ export async function SetUsersUserGroup({
   user_token,
   user_group_id,
   old_user_group_id,
-  user_ids
+  user_ids,
 }) {
   const response = await axios.post('/api/users/user_group/set', {
     user_token,
     user_group_id,
     old_user_group_id,
-    user_ids
-  });
-  return response;
+    user_ids,
+  })
+  return response
 }
 /**
  * @description 设置用户禁用时间
@@ -1986,17 +1865,13 @@ export async function SetUsersUserGroup({
  * @param {Array} user_ids 用户ID列表
  * @returns {Promise<{is_delete: Boolean}>}
  */
-export async function SetUsersDisableTime({
-  user_token,
-  user_ids,
-  disable_time
-}) {
+export async function SetUsersDisableTime({ user_token, user_ids, disable_time }) {
   const response = await axios.post('/api/users/delete', {
     user_token,
     user_ids,
-    disable_time
-  });
-  return response;
+    disable_time,
+  })
+  return response
 }
 /**
  * @description 获取 关注对象 的 N个用户对象的列表 或 获取 用户对象 关注的 N个对象的列表
@@ -2007,21 +1882,15 @@ export async function SetUsersDisableTime({
  * @param {String} user_token 用户token
  * @returns {Promise<DataAndPagination>}
  */
-export async function GetFollows({
-  modes,
-  type,
-  followable_id,
-  page,
-  user_token
-}) {
+export async function GetFollows({ modes, type, followable_id, page, user_token }) {
   const response = await axios.post('/api/follows/get', {
     modes,
     type,
     followable_id,
     page,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 添加话题
@@ -2031,19 +1900,14 @@ export async function GetFollows({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_add: Boolean,topic: TopicModel}>}
  */
-export async function AddTopic({
-  title,
-  description,
-  cover,
-  user_token
-}) {
+export async function AddTopic({ title, description, cover, user_token }) {
   const response = await axios.post('/api/topic/add', {
     title,
     description,
     cover,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 编辑话题
@@ -2054,21 +1918,15 @@ export async function AddTopic({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_edit: Boolean,topic: TopicModel}>}
  */
-export async function EditTopic({
-  topic_id,
-  title,
-  description,
-  cover,
-  user_token
-}) {
+export async function EditTopic({ topic_id, title, description, cover, user_token }) {
   const response = await axios.post('/api/topic/edit', {
     topic_id,
     title,
     description,
     cover,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取话题
@@ -2076,15 +1934,12 @@ export async function EditTopic({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean,topic: TopicModel}>}
  */
-export async function GetTopic({
-  topic_id,
-  user_token
-}) {
+export async function GetTopic({ topic_id, user_token }) {
   const response = await axios.post('/api/topic/get', {
     topic_id,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取话题列表
@@ -2104,7 +1959,7 @@ export async function GetTopics({
   user_token,
   per_page,
   search_keywords,
-  search_field
+  search_field,
 }) {
   const response = await axios.post('/api/topics/get', {
     order,
@@ -2113,9 +1968,9 @@ export async function GetTopics({
     user_token,
     per_page,
     search_keywords,
-    search_field
-  });
-  return response;
+    search_field,
+  })
+  return response
 }
 /**
  * @description 删除话题
@@ -2123,15 +1978,12 @@ export async function GetTopics({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_delete: Boolean,delete_ids: Array,data:Array<TopicModel>}>}
  */
-export async function DeleteTopics({
-  topic_ids,
-  user_token
-}) {
+export async function DeleteTopics({ topic_ids, user_token }) {
   const response = await axios.post('/api/topics/delete', {
     topic_ids,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 添加问题
@@ -2147,16 +1999,16 @@ export async function AddQuestion({
   topics,
   content_markdown,
   content_rendered,
-  user_token
+  user_token,
 }) {
   const response = await axios.post('/api/question/add', {
     title,
     topics,
     content_markdown,
     content_rendered,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取问题
@@ -2164,15 +2016,12 @@ export async function AddQuestion({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean,question: QuestionModel}>}
  */
-export async function GetQuestion({
-  question_id,
-  user_token
-}) {
+export async function GetQuestion({ question_id, user_token }) {
   const response = await axios.post('/api/question/get', {
     question_id,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 编辑问题
@@ -2190,7 +2039,7 @@ export async function EditQuestion({
   topics,
   content_markdown,
   content_rendered,
-  user_token
+  user_token,
 }) {
   const response = await axios.post('/api/question/edit', {
     question_id,
@@ -2198,9 +2047,9 @@ export async function EditQuestion({
     topics,
     content_markdown,
     content_rendered,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取问题列表
@@ -2222,7 +2071,7 @@ export async function GetQuestions({
   per_page,
   search_keywords,
   search_field,
-  specify_topic_id
+  specify_topic_id,
 }) {
   const response = await axios.post('/api/questions/get', {
     order,
@@ -2232,9 +2081,9 @@ export async function GetQuestions({
     per_page,
     search_keywords,
     search_field,
-    specify_topic_id
-  });
-  return response;
+    specify_topic_id,
+  })
+  return response
 }
 /**
  * @description 删除问题
@@ -2242,15 +2091,12 @@ export async function GetQuestions({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_delete: Boolean,delete_ids: Array,data:Array<QuestionModel>}>}
  */
-export async function DeleteQuestions({
-  question_ids,
-  user_token
-}) {
+export async function DeleteQuestions({ question_ids, user_token }) {
   const response = await axios.post('/api/questions/delete', {
     question_ids,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 添加文章
@@ -2266,16 +2112,16 @@ export async function AddArticle({
   topics,
   content_markdown,
   content_rendered,
-  user_token
+  user_token,
 }) {
   const response = await axios.post('/api/article/add', {
     title,
     topics,
     content_markdown,
     content_rendered,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取文章
@@ -2283,15 +2129,12 @@ export async function AddArticle({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean,article: ArticleModel}>}
  */
-export async function GetArticle({
-  article_id,
-  user_token
-}) {
+export async function GetArticle({ article_id, user_token }) {
   const response = await axios.post('/api/article/get', {
     article_id,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 编辑文章
@@ -2309,7 +2152,7 @@ export async function EditArticle({
   topics,
   content_markdown,
   content_rendered,
-  user_token
+  user_token,
 }) {
   const response = await axios.post('/api/article/edit', {
     article_id,
@@ -2317,9 +2160,9 @@ export async function EditArticle({
     topics,
     content_markdown,
     content_rendered,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取文章列表
@@ -2341,7 +2184,7 @@ export async function GetArticles({
   per_page,
   search_keywords,
   search_field,
-  specify_topic_id
+  specify_topic_id,
 }) {
   const response = await axios.post('/api/articles/get', {
     order,
@@ -2351,9 +2194,9 @@ export async function GetArticles({
     per_page,
     search_keywords,
     search_field,
-    specify_topic_id
-  });
-  return response;
+    specify_topic_id,
+  })
+  return response
 }
 /**
  * @description 删除文章
@@ -2361,15 +2204,12 @@ export async function GetArticles({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_delete: Boolean,delete_ids: Array,data:Array<ArticleModel>}>}
  */
-export async function DeleteArticles({
-  article_ids,
-  user_token
-}) {
+export async function DeleteArticles({ article_ids, user_token }) {
   const response = await axios.post('/api/articles/delete', {
     article_ids,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 添加回答
@@ -2379,19 +2219,14 @@ export async function DeleteArticles({
  * @param {String} user_token 用户token
  * @returns {Promise<{ is_add: boolean, answer: AnswerModel }>} { is_add: 是否添加成功, answer: 回答 }
  */
-export async function AddAnswer({
-  question_id,
-  content_markdown,
-  content_rendered,
-  user_token
-}) {
+export async function AddAnswer({ question_id, content_markdown, content_rendered, user_token }) {
   const response = await axios.post('/api/answer/add', {
     question_id,
     content_markdown,
     content_rendered,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取回答
@@ -2399,15 +2234,12 @@ export async function AddAnswer({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean,answer: AnswerModel}>}
  */
-export async function GetAnswer({
-  answer_id,
-  user_token
-}) {
+export async function GetAnswer({ answer_id, user_token }) {
   const response = await axios.post('/api/answer/get', {
     answer_id,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 编辑回答
@@ -2417,19 +2249,14 @@ export async function GetAnswer({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_edit: Boolean,answer: AnswerModel}>}
  */
-export async function EditAnswer({
-  answer_id,
-  content_markdown,
-  content_rendered,
-  user_token
-}) {
+export async function EditAnswer({ answer_id, content_markdown, content_rendered, user_token }) {
   const response = await axios.post('/api/answer/edit', {
     answer_id,
     content_markdown,
     content_rendered,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取回答列表
@@ -2451,7 +2278,7 @@ export async function GetAnswers({
   user_token,
   per_page,
   search_keywords,
-  search_field
+  search_field,
 }) {
   const response = await axios.post('/api/answers/get', {
     question_id,
@@ -2461,9 +2288,9 @@ export async function GetAnswers({
     user_token,
     per_page,
     search_keywords,
-    search_field
-  });
-  return response;
+    search_field,
+  })
+  return response
 }
 /**
  * @description 删除回答
@@ -2471,15 +2298,12 @@ export async function GetAnswers({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_delete: Boolean,delete_ids: Array,data:Array<AnswerModel>}>}
  */
-export async function DeleteAnswers({
-  answer_ids,
-  user_token
-}) {
+export async function DeleteAnswers({ answer_ids, user_token }) {
   const response = await axios.post('/api/answers/delete', {
     answer_ids,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 添加评论
@@ -2489,19 +2313,14 @@ export async function DeleteAnswers({
  * @param {String} user_token 用户token
  * @returns {Promise<{ is_add: boolean, comment: CommentModel }>} { is_add: 是否添加成功, comment: 评论 }
  */
-export async function AddComment({
-  commentable_id,
-  commentable_type,
-  content,
-  user_token
-}) {
+export async function AddComment({ commentable_id, commentable_type, content, user_token }) {
   const response = await axios.post('/api/comment/add', {
     commentable_id,
     commentable_type,
     content,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 编辑评论
@@ -2510,17 +2329,13 @@ export async function AddComment({
  * @param {String} user_token 用户token
  * @returns {Promise<{ is_edit: boolean, comment: CommentModel }>} { is_edit: 是否编辑成功, comment: 评论 }
  */
-export async function EditComment({
-  comment_id,
-  content,
-  user_token
-}) {
+export async function EditComment({ comment_id, content, user_token }) {
   const response = await axios.post('/api/comment/edit', {
     comment_id,
     content,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取评论列表
@@ -2542,9 +2357,9 @@ export async function GetComments({
   user_token,
   per_page,
   search_keywords,
-  search_field
+  search_field,
 }) {
-  if(commentable_id==0){
+  if (commentable_id == 0) {
     console.log('commentable_id==0')
     return
   }
@@ -2556,9 +2371,9 @@ export async function GetComments({
     user_token,
     per_page,
     search_keywords,
-    search_field
-  });
-  return response;
+    search_field,
+  })
+  return response
 }
 /**
  * @description 删除评论
@@ -2566,15 +2381,12 @@ export async function GetComments({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_delete: Boolean,delete_ids: Array,data:Array<CommentModel>}>}
  */
-export async function DeleteComments({
-  comment_ids,
-  user_token
-}) {
+export async function DeleteComments({ comment_ids, user_token }) {
   const response = await axios.post('/api/comments/delete', {
     comment_ids,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 添加回复
@@ -2592,7 +2404,7 @@ export async function AddReply({
   replyable_comment_id,
   content,
   user_token,
-  replyable_user_id
+  replyable_user_id,
 }) {
   const response = await axios.post('/api/reply/add', {
     replyable_id,
@@ -2600,9 +2412,9 @@ export async function AddReply({
     replyable_comment_id,
     content,
     user_token,
-    replyable_user_id
-  });
-  return response;
+    replyable_user_id,
+  })
+  return response
 }
 /**
  * @description 编辑回复
@@ -2611,17 +2423,13 @@ export async function AddReply({
  * @param {String} user_token 用户token
  * @returns {Promise<{ is_edit: boolean, reply: ReplyModel }>} { is_edit: 是否编辑成功, reply: 回复 }
  */
-export async function EditReply({
-  reply_id,
-  content,
-  user_token
-}) {
+export async function EditReply({ reply_id, content, user_token }) {
   const response = await axios.post('/api/reply/edit', {
     reply_id,
     content,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取回复列表
@@ -2641,7 +2449,7 @@ export async function GetReplys({
   user_token,
   per_page,
   search_keywords,
-  search_field
+  search_field,
 }) {
   const response = await axios.post('/api/replys/get', {
     replyable_comment_id,
@@ -2650,9 +2458,9 @@ export async function GetReplys({
     user_token,
     per_page,
     search_keywords,
-    search_field
-  });
-  return response;
+    search_field,
+  })
+  return response
 }
 /**
  * @description 删除回复
@@ -2660,15 +2468,12 @@ export async function GetReplys({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_delete: Boolean,delete_ids: Array,data:Array<ReplyModel>}>}
  */
-export async function DeleteReplys({
-  reply_ids,
-  user_token
-}) {
+export async function DeleteReplys({ reply_ids, user_token }) {
   const response = await axios.post('/api/replys/delete', {
     reply_ids,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @typedef Vote
@@ -2689,19 +2494,14 @@ export async function DeleteReplys({
  * @param {String} type 类型
  * @returns {Promise<{is_add_vote: Boolean,is_sub_vote: VoteModel,vote:Vote}>}
  */
-export async function Vote({
-  user_token,
-  votable_id,
-  votable_type,
-  type
-}) {
+export async function Vote({ user_token, votable_id, votable_type, type }) {
   const response = await axios.post('/api/vote', {
     user_token,
     votable_id,
     votable_type,
-    type
-  });
-  return response;
+    type,
+  })
+  return response
 }
 /**
  * @typedef AdminDataCount
@@ -2724,13 +2524,11 @@ export async function Vote({
  * @param {String} end_timestamp 结束时间戳
  * @returns {Promise<{is_get: Boolean,data:AdminDataCount}>}
  */
-export async function GetDataCount({
-  user_token
-}) {
+export async function GetDataCount({ user_token }) {
   const response = await axios.post('/api/admin/data/count', {
     user_token,
-  });
-  return response;
+  })
+  return response
 }
 /**
  * @typedef BetweenTimestampsData
@@ -2744,17 +2542,13 @@ export async function GetDataCount({
  * @param model_type 模型类型 user、user_group、report、topic、question、answer、article、comment、reply
  * @returns {Promise<{is_get: Boolean,data:Array<BetweenTimestampsData>,data_count:Number}>}
  */
-export async function GetDataBetweenTimestamps({
-  user_token,
-  time_type,
-  model_type
-}) {
+export async function GetDataBetweenTimestamps({ user_token, time_type, model_type }) {
   const response = await axios.post('/api/admin/data/between_timestamps', {
     user_token,
     time_type,
-    model_type
-  });
-  return response;
+    model_type,
+  })
+  return response
 }
 /**
  * @typedef DataBetweenTimestampsAll
@@ -2778,15 +2572,12 @@ export async function GetDataBetweenTimestamps({
  * @param model_type 模型类型 user、user_group、report、topic、question、answer、article、comment、reply
  * @returns {Promise<DataBetweenTimestampsAll>}
  */
-export async function GetDataBetweenTimestampsAll({
-  user_token,
-  time_type
-}) {
+export async function GetDataBetweenTimestampsAll({ user_token, time_type }) {
   const response = await axios.post('/api/admin/data/between_timestamps_all', {
     user_token,
-    time_type
-  });
-  return response;
+    time_type,
+  })
+  return response
 }
 /**
  * @typedef ServerInfo
@@ -2804,13 +2595,11 @@ export async function GetDataBetweenTimestampsAll({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean,data:ServerInfo}>}
  */
-export async function GetServerInfo({
-  user_token
-}) {
+export async function GetServerInfo({ user_token }) {
   const response = await axios.post('/api/admin/data/server_info', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 添加用户组
@@ -2818,15 +2607,12 @@ export async function GetServerInfo({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_add: Boolean,data:UserGroupModel}>}
  */
-export async function AddUserGroup({
-  user_group_data,
-  user_token
-}) {
+export async function AddUserGroup({ user_group_data, user_token }) {
   const response = await axios.post('/api/user_group/add', {
     user_group_data,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 获取用户组
@@ -2834,15 +2620,12 @@ export async function AddUserGroup({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_get: Boolean,data:UserGroupModel}>}
  */
-export async function GetUserGroup({
-  user_group_id,
-  user_token,
-}) {
+export async function GetUserGroup({ user_group_id, user_token }) {
   const response = await axios.post('/api/user_group/get', {
     user_group_id,
     user_token,
-  });
-  return response;
+  })
+  return response
 }
 /**
  * @description 获取用户组列表
@@ -2861,7 +2644,7 @@ export async function GetUserGroups({
   user_token,
   per_page,
   search_keywords,
-  search_field
+  search_field,
 }) {
   const response = await axios.post('/api/user_groups/get', {
     order,
@@ -2869,9 +2652,9 @@ export async function GetUserGroups({
     user_token,
     per_page,
     search_keywords,
-    search_field
-  });
-  return response;
+    search_field,
+  })
+  return response
 }
 /**
  * @description 编辑用户组
@@ -2880,17 +2663,13 @@ export async function GetUserGroups({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_edit: Boolean,data:UserGroupModel}>}
  */
-export async function EditUserGroup({
-  user_group_id,
-  user_group_data,
-  user_token
-}) {
+export async function EditUserGroup({ user_group_id, user_group_data, user_token }) {
   const response = await axios.post('/api/user_group/edit', {
     user_group_id,
     user_group_data,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 删除用户组
@@ -2898,15 +2677,12 @@ export async function EditUserGroup({
  * @param {String} user_token 用户token
  * @returns {Promise<{is_delete: Boolean,delete_ids: Array<String>,data:Array<UserGroupModel>}>}
  */
-export async function DeleteUserGroups({
-  user_group_ids,
-  user_token
-}) {
+export async function DeleteUserGroups({ user_group_ids, user_token }) {
   const response = await axios.post('/api/user_groups/delete', {
     user_group_ids,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 /**
  * @description 添加举报
@@ -2916,19 +2692,14 @@ export async function DeleteUserGroups({
  * @param {String} reason 原因
  * @returns {Promise<{is_add: Boolean,report:ReportModel}>}
  */
-export async function AddReport({
-  reportable_id,
-  reportable_type,
-  user_token,
-  reason
-}) {
+export async function AddReport({ reportable_id, reportable_type, user_token, reason }) {
   const response = await axios.post('/api/report/add', {
     reportable_id,
     reportable_type,
     user_token,
-    reason
-  });
-  return response;
+    reason,
+  })
+  return response
 }
 /**
  * @description 获取举报列表
@@ -2946,7 +2717,7 @@ export async function GetReports({
   user_token,
   per_page,
   search_keywords,
-  search_field
+  search_field,
 }) {
   const response = await axios.post('/api/reports/get', {
     order,
@@ -2954,17 +2725,17 @@ export async function GetReports({
     user_token,
     per_page,
     search_keywords,
-    search_field
-  });
-  return response;
+    search_field,
+  })
+  return response
 }
 /**
  * @description 获取语言信息列表
  * @returns {Promise<{Object}>} 语言包['zh_CN'=>self::t('Message.langInfo.langname'),'en_US'=>self::t('Message.langInfo.langname')]
  */
 export async function GetLocaleInfoList() {
-  const response = await axios.post('/api/lang/get/locale/info/list');
-  return response;
+  const response = await axios.post('/api/lang/get/locale/info/list')
+  return response
 }
 /**
  * @description 获取安装信息
@@ -2972,7 +2743,7 @@ export async function GetLocaleInfoList() {
  */
 export async function GetInstallInfoJson() {
   const response = await axios.post('/api/install/get_install_info_json')
-  return response;
+  return response
 }
 /**
  * @description 设置安装配置
@@ -2988,16 +2759,16 @@ export async function SetInstallConfig({
   mysql_username,
   mysql_password,
   mysql_hostname,
-  mysql_prefix
+  mysql_prefix,
 }) {
   const response = await axios.post('/api/install/set_config', {
     mysql_database,
     mysql_username,
     mysql_password,
     mysql_hostname,
-    mysql_prefix
-  });
-  return response;
+    mysql_prefix,
+  })
+  return response
 }
 //以下为安装时接口
 /**
@@ -3018,7 +2789,7 @@ export async function TestMail({
   smtp_send_name,
   smtp_username,
   smtp_password,
-  smtp_email
+  smtp_email,
 }) {
   const response = await axios.post('/api/install/test_mail', {
     smtp_host,
@@ -3027,9 +2798,9 @@ export async function TestMail({
     smtp_send_name,
     smtp_username,
     smtp_password,
-    smtp_email
-  });
-  return response;
+    smtp_email,
+  })
+  return response
 }
 /**
  * @description 设置邮箱
@@ -3047,7 +2818,7 @@ export async function SetMail({
   smtp_secure,
   smtp_send_name,
   smtp_username,
-  smtp_password
+  smtp_password,
 }) {
   const response = await axios.post('/api/install/mail/set', {
     smtp_host,
@@ -3055,9 +2826,9 @@ export async function SetMail({
     smtp_secure,
     smtp_send_name,
     smtp_username,
-    smtp_password
-  });
-  return response;
+    smtp_password,
+  })
+  return response
 }
 /**
  * @description 设置网站信息
@@ -3065,23 +2836,20 @@ export async function SetMail({
  * @param {String} default_language 默认语言
  * @returns {Promise<{web: Boolean}>}
  */
-export async function SetWebInfo({
-  site_name,
-  default_language
-}) {
+export async function SetWebInfo({ site_name, default_language }) {
   const response = await axios.post('/api/install/set_web_info', {
     site_name,
-    default_language
-  });
-  return response;
+    default_language,
+  })
+  return response
 }
 /**
  * @description 设置网站完成
  * @returns {Promise<{web: Boolean}>}
  */
 export async function SetWebChange() {
-  const response = await axios.post('/api/install/set_web_change');
-  return response;
+  const response = await axios.post('/api/install/set_web_change')
+  return response
 }
 /**
  * @description 获取语言
@@ -3089,8 +2857,8 @@ export async function SetWebChange() {
  * @returns {Promise<Object>} 返回语言包对象内容
  */
 export async function GetLanguage(val) {
-  const response = await axios.get(`/language/get/${val}`);
-  return response;
+  const response = await axios.get(`/language/get/${val}`)
+  return response
 }
 
 /**
@@ -3098,13 +2866,11 @@ export async function GetLanguage(val) {
  * @param {String} user_token 用户token
  * @return {Promise<{is_get: Boolean,oauths: Array}>}
  */
-export async function GetOauths({
-  user_token
-}) {
+export async function GetOauths({ user_token }) {
   const response = await axios.post('/api/oauths/get', {
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 
 /**
@@ -3113,15 +2879,12 @@ export async function GetOauths({
  * @param {String} user_token 用户token
  * @return {Promise<{is_delete: Boolean}>}
  */
-export async function DeleteOauth({
-  oauth_id,
-  user_token
-}) {
+export async function DeleteOauth({ oauth_id, user_token }) {
   const response = await axios.post('/api/oauth/delete', {
     oauth_id,
-    user_token
-  });
-  return response;
+    user_token,
+  })
+  return response
 }
 
 /**
@@ -3131,10 +2894,9 @@ export async function DeleteOauth({
  * @description 如果路由中包含 localhost，则使用本地地址，否则使用线上地址
  */
 export async function GetOauthLink(oauth_name) {
-
   //鉴定oauth_name是否存在
   if (!['github', 'microsoft', 'google', 'sso'].includes(oauth_name)) {
-    return '';
+    return ''
   }
 
   // 初始化 oauth 对象（如果不存在）
@@ -3144,58 +2906,58 @@ export async function GetOauthLink(oauth_name) {
       microsoft: null,
       google: null,
       sso: null,
-    };
+    }
   }
 
   // 如果已经缓存了 OAuth 链接，直接返回
   if (window.oauth[oauth_name]) {
-    return window.oauth[oauth_name];
+    return window.oauth[oauth_name]
   }
 
   // 从服务器获取 client_id
   const response = await axios.post('/api/option/get/oauth/client_id', {
-    oauth_name: oauth_name
-  });
+    oauth_name: oauth_name,
+  })
 
   if (!response.data.is_get || !response.data.client_id) {
-    return '';
+    return ''
   }
-  window.sso_client_main_name = response.data.sso_client_main_name;
+  window.sso_client_main_name = response.data.sso_client_main_name
 
-  const client_id = response.data.client_id;
+  const client_id = response.data.client_id
 
-  const isLocalhost = window.location.href.indexOf('localhost') !== -1;
+  const isLocalhost = window.location.href.indexOf('localhost') !== -1
 
   //回调地址
   const redirectUri = isLocalhost
     ? `http://localhost:83/api/oauth/redirect/${oauth_name}`
-    : `${window.location.origin}/api/oauth/redirect/${oauth_name}`;
+    : `${window.location.origin}/api/oauth/redirect/${oauth_name}`
 
   // console.log('fkymd')
   // 根据不同的 OAuth 服务生成对应的授权 URL
-  let oauthUrl;
+  let oauthUrl
   switch (oauth_name) {
     case 'github':
-      oauthUrl = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUri}&scope=user`;
-      break;
+      oauthUrl = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUri}&scope=user`
+      break
     case 'microsoft':
-      oauthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirectUri}&scope=openid%20profile%20User.Read`;
-      break;
+      oauthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirectUri}&scope=openid%20profile%20User.Read`
+      break
     case 'google':
-      oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&client_id=${client_id}&response_type=code&redirect_uri=${redirectUri}&scope=openid%20profile%20email`;
-      break;
+      oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&client_id=${client_id}&response_type=code&redirect_uri=${redirectUri}&scope=openid%20profile%20email`
+      break
     case 'sso':
       console.log('fuck you')
       // oauthUrl = `http://a.com/api/sso/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirectUri}&scope=openid%20profile%20email`;
-      oauthUrl = `${response.data.sso_client_main_url}/api/sso/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirectUri}&scope=openid%20profile%20email`;
-      break;
+      oauthUrl = `${response.data.sso_client_main_url}/api/sso/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirectUri}&scope=openid%20profile%20email`
+      break
     default:
-      return '';
+      return ''
   }
 
   // 缓存生成的 URL
-  window.oauth[oauth_name] = oauthUrl;
-  return oauthUrl;
+  window.oauth[oauth_name] = oauthUrl
+  return oauthUrl
 }
 
 /**
@@ -3204,15 +2966,12 @@ export async function GetOauthLink(oauth_name) {
  * @param {String} name 自定义设置名称
  * @return {Promise<{is_get: Boolean, data: mixed, error: string|null}>}
  */
-export async function GetUserOption({
-  user_token,
-  name
-}) {
+export async function GetUserOption({ user_token, name }) {
   const response = await axios.post('/api/user/option/get', {
     user_token,
-    name
-  });
-  return response;
+    name,
+  })
+  return response
 }
 
 /**
@@ -3222,17 +2981,13 @@ export async function GetUserOption({
  * @param {String} value 自定义设置值
  * @return {Promise<{is_set: Boolean, data: mixed, error: string|null}>}
  */
-export async function SetUserOption({
-  user_token,
-  name,
-  value
-}) {
+export async function SetUserOption({ user_token, name, value }) {
   const response = await axios.post('/api/user/option/set', {
     user_token,
     name,
-    value
-  });
-  return response;
+    value,
+  })
+  return response
 }
 
 /**
@@ -3241,18 +2996,13 @@ export async function SetUserOption({
  * @param {String} name 自定义设置名称
  * @return {Promise<{is_delete: Boolean, data: mixed, error: string|null}>}
  */
-export async function DeleteUserOption({
-  user_token,
-  name
-}) {
+export async function DeleteUserOption({ user_token, name }) {
   const response = await axios.post('/api/user/option/delete', {
     user_token,
-    name
-  });
-  return response;
+    name,
+  })
+  return response
 }
-
-
 
 /**
  * 对象导出所有函数
@@ -3391,7 +3141,7 @@ export const MDF = {
   SetMail,
   SetWebInfo,
   SetWebChange,
-  GetLanguage
+  GetLanguage,
 }
 
 //将MDF设置为全局变量

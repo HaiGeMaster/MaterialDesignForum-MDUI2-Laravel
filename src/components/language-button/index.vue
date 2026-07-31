@@ -5,7 +5,7 @@
       v-if="slotname == 'icon'"
       slot="trigger"
       v-show="show && LanguageList.length >= 2"
-      style="margin-right: 4px; margin-left: 4px"
+      style="margin-right: 4px; margin-left: 4px; -webkit-app-region: no-drag"
       :loading="is_loading"
     >
       <mdui-tooltip :content="`Language: ${$t('Message.langInfo.langname')}`">

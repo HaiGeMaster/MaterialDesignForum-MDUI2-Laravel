@@ -3,7 +3,7 @@
     <mdui-button-icon
       v-show="show"
       @click="handleThemeSwitch"
-      style="margin-right: 4px; margin-left: 4px"
+      style="margin-right: 4px; margin-left: 4px; -webkit-app-region: no-drag"
     >
       <mdi-icon :icon="themeIcon" />
     </mdui-button-icon>
@@ -95,6 +95,7 @@ export default {
       let themes = this.theme_data
       themes = Object.assign({}, themes, this.mainStore.getAppBaseInfo.theme_color)
       this.theme_data = themes
+
       this.updateColorScheme()
     },
 
@@ -122,11 +123,16 @@ export default {
       const darkColor = this.theme_data.dark.colors?.primary
 
       if (this.isDark) {
+        console.log(darkColor)
         setColorScheme(darkColor)
+        console.log(1)
       } else if (!this.isDark) {
+        console.log(lightColor)
         setColorScheme(lightColor)
+        console.log(2)
       } else {
         setColorScheme('#4c5e8b')
+        console.log(3)
       }
 
       // 从 CSS 变量读取当前主题色，更新浏览器顶栏
@@ -158,7 +164,7 @@ export default {
     },
   },
   created() {
-    setColorScheme('#4c5e8b')
+    // setColorScheme('#4c5e8b')
 
     // Initialize theme based on system preference
     const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches

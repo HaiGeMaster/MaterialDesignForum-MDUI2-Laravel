@@ -5,8 +5,8 @@
     }}</mdui-list-subheader>
 
     <mdui-list-item
-      v-if="userStore.getIsLogin"
-      @click="!oauths.github && (window.location.href = $G_CrossDomain() + '/auth/github/redirect')"
+      v-if="userStore.getIsLogin && oauthList.github"
+      @click="!oauths.github && redirectOauth('github')"
     >
       <img
         slot="icon"
@@ -37,6 +37,7 @@
         :content="$t('Message.Components.Account.Disassociation')"
       >
         <mdui-button-icon
+          variant="outlined"
           @click.stop="DeleteOauth(oauths.github.oauth_id)"
           :disabled="delete_loading_id == oauths.github.oauth_id"
           :loading="delete_loading_id == oauths.github.oauth_id"
@@ -47,10 +48,8 @@
     </mdui-list-item>
 
     <mdui-list-item
-      v-if="userStore.getIsLogin"
-      @click="
-        !oauths.microsoft && (window.location.href = $G_CrossDomain() + '/auth/microsoft/redirect')
-      "
+      v-if="userStore.getIsLogin && oauthList.microsoft"
+      @click="!oauths.microsoft && redirectOauth('microsoft')"
     >
       <img
         slot="icon"
@@ -81,6 +80,7 @@
         :content="$t('Message.Components.Account.Disassociation')"
       >
         <mdui-button-icon
+          variant="outlined"
           @click.stop="DeleteOauth(oauths.microsoft.oauth_id)"
           :disabled="delete_loading_id == oauths.microsoft.oauth_id"
           :loading="delete_loading_id == oauths.microsoft.oauth_id"
@@ -91,8 +91,8 @@
     </mdui-list-item>
 
     <mdui-list-item
-      v-if="userStore.getIsLogin"
-      @click="!oauths.google && (window.location.href = $G_CrossDomain() + '/auth/google/redirect')"
+      v-if="userStore.getIsLogin && oauthList.google"
+      @click="!oauths.google && redirectOauth('google')"
     >
       <img
         slot="icon"
@@ -124,6 +124,7 @@
         :content="$t('Message.Components.Account.Disassociation')"
       >
         <mdui-button-icon
+          variant="outlined"
           @click.stop="DeleteOauth(oauths.google.oauth_id)"
           :disabled="delete_loading_id == oauths.google.oauth_id"
           :loading="delete_loading_id == oauths.google.oauth_id"
@@ -174,11 +175,19 @@ export default {
     }
   },
   computed: {
+    oauthList() {
+      return this.mainStore.getAppBaseInfo?.oauth_list || {}
+    },
     ReturnUserIsLogin() {
       return this.userStore.getIsLogin
     },
   },
   methods: {
+    redirectOauth(provider) {
+      if (typeof window !== 'undefined') {
+        window.location.href = this.$G_CrossDomain() + '/auth/' + provider + '/redirect'
+      }
+    },
     async GetUserOauthBindings() {
       // if (this.$route.name!='settings'||this.$route.name!='lang-settings') {
       //   return

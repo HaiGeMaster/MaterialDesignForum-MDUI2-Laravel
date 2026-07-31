@@ -1,10 +1,11 @@
 <template>
   <div>
-    <WinHeader v-show="IsElectron || IsTauri" />
+    <!-- <WinHeader v-show="IsElectron || IsTauri" /> -->
 
-    <Body :search_appbar="search_appbar" @search_appbar="search_appbar = $event">
+    <AppBody :search_appbar="search_appbar" @search_appbar="search_appbar = $event">
       <template v-slot:appbar-right>
         <CustomInput
+          style="-webkit-app-region: no-drag"
           v-if="mainStore.getDesktop"
           :placeholder="$t('Message.Components.Search.SearchTooltop')"
           @model="
@@ -18,14 +19,18 @@
         />
         <mdui-button-icon
           v-if="!mainStore.getDesktop"
-          style="margin-left: 4px; margin-right: 4px"
+          style="margin-left: 4px; margin-right: 4px; -webkit-app-region: no-drag"
           @click="search_appbar = !search_appbar"
         >
           <mdi-icon icon="mdi-magnify" />
         </mdui-button-icon>
-        <ThemeButton :show="!mainStore.getMobile && localDataStore.getAppbarShowThemeButton" />
+        <ThemeButton
+          :show="!mainStore.getMobile && localDataStore.getAppbarShowThemeButton"
+          style="-webkit-app-region: no-drag"
+        />
         <LanguageButton
           :show="!mainStore.getMobile && localDataStore.getAppbarShowLanguageButton"
+          style="-webkit-app-region: no-drag"
         />
         <!-- :show="!userStore.getIsLogin || (userStore.getIsLogin && !mainStore.getMobile)" -->
         <!-- <DeviceTypeButton :show="mainStore.getDesktop"/> -->
@@ -33,7 +38,7 @@
         <mdui-button
           v-if="!mainStore.getMobile && !userStore.getIsLogin"
           variant="filled"
-          style="margin-right: 4px; margin-left: 4px"
+          style="margin-right: 4px; margin-left: 4px; -webkit-app-region: no-drag"
           @click="
             () => {
               mainStore.setDrawer(false)
@@ -49,14 +54,15 @@
           v-if="!mainStore.getMobile && !userStore.getIsLogin"
           variant="tonal"
           @click="dialogStore.setRegisterDialog(true)"
+          style="-webkit-app-region: no-drag"
         >
           <mdi-icon slot="icon" icon="mdi-account-plus" />
           {{ $t('Message.Components.Account.Register') }}
         </mdui-button>
 
-        <NotificationButton v-if="userStore.getIsLogin" />
+        <NotificationButton v-if="userStore.getIsLogin" style="-webkit-app-region: no-drag" />
 
-        <AppbarAvatarMenu v-if="userStore.getIsLogin">
+        <AppbarAvatarMenu v-if="userStore.getIsLogin" style="-webkit-app-region: no-drag">
           <template v-slot:action>
             <ThemeButton :show="mainStore.getMobile" />
             <LanguageButton :show="mainStore.getMobile" />
@@ -64,7 +70,10 @@
           </template>
         </AppbarAvatarMenu>
 
-        <LoginRegisterMenu v-if="mainStore.getMobile && !userStore.getIsLogin" />
+        <LoginRegisterMenu
+          v-if="mainStore.getMobile && !userStore.getIsLogin"
+          style="-webkit-app-region: no-drag"
+        />
       </template>
 
       <template v-slot:navigation-drawer-content>
@@ -207,7 +216,9 @@
       </template>
 
       <template v-slot:navigation-rail-bottom>
-        <div style="position: absolute; bottom: 0; padding: 16px">
+        <div
+          style="position: absolute; bottom: 0; padding: 0 16px 0 16px; -webkit-app-region: no-drag"
+        >
           <mdui-dropdown>
             <mdui-button-icon slot="trigger">
               <mdui-tooltip
@@ -524,12 +535,12 @@
         :content="$store.getters['Dialog/GetDialog'].content"
         @model="$store.dispatch('Dialog/Set_Dialog', false)"
       /> -->
-    </Body>
+    </AppBody>
   </div>
 </template>
 
 <script>
-import Body from '@/components/body.vue'
+import AppBody from '@/components/body.vue'
 
 import Login from '@/components/account/login.vue'
 import Register from '@/components/account/register.vue'
@@ -560,7 +571,7 @@ import TopicSelectorDialog from '@/components/md-editor/components/topic-selecto
 import UseCookieDialog from '@/components/dialog/use-cookie-dialog/index.vue'
 // import Snackbar from '@/components/snackbar/index.vue'
 
-import WinHeader from '@/components/win-header/index.vue'
+// import WinHeader from '@/components/win-header/index.vue'
 
 import { defineAsyncComponent, getCurrentInstance } from 'vue'
 
@@ -583,8 +594,8 @@ import { useLocalDataStore } from '@/stores/local-data'
 export default {
   name: 'App',
   components: {
-    Body,
-    WinHeader,
+    AppBody,
+    // WinHeader,
 
     // Login: defineAsyncComponent(() => import('@/components/account/login.vue')),
     // Register: defineAsyncComponent(() => import('@/components/account/register.vue')),
@@ -649,44 +660,6 @@ export default {
       localDataStore: useLocalDataStore(),
       search_appbar: false,
     }
-  },
-  mounted() {
-    // 初始化 Fancybox（必须！）
-    this.$Fancybox.bind('[data-fancybox]', {
-      // 可选配置项
-      infinite: true,
-      keyboard: true,
-    })
-    if (IsElectron()) {
-      //如果当前路由是/
-      if (this.$route.path != '/') {
-        this.$router.push('/')
-      }
-    }
-    const _this = this
-    this.$axios.interceptors.response.use(
-      function (response) {
-        // Do something with response data
-        // console.log('拦截请求')
-        if (response.data.snackbar) {
-          // _this.$store.dispatch('Snackbar/Show_Snackbar', {
-          //   text: _this.$t(response.data.snackbar),
-          // })
-        }
-        if (response.data.error) {
-          // _this.$store.dispatch('Dialog/Set_Dialog', {
-          //   model: true,
-          //   title: 'Error',
-          //   content: response.data.error,
-          // })
-        }
-        return response
-      },
-      function (error) {
-        // Do something with response error
-        return Promise.reject(error)
-      },
-    )
   },
   computed: {
     IsTauri() {
@@ -779,7 +752,7 @@ export default {
       var domain = window.location.host //或者定制域名
       if (IsTauri() || IsElectron() || IsMobileApp()) {
         //打包专属app时使用
-        domain = 'mdf.xbedrock.com'
+        domain = 'www.xbedrock.com'
       }
       var base64 = btoa(domain)
       // console.log('AddActivity-base64',base64)
@@ -1108,9 +1081,49 @@ export default {
 
     //添加远程script
     const script = document.createElement('script')
-    script.src = 'https://mdf.xbedrock.com/mdui2.js'
+    script.src = 'https://www.xbedrock.com/mdui2.js'
     script.async = true
     document.head.appendChild(script)
+  },
+  mounted() {
+    // 初始化 Fancybox（必须！）
+    this.$Fancybox.bind('[data-fancybox]', {
+      // 可选配置项
+      infinite: true,
+      keyboard: true,
+    })
+    if (IsElectron()) {
+      //如果当前路由是/
+      if (this.$route.path != '/') {
+        this.$router.push('/')
+      }
+    }
+    const _this = this
+    this.$axios.interceptors.response.use(
+      function (response) {
+        // Do something with response data
+        // console.log('拦截请求')
+        if (response.data.snackbar) {
+          // _this.$store.dispatch('Snackbar/Show_Snackbar', {
+          //   text: _this.$t(response.data.snackbar),
+          // })
+        }
+        if (response.data.error) {
+          // _this.$store.dispatch('Dialog/Set_Dialog', {
+          //   model: true,
+          //   title: 'Error',
+          //   content: response.data.error,
+          // })
+        }
+        return response
+      },
+      function (error) {
+        // Do something with response error
+        return Promise.reject(error)
+      },
+    )
+    // // 获取应用基本信息
+    // this.GetAppBaseInfoData()
   },
   watch: {
     $route() {

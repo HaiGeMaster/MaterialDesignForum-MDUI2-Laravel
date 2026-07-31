@@ -1,25 +1,27 @@
 <template>
   <!-- style="height: 100vh;width: 100%;" -->
-  <mdui-layout
-    :style="{
+
+  <!-- :style="{
       height: IsElectron || IsTauri ? 'calc(100vh - 32px)' : '100vh',
       width: '100%',
-    }"
-  >
+    }" -->
+  <mdui-layout style="height: 100vh; width: 100%">
     <mdui-top-app-bar
       v-if="!v_search_appbar"
       scroll-behavior="elevate"
       scroll-target=".layout-main"
+      style="-webkit-app-region: drag; -webkit-user-select: none"
     >
       <mdui-tooltip :content="GetBarDrawerText" placement="right">
         <mdui-button-icon
           @click="navigation_drawer = !navigation_drawer"
-          style="margin-right: 16px"
+          style="margin-right: 16px; -webkit-app-region: no-drag"
         >
           <mdi-icon :icon="GetBarDrawerIcon" />
         </mdui-button-icon>
       </mdui-tooltip>
 
+      <!-- style="-webkit-app-region: no-drag" -->
       <mdui-top-app-bar-title
         v-if="mainStore.getReadTitle"
         @click="$router.push($G_UrlHeaderLang() + '/')"
@@ -27,6 +29,7 @@
         {{ mainStore.getReadTitle }}
       </mdui-top-app-bar-title>
 
+      <!-- style="-webkit-app-region: no-drag" -->
       <mdui-top-app-bar-title v-else @click="$router.push($G_UrlHeaderLang() + '/')">
         {{
           mainStore.getBreakpointName == 'xs' ||
@@ -50,11 +53,57 @@
 
       <div style="flex-grow: 1"></div>
       <slot name="appbar-right"> </slot>
+
+      <mdui-tooltip
+        v-show="IsElectron || IsTauri"
+        :content="
+          !top_window
+            ? $t('Message.Components.SystemBar.TopWindow')
+            : $t('Message.Components.SystemBar.CancelTopWindow')
+        "
+      >
+        <mdui-button-icon @click="top_window = !top_window" style="-webkit-app-region: no-drag">
+          <mdi-icon :icon="!top_window ? 'mdi-pin-outline' : 'mdi-pin'"></mdi-icon>
+        </mdui-button-icon>
+      </mdui-tooltip>
+
+      <mdui-tooltip
+        v-show="IsElectron || IsTauri"
+        :content="$t('Message.Components.Editor.Minimize')"
+      >
+        <mdui-button-icon @click="_OnWindowOpen('window-min')" style="-webkit-app-region: no-drag">
+          <mdi-icon icon="mdi-minus"></mdi-icon>
+        </mdui-button-icon>
+      </mdui-tooltip>
+
+      <mdui-tooltip
+        v-show="IsElectron || IsTauri"
+        :content="$t('Message.Components.Editor.Maximize')"
+      >
+        <mdui-button-icon @click="_OnWindowOpen('window-max')" style="-webkit-app-region: no-drag">
+          <mdi-icon icon="mdi-square-rounded-outline"></mdi-icon>
+        </mdui-button-icon>
+      </mdui-tooltip>
+
+      <mdui-tooltip v-show="IsElectron || IsTauri" :content="$t('Message.Components.Editor.Close')">
+        <mdui-button-icon
+          @click="_OnWindowOpen('window-close')"
+          style="-webkit-app-region: no-drag"
+        >
+          <mdi-icon icon="mdi-window-close"></mdi-icon>
+        </mdui-button-icon>
+      </mdui-tooltip>
     </mdui-top-app-bar>
 
-    <mdui-top-app-bar v-else scroll-behavior="elevate" scroll-target=".layout-main">
+    <mdui-top-app-bar
+      v-else
+      scroll-behavior="elevate"
+      scroll-target=".layout-main"
+      style="-webkit-app-region: drag; -webkit-user-select: none"
+    >
       <input style="display: none" />
       <CustomInput
+        style="-webkit-app-region: no-drag"
         :name="'search-appbar'"
         :placeholder="$t('Message.Components.Search.SearchTooltop')"
         @model="
@@ -77,7 +126,7 @@
       />
 
       <mdui-button-icon
-        style="margin-left: 4px; margin-right: 4px"
+        style="margin-left: 4px; margin-right: 4px; -webkit-app-region: no-drag"
         @click="v_search_appbar = !v_search_appbar"
       >
         <mdi-icon icon="mdi-close" />
@@ -142,6 +191,7 @@ import CustomInput from '@/components/custom-input/index.vue'
 // import Copyright from '@/components/append-footer/components/copyright/index.vue'
 import { IsTauri, IsElectron, IsMobileApp } from '@/api/global.js'
 import SettingNavigationDrawer from '@/components/setting-navigation-drawer/index.vue'
+import { OnWindowOpen } from '@/api/global.js'
 export default {
   name: 'App',
   props: {
@@ -179,6 +229,8 @@ export default {
   },
   data() {
     return {
+      max: false,
+      top_window: false,
       mainStore: useMainStore(),
       dialogStore: useDialogStore(),
       fabDialogStore: useFabDialogStore(),
@@ -259,6 +311,9 @@ export default {
     },
   },
   methods: {
+    _OnWindowOpen(type) {
+      OnWindowOpen(type)
+    },
     /**
      * 滚动到顶部
      */
@@ -334,6 +389,12 @@ export default {
   },
   created() {},
   watch: {
+    max(val) {
+      this._OnWindowOpen('max')
+    },
+    top_window(val) {
+      this._OnWindowOpen(val ? 'window-top' : 'window-top-cancel')
+    },
     search_appbar(val) {
       if (val) {
         this.v_search_appbar = true
