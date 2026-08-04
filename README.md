@@ -55,6 +55,19 @@ pnpm build
 
 构建产物默认输出到 `../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/`，配合 Laravel 后端部署。
 
+> **工作区目录结构**：三个前端项目共享同一个 Laravel 后端，Web 构建产物统一输出到 `MaterialDesignForum-Laravel/public/themes/` 目录下：
+>
+> ```
+> Vue/                                  # 工作区根目录
+> ├── MaterialDesignForum-Laravel/       # Laravel 后端（共享）
+> │   └── public/themes/
+> │       ├── MaterialDesignForum-MCUI/       # MCUI 主题构建产物
+> │       ├── MaterialDesignForum-MDUI2/      # MDUI2 主题构建产物
+> │       └── MaterialDesignForum-Vuetify4/  # Vuetify4 主题构建产物
+> ├── MaterialDesignForum-MDUI2-Laravel/ # MDUI2 前端项目
+> └── MaterialDesignForum-Vuetify4-Laravel/ # Vuetify4 前端项目
+> ```
+
 > **环境自动切换说明**：构建时 `vite.config.js` 会自动检测是否为 Tauri 打包：
 >
 > - **Web 构建**（`pnpm build`）：`base` 为 `/themes/MaterialDesignForum-MDUI2/`，输出到 Laravel 的 public 目录
