@@ -6,10 +6,10 @@ import { getCurrentWindow } from '@tauri-apps/api/window'
 // const MainCheckServer = 'aHR0cDovL2xvY2FsaG9zdDo4My9hcGkvYw==';//http://localhost:83/api/c
 // const MainCheckServer = 'aHR0cHM6Ly9tZGYueGJlZHJvY2suY29tL2FwaS9j';//https://demo.xbedrock.com/api/c
 
-// web 模式
-const Is_Tauri = true //false //
-const Is_Electron = false //true;//
-const Is_MobileApp = false //true;//
+// 自动检测运行环境（无需手动修改）
+const Is_Tauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
+const Is_Electron = typeof window !== 'undefined' && 'electronAPI' in window
+const Is_MobileApp = typeof window !== 'undefined' && 'mobileAppAPI' in window
 
 console.log('当前环境', process.env.NODE_ENV)
 //如果是开发环境

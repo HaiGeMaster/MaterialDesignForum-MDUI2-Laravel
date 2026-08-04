@@ -1,69 +1,167 @@
-# vue-project
+# MaterialDesignForum（MDUI2 版本）
 
-This template should help get you started developing with Vue 3 in Vite.
+基于 **Vue 3 + MDUI 2 + Laravel** 构建的 Material Design 风格社区论坛，支持 Web 端和 Tauri 桌面端。
 
-## Recommended IDE Setup
+<img src="https://www.xbedrock.com/assets/info_content/md3/device_info_template_auto.png" alt="MDUI2主题预览图" width="100%">
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 技术栈
 
-## Recommended Browser Setup
+| 类别       | 技术                                |
+| ---------- | ----------------------------------- |
+| 前端框架   | Vue 3 + Vite 8                      |
+| UI 框架    | MDUI 2（Material Design 2）         |
+| 状态管理   | Pinia + pinia-plugin-persistedstate |
+| 路由       | Vue Router 5                        |
+| 国际化     | vue-i18n                            |
+| 富文本编辑 | Tiptap                              |
+| 轮播       | Swiper                              |
+| 后端       | Laravel（PHP）                      |
+| 桌面端     | Tauri 2                             |
+| 测试       | Vitest + Playwright                 |
+| 代码检查   | ESLint + Oxlint + Prettier          |
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## 环境要求
 
-## Customize configuration
+- **Node.js** ^22.18.0 或 >=24.12.0
+- **pnpm**（推荐）或 npm
+- **Rust**（仅 Tauri 打包需要）：[rustup.rs](https://rustup.rs/)
+- **Tauri 系统依赖**：[Tauri 前置准备](https://v2.tauri.app/start/prerequisites/)
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 安装
 
-## Project Setup
+```bash
+# 克隆项目后进入目录
+cd MaterialDesignForum-MDUI2-Laravel
 
-```sh
+# 安装依赖
 pnpm install
 ```
 
-### Compile and Hot-Reload for Development
+## 开发
 
-```sh
+```bash
+# 启动前端开发服务器（带热更新）
 pnpm dev
 ```
 
-### Compile and Minify for Production
+开发服务器通过 Vite 代理访问 Laravel 后端 API。
 
-```sh
+## 构建前端（Web 部署）
+
+```bash
+# 构建生产版本
 pnpm build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+构建产物默认输出到 `../MaterialDesignForum-Laravel/public/themes/MaterialDesignForum-MDUI2/`，配合 Laravel 后端部署。
 
-```sh
-pnpm test:unit
+> **环境自动切换说明**：构建时 `vite.config.js` 会自动检测是否为 Tauri 打包：
+>
+> - **Web 构建**（`pnpm build`）：`base` 为 `/themes/MaterialDesignForum-MDUI2/`，输出到 Laravel 的 public 目录
+> - **Tauri 构建**（`pnpm tauri:build`）：`base` 为 `./`，输出到默认 `dist` 目录
+>
+> 运行时代码（`global.js`）会自动通过 `window.__TAURI_INTERNALS__` 检测当前环境，无需手动切换配置。
+
+## 构建 Tauri 桌面应用
+
+### 前置准备
+
+确保已安装 Rust 和 Tauri 系统依赖，参考 [Tauri 官方文档](https://v2.tauri.app/start/prerequisites/)。
+
+### Tauri 开发模式
+
+```bash
+# 启动 Tauri 开发窗口（带热更新）
+pnpm tauri:dev
 ```
 
-### Run End-to-End Tests with [Playwright](https://playwright.dev)
+此命令会自动设置 `TAURI_BUILD=1` 环境变量，使 Vite 使用 Tauri 专用的构建配置。
 
-```sh
-# Install browsers for the first run
+### Tauri 生产打包
+
+```bash
+# 生产打包（优化体积）
+pnpm tauri:build
+
+# Debug 打包（方便调试，保留更多信息）
+pnpm tauri:build:debug
+```
+
+打包产物位于 `src-tauri/target/release/` 或 `src-tauri/target/debug/` 目录下。
+
+### Tauri CLI 通用命令
+
+```bash
+# 直接调用 tauri CLI（已自动注入 TAURI_BUILD）
+pnpm tauri
+```
+
+## 测试
+
+```bash
+# 运行单元测试（Vitest）
+pnpm test:unit
+
+# 安装 Playwright 浏览器（仅首次）
 npx playwright install
 
-# When testing on CI, must build the project first
-pnpm build
-
-# Runs the end-to-end tests
+# 运行端到端测试
 pnpm test:e2e
-# Runs the tests only on Chromium
+
+# 仅在 Chromium 上运行
 pnpm test:e2e --project=chromium
-# Runs the tests of a specific file
+
+# 运行指定测试文件
 pnpm test:e2e tests/example.spec.ts
-# Runs the tests in debug mode
+
+# Debug 模式运行
 pnpm test:e2e --debug
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+## 代码检查与格式化
 
-```sh
+```bash
+# 运行所有 Lint 检查并自动修复
 pnpm lint
+
+# 代码格式化
+pnpm format
 ```
+
+## 其他脚本
+
+| 命令           | 说明                     |
+| -------------- | ------------------------ |
+| `pnpm preview` | 预览构建结果             |
+| `pnpm lint`    | Oxlint + ESLint 检查修复 |
+| `pnpm format`  | Prettier 格式化代码      |
+
+## 项目结构
+
+```
+MaterialDesignForum-MDUI2-Laravel/
+├── src/                    # 前端源码
+│   ├── api/                # API 请求与全局配置
+│   │   └── global.js       # 环境自动检测（Tauri/Electron/MobileApp）
+│   ├── components/         # Vue 组件
+│   ├── layouts/            # 布局组件
+│   ├── locales/            # 国际化语言文件
+│   ├── pages/              # 页面组件
+│   ├── plugins/            # MDUI、i18n 等插件
+│   ├── router/             # 路由配置
+│   ├── stores/             # Pinia 状态管理
+│   └── styles/             # 全局样式
+├── src-tauri/              # Tauri 后端（Rust）
+├── tests/                  # 测试文件
+│   ├── unit/               # 单元测试
+│   └── e2e/                # 端到端测试
+├── vite.config.js          # Vite 构建配置
+├── package.json            # 项目依赖与脚本
+└── pnpm-lock.yaml          # 依赖锁定文件
+```
+
+## 许可证
+
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright (c) 2026 HaiGeMaster
